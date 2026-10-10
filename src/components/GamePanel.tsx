@@ -16,6 +16,10 @@ interface Props {
   moveHistory: string[];
   difficulty: string;
   onDifficultyChange: (d: string) => void;
+  soundEnabled?: boolean;
+  onToggleSound?: () => void;
+  volume?: number;
+  onVolumeChange?: (v: number) => void;
 }
 
 export function GamePanel({
@@ -33,6 +37,10 @@ export function GamePanel({
   moveHistory,
   difficulty,
   onDifficultyChange,
+  soundEnabled = true,
+  onToggleSound,
+  volume = 0.7,
+  onVolumeChange,
 }: Props) {
   const pairs: string[][] = [];
   for (let i = 0; i < moveHistory.length; i += 2) {
@@ -91,6 +99,29 @@ export function GamePanel({
           <option value="hard">Hard</option>
           <option value="expert">Expert</option>
         </select>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <button
+          type="button"
+          className="btn"
+          onClick={onToggleSound}
+          title={soundEnabled ? 'Mute sounds' : 'Unmute sounds'}
+          style={{ flexShrink: 0 }}
+        >
+          {soundEnabled ? 'Sound On' : 'Muted'}
+        </button>
+        <input
+          type="range"
+          min={0}
+          max={1}
+          step={0.05}
+          value={volume}
+          onChange={(e) => onVolumeChange?.(parseFloat(e.target.value))}
+          style={{ flex: 1 }}
+          title="Volume"
+          disabled={!soundEnabled}
+        />
       </div>
 
       <div
