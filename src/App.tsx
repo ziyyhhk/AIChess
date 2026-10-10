@@ -10,6 +10,7 @@ import { GameController } from './chess/gameController';
 import { PremoveManager } from './chess/premoveManager';
 import { AnnotationManager } from './chess/annotationManager';
 import { aiManager } from './ai/aiManager';
+import { soundManager } from './audio/soundManager';
 import { getModelById } from './ai/modelCatalog';
 import { DEFAULT_SETTINGS, type AppSettings } from './ai/types';
 import type { Square } from 'chess.js';
@@ -28,6 +29,16 @@ function loadSettings(): AppSettings {
 }
 
 export default function App() {
+  useEffect(() => {
+    const unlock = () => {
+      soundManager.unlock();
+      soundManager.preload();
+      window.removeEventListener('pointerdown', unlock);
+    };
+    window.addEventListener('pointerdown', unlock);
+    return () => window.removeEventListener('pointerdown', unlock);
+  }, []);
+
   const [view, setView] = useState<View>('play');
   const [settings, setSettings] = useState<AppSettings>(loadSettings);
   useEffect(() => {
@@ -62,6 +73,7 @@ export default function App() {
   useEffect(() => {
     try { localStorage.setItem('aichess-settings', JSON.stringify(settings)); } catch {}
     premoveRef.current.setEnabled(settings.enablePremoves);
+    soundManager.setEnabled(settings.enableSounds !== false);
   }, [settings]);
 
   useEffect(() => { aiManager.setModel(settings.defaultOpponent); }, []);
@@ -88,12 +100,31 @@ export default function App() {
 
   const applyMove = useCallback((from: Square, to: Square, promotion?: string) => {
     const move = game.makeMove(from, to, promotion);
-    if (!move) return false;
+    if (!move) {
+      soundManager.play('illegal');
+      return false as const;
+    }
     setSelected(null);
     annotRef.current.clear();
     refresh();
-    return true;
+    return move;
   }, []);
+
+  const playMoveSound = useCallback((move: import('chess.js').Move, isPlayer: boolean) => {
+    const flags = move.flags || '';
+    const isCapture = flags.includes('c') || flags.includes('e');
+    const isCastle = flags.includes('k') || flags.includes('q');
+    const isPromotion = !!move.promotion || flags.includes('p');
+    const isCheckmate = game.isCheckmate();
+    const isCheck = game.isCheck();
+    const isDraw = game.isDraw() && !isCheckmate;
+    let playerWon: boolean | undefined;
+    if (isCheckmate) playerWon = game.getTurn() !== playerColor;
+    soundManager.playForMove({
+      isPlayer, isCapture, isCastle, isPromotion,
+      isCheck: isCheck && !isCheckmate, isCheckmate, isDraw, playerWon,
+    });
+  }, [playerColor]);
 
   const checkGameOver = useCallback(() => {
     if (game.isGameOver()) {
@@ -123,9 +154,10 @@ export default function App() {
         sideToMove: game.getTurn(), timeoutMs: settings.aiTimeoutMs,
       }, apiKeys);
       if (game.isGameOver()) return;
-      const ok = game.makeUciMove(res.move);
-      if (!ok) setError(`AI proposed illegal move: ${res.move}`);
+      const moveObj = game.makeUciMove(res.move);
+      if (!moveObj) setError(`AI proposed illegal move: ${res.move}`);
       else {
+        playMoveSound(moveObj, false);
         setStatus('Your turn');
         if (settings.enablePremoves) {
           const pm = premoveRef.current.consumeIfLegal(game.getLegalUci());
@@ -144,7 +176,7 @@ export default function App() {
       setThinking(false);
       requestingRef.current = false;
     }
-  }, [apiKeys, playerColor, settings, checkGameOver]);
+  }, [apiKeys, playerColor, settings, checkGameOver, playMoveSound]);
 
   useEffect(() => {
     if (!game.isGameOver() && game.getTurn() !== playerColor && !requestingRef.current) {
@@ -157,7 +189,7 @@ export default function App() {
     if (game.isGameOver()) return;
     const piece = game.getPiece(sq);
     if (!isPlayerTurn && settings.enablePremoves) {
-      if (selected) { premoveRef.current.set(selected, sq); setSelected(null); refresh(); return; }
+      if (selected) { premoveRef.current.set(selected, sq); soundManager.play('premove'); setSelected(null); refresh(); return; }
       if (piece && piece.color === playerColor) { setSelected(sq); return; }
       setSelected(null); return;
     }
@@ -166,7 +198,7 @@ export default function App() {
       const moves = game.getLegalMoves(selected);
       const match = moves.find((m) => m.to === sq);
       if (match && match.promotion) { setPromotion({ from: selected, to: sq }); return; }
-      if (applyMove(selected, sq)) checkGameOver();
+      { const m = applyMove(selected, sq); if (m) { playMoveSound(m as any, true); checkGameOver(); } }
       else if (piece && piece.color === playerColor) setSelected(sq);
       else setSelected(null);
     } else if (piece && piece.color === playerColor) setSelected(sq);
@@ -177,7 +209,7 @@ export default function App() {
     if (!isPlayerTurn && settings.enablePremoves) {
       const piece = game.getPiece(from);
       if (piece && piece.color === playerColor) {
-        premoveRef.current.set(from, to); setSelected(null); refresh();
+        premoveRef.current.set(from, to); soundManager.play('premove'); setSelected(null); refresh();
       }
       return;
     }
@@ -185,16 +217,17 @@ export default function App() {
     const moves = game.getLegalMoves(from);
     const match = moves.find((m) => m.to === to);
     if (match?.promotion) { setPromotion({ from, to }); return; }
-    if (applyMove(from, to)) checkGameOver();
+    { const m = applyMove(from, to); if (m) { playMoveSound(m as any, true); checkGameOver(); } }
   };
 
   const onPromotion = (p: 'q' | 'r' | 'b' | 'n') => {
     if (!promotion) return;
-    if (applyMove(promotion.from, promotion.to, p)) checkGameOver();
+    { const m = applyMove(promotion.from, promotion.to, p); if (m) { playMoveSound(m as any, true); checkGameOver(); } }
     setPromotion(null);
   };
 
   const newGame = () => {
+    soundManager.play('gameStart');
     aiManager.cancel();
     requestingRef.current = false;
     game.reset();
@@ -245,6 +278,7 @@ export default function App() {
                 onHighlight={(sq) => { annotRef.current.toggleHighlight(sq); refresh(); }}
                 onClearAnnotations={() => { annotRef.current.clear(); refresh(); }}
                 themeClass={`board-theme-${settings.boardTheme}`}
+                animateMoves={settings.enableAnimations !== false}
               />
               <div style={{ display: 'flex', justifyContent: 'space-between', width: 'min(560px, 92vw)', fontSize: 13 }}>
                 <span>{orientation === 'w' ? 'White' : 'Black'} · You</span>
@@ -262,6 +296,16 @@ export default function App() {
                 setSettings((s) => ({ ...s, difficulty: d as AppSettings['difficulty'] }))
               }
               onClearArrows={() => { annotRef.current.clear(); refresh(); }}
+              soundEnabled={settings.enableSounds}
+              onToggleSound={() => {
+                setSettings((s) => {
+                  const next = !s.enableSounds;
+                  soundManager.setEnabled(next);
+                  return { ...s, enableSounds: next };
+                });
+              }}
+              volume={soundManager.getVolume()}
+              onVolumeChange={(v) => { soundManager.setVolume(v); setTick((x) => x + 1); }}
               moveHistory={game.getHistorySan()} />
           </div>
         )}
