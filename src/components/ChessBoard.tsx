@@ -3,6 +3,7 @@ import type { Square } from 'chess.js';
 import type { Arrow, SquareHighlight } from '../chess/annotationManager';
 import type { Premove } from '../chess/premoveManager';
 import { pieceSrc, type PieceSetId } from '../chess/pieceAssets';
+import { FlyingPiece } from './FlyingPiece';
 
 const FILES = 'abcdefgh';
 
@@ -32,6 +33,7 @@ interface Props {
   onClearAnnotations: () => void;
   themeClass: string;
   pieceSet?: PieceSetId;
+  animateMoves?: boolean;
 }
 
 function squareToCoords(sq: Square, orientation: 'w' | 'b') {
@@ -76,15 +78,12 @@ function ArrowPath({
   const y1 = (from.y + 0.5) * cell;
   const x2 = (to.x + 0.5) * cell;
   const y2 = (to.y + 0.5) * cell;
-
   const gridDx = to.x - from.x;
   const gridDy = to.y - from.y;
   const knight = isKnightDelta(gridDx, gridDy);
-
   const headLen = 2.8;
   const headWidth = 2.1;
   const shaftW = 0.95;
-
   let points: { x: number; y: number }[];
   if (knight) {
     const ax = Math.abs(gridDx);
@@ -97,19 +96,11 @@ function ArrowPath({
       midX = x1;
       midY = (from.y + Math.sign(gridDy) * 2 + 0.5) * cell;
     }
-    points = [
-      { x: x1, y: y1 },
-      { x: midX, y: midY },
-      { x: x2, y: y2 },
-    ];
+    points = [{ x: x1, y: y1 }, { x: midX, y: midY }, { x: x2, y: y2 }];
   } else {
-    points = [
-      { x: x1, y: y1 },
-      { x: x2, y: y2 },
-    ];
+    points = [{ x: x1, y: y1 }, { x: x2, y: y2 }];
   }
-
-  const out: { x: number; y: number }[] = points.map((p) => ({ ...p }));
+  const out = points.map((p) => ({ ...p }));
   {
     const a = out[0];
     const b = out[1];
@@ -129,7 +120,6 @@ function ArrowPath({
     b.x -= (dx / len) * 0.3;
     b.y -= (dy / len) * 0.3;
   }
-
   const n = out.length;
   const lastA = out[n - 2];
   const lastB = out[n - 1];
@@ -140,15 +130,9 @@ function ArrowPath({
   const uy = ldy / llen;
   const px = -uy;
   const py = ux;
-
   const tip = { x: lastB.x, y: lastB.y };
-  const base = {
-    x: lastB.x - ux * headLen,
-    y: lastB.y - uy * headLen,
-  };
-
+  const base = { x: lastB.x - ux * headLen, y: lastB.y - uy * headLen };
   const shaftPts = out.slice(0, -1).concat([base]);
-
   const left: string[] = [];
   const right: string[] = [];
   for (let i = 0; i < shaftPts.length; i++) {
@@ -170,20 +154,15 @@ function ArrowPath({
     left.push(`${p1.x + nx * shaftW} ${p1.y + ny * shaftW}`);
     right.push(`${p1.x - nx * shaftW} ${p1.y - ny * shaftW}`);
   }
-
   const pathD = [
     `M ${left[0]}`,
     ...left.slice(1).map((p) => `L ${p}`),
     `L ${base.x + px * headWidth} ${base.y + py * headWidth}`,
     `L ${tip.x} ${tip.y}`,
     `L ${base.x - px * headWidth} ${base.y - py * headWidth}`,
-    ...right
-      .slice()
-      .reverse()
-      .map((p) => `L ${p}`),
+    ...right.slice().reverse().map((p) => `L ${p}`),
     'Z',
   ].join(' ');
-
   return <path d={pathD} fill={color} opacity={0.9} stroke="none" />;
 }
 
@@ -229,10 +208,43 @@ export function ChessBoard({
   onClearAnnotations,
   themeClass,
   pieceSet = 'cburnett',
+  animateMoves = true,
 }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [dragFrom, setDragFrom] = useState<Square | null>(null);
   const [rightDragFrom, setRightDragFrom] = useState<Square | null>(null);
+  const [flying, setFlying] = useState<{
+    from: Square;
+    to: Square;
+    color: 'w' | 'b';
+    type: string;
+    key: number;
+  } | null>(null);
+  const prevLastRef = useRef<string | null>(null);
+  const reduceMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  useEffect(() => {
+    if (!animateMoves || reduceMotion || !lastMove) {
+      prevLastRef.current = lastMove ? `${lastMove.from}${lastMove.to}` : null;
+      return;
+    }
+    const key = `${lastMove.from}${lastMove.to}`;
+    if (prevLastRef.current === key) return;
+    prevLastRef.current = key;
+    const destPiece = pieces.find((p) => p.square === lastMove.to);
+    if (!destPiece) return;
+    setFlying({
+      from: lastMove.from,
+      to: lastMove.to,
+      color: destPiece.color,
+      type: destPiece.type,
+      key: Date.now(),
+    });
+    const t = window.setTimeout(() => setFlying(null), 180);
+    return () => clearTimeout(t);
+  }, [lastMove, pieces, animateMoves, reduceMotion]);
 
   const getSquareFromEvent = useCallback(
     (e: React.MouseEvent | MouseEvent): Square | null => {
@@ -249,7 +261,6 @@ export function ChessBoard({
 
   const handlePointerDown = (e: React.MouseEvent) => {
     if (!interactive) return;
-
     if (e.button === 2) {
       e.preventDefault();
       const sq = getSquareFromEvent(e);
@@ -257,10 +268,7 @@ export function ChessBoard({
       return;
     }
     if (e.button !== 0) return;
-
-    // Left-click clears all arrows/highlights (Chess.com behavior), then normal play
     onClearAnnotations();
-
     const sq = getSquareFromEvent(e);
     if (!sq) return;
     const piece = pieces.find((p) => p.square === sq);
@@ -323,10 +331,8 @@ export function ChessBoard({
       ]
         .filter(Boolean)
         .join(' ');
-
       const fileLabel = showCoordinates && y === 7 ? FILES[orientation === 'w' ? x : 7 - x] : null;
       const rankLabel = showCoordinates && x === 0 ? String(orientation === 'w' ? 8 - y : y + 1) : null;
-
       squares.push(
         <div key={sq} className={classes} data-square={sq}>
           {isLegal && !piece && <div className="legal-dot" />}
@@ -336,7 +342,7 @@ export function ChessBoard({
               color={piece.color}
               type={piece.type}
               set={pieceSet}
-              dimmed={dragFrom === sq}
+              dimmed={dragFrom === sq || (!!flying && flying.to === sq)}
             />
           )}
           {fileLabel && <span className="coord coord-file">{fileLabel}</span>}
@@ -368,6 +374,19 @@ export function ChessBoard({
       }}
     >
       <div className="chessboard">{squares}</div>
+      {flying && (
+        <div className="piece-flying-layer" aria-hidden>
+          <FlyingPiece
+            from={flying.from}
+            to={flying.to}
+            color={flying.color}
+            type={flying.type}
+            set={pieceSet}
+            orientation={orientation}
+            animKey={flying.key}
+          />
+        </div>
+      )}
       <div className="board-overlay" aria-hidden>
         <svg viewBox="0 0 100 100" preserveAspectRatio="none">
           {arrowElements}
