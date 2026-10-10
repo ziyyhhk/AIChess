@@ -56,6 +56,12 @@ const ARROW_COLORS: Record<string, string> = {
   yellow: '#e8b84a',
 };
 
+function isKnightDelta(dx: number, dy: number) {
+  const ax = Math.abs(dx);
+  const ay = Math.abs(dy);
+  return (ax === 2 && ay === 1) || (ax === 1 && ay === 2);
+}
+
 function ArrowPath({
   from,
   to,
@@ -70,33 +76,115 @@ function ArrowPath({
   const y1 = (from.y + 0.5) * cell;
   const x2 = (to.x + 0.5) * cell;
   const y2 = (to.y + 0.5) * cell;
-  const dx = x2 - x1;
-  const dy = y2 - y1;
-  const len = Math.sqrt(dx * dx + dy * dy) || 1;
-  const ux = dx / len;
-  const uy = dy / len;
-  const headLen = 3.2;
-  const headWidth = 2.4;
-  const shaftW = 1.15;
-  const sx = x1 + ux * 1.5;
-  const sy = y1 + uy * 1.5;
-  const hx = x2 - ux * 0.4;
-  const hy = y2 - uy * 0.4;
-  const bx = hx - ux * headLen;
-  const by = hy - uy * headLen;
+
+  const gridDx = to.x - from.x;
+  const gridDy = to.y - from.y;
+  const knight = isKnightDelta(gridDx, gridDy);
+
+  const headLen = 2.8;
+  const headWidth = 2.1;
+  const shaftW = 0.95;
+
+  let points: { x: number; y: number }[];
+  if (knight) {
+    const ax = Math.abs(gridDx);
+    let midX: number;
+    let midY: number;
+    if (ax === 2) {
+      midX = (from.x + Math.sign(gridDx) * 2 + 0.5) * cell;
+      midY = y1;
+    } else {
+      midX = x1;
+      midY = (from.y + Math.sign(gridDy) * 2 + 0.5) * cell;
+    }
+    points = [
+      { x: x1, y: y1 },
+      { x: midX, y: midY },
+      { x: x2, y: y2 },
+    ];
+  } else {
+    points = [
+      { x: x1, y: y1 },
+      { x: x2, y: y2 },
+    ];
+  }
+
+  const out: { x: number; y: number }[] = points.map((p) => ({ ...p }));
+  {
+    const a = out[0];
+    const b = out[1];
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const len = Math.sqrt(dx * dx + dy * dy) || 1;
+    a.x += (dx / len) * 1.2;
+    a.y += (dy / len) * 1.2;
+  }
+  {
+    const n = out.length;
+    const a = out[n - 2];
+    const b = out[n - 1];
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const len = Math.sqrt(dx * dx + dy * dy) || 1;
+    b.x -= (dx / len) * 0.3;
+    b.y -= (dy / len) * 0.3;
+  }
+
+  const n = out.length;
+  const lastA = out[n - 2];
+  const lastB = out[n - 1];
+  const ldx = lastB.x - lastA.x;
+  const ldy = lastB.y - lastA.y;
+  const llen = Math.sqrt(ldx * ldx + ldy * ldy) || 1;
+  const ux = ldx / llen;
+  const uy = ldy / llen;
   const px = -uy;
   const py = ux;
-  const path = [
-    `M ${sx + px * shaftW} ${sy + py * shaftW}`,
-    `L ${bx + px * shaftW} ${by + py * shaftW}`,
-    `L ${bx + px * headWidth} ${by + py * headWidth}`,
-    `L ${hx} ${hy}`,
-    `L ${bx - px * headWidth} ${by - py * headWidth}`,
-    `L ${bx - px * shaftW} ${by - py * shaftW}`,
-    `L ${sx - px * shaftW} ${sy - py * shaftW}`,
+
+  const tip = { x: lastB.x, y: lastB.y };
+  const base = {
+    x: lastB.x - ux * headLen,
+    y: lastB.y - uy * headLen,
+  };
+
+  const shaftPts = out.slice(0, -1).concat([base]);
+
+  const left: string[] = [];
+  const right: string[] = [];
+  for (let i = 0; i < shaftPts.length; i++) {
+    const p0 = shaftPts[Math.max(0, i - 1)];
+    const p1 = shaftPts[i];
+    const p2 = shaftPts[Math.min(shaftPts.length - 1, i + 1)];
+    let dx = p2.x - p0.x;
+    let dy = p2.y - p0.y;
+    if (i === 0) {
+      dx = p2.x - p1.x;
+      dy = p2.y - p1.y;
+    } else if (i === shaftPts.length - 1) {
+      dx = p1.x - p0.x;
+      dy = p1.y - p0.y;
+    }
+    const len = Math.sqrt(dx * dx + dy * dy) || 1;
+    const nx = -dy / len;
+    const ny = dx / len;
+    left.push(`${p1.x + nx * shaftW} ${p1.y + ny * shaftW}`);
+    right.push(`${p1.x - nx * shaftW} ${p1.y - ny * shaftW}`);
+  }
+
+  const pathD = [
+    `M ${left[0]}`,
+    ...left.slice(1).map((p) => `L ${p}`),
+    `L ${base.x + px * headWidth} ${base.y + py * headWidth}`,
+    `L ${tip.x} ${tip.y}`,
+    `L ${base.x - px * headWidth} ${base.y - py * headWidth}`,
+    ...right
+      .slice()
+      .reverse()
+      .map((p) => `L ${p}`),
     'Z',
   ].join(' ');
-  return <path d={path} fill={color} opacity={0.88} stroke="none" />;
+
+  return <path d={pathD} fill={color} opacity={0.9} stroke="none" />;
 }
 
 function PieceImg({
@@ -161,6 +249,7 @@ export function ChessBoard({
 
   const handlePointerDown = (e: React.MouseEvent) => {
     if (!interactive) return;
+
     if (e.button === 2) {
       e.preventDefault();
       const sq = getSquareFromEvent(e);
@@ -168,6 +257,10 @@ export function ChessBoard({
       return;
     }
     if (e.button !== 0) return;
+
+    // Left-click clears all arrows/highlights (Chess.com behavior), then normal play
+    onClearAnnotations();
+
     const sq = getSquareFromEvent(e);
     if (!sq) return;
     const piece = pieces.find((p) => p.square === sq);
@@ -255,7 +348,7 @@ export function ChessBoard({
 
   const arrowElements = arrows.map((a, i) => (
     <ArrowPath
-      key={i}
+      key={`${a.from}-${a.to}-${a.color}-${i}`}
       from={squareToCoords(a.from, orientation)}
       to={squareToCoords(a.to, orientation)}
       color={ARROW_COLORS[a.color] || ARROW_COLORS.green}
@@ -275,7 +368,7 @@ export function ChessBoard({
       }}
     >
       <div className="chessboard">{squares}</div>
-      <div className="board-overlay">
+      <div className="board-overlay" aria-hidden>
         <svg viewBox="0 0 100 100" preserveAspectRatio="none">
           {arrowElements}
         </svg>
