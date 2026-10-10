@@ -11,6 +11,7 @@ function squareToCoords(sq: Square, orientation: 'w' | 'b') {
   };
 }
 
+/** Renders a piece sliding from `from` to `to` using CSS transform. */
 export function FlyingPiece({
   from,
   to,
@@ -19,6 +20,7 @@ export function FlyingPiece({
   set,
   orientation,
   animKey,
+  durationMs = 180,
 }: {
   from: Square;
   to: Square;
@@ -27,31 +29,46 @@ export function FlyingPiece({
   set: PieceSetId;
   orientation: 'w' | 'b';
   animKey: number;
+  durationMs?: number;
 }) {
   const fc = squareToCoords(from, orientation);
   const tc = squareToCoords(to, orientation);
-  const [phase, setPhase] = useState(0);
+  const [moved, setMoved] = useState(false);
 
   useEffect(() => {
-    setPhase(0);
-    const id = requestAnimationFrame(() => {
-      requestAnimationFrame(() => setPhase(1));
+    setMoved(false);
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => setMoved(true));
     });
-    return () => cancelAnimationFrame(id);
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+    };
   }, [animKey]);
 
-  const left = (phase === 0 ? fc.x : tc.x) * 12.5;
-  const top = (phase === 0 ? fc.y : tc.y) * 12.5;
+  const x = (moved ? tc.x : fc.x) * 12.5;
+  const y = (moved ? tc.y : fc.y) * 12.5;
 
   return (
     <div
       className="piece-flying"
       style={{
-        left: `${left}%`,
-        top: `${top}%`,
+        position: 'absolute',
+        left: 0,
+        top: 0,
         width: '12.5%',
         height: '12.5%',
-        transition: phase === 0 ? 'none' : 'left 160ms ease-out, top 160ms ease-out',
+        transform: `translate(${(x / 12.5) * 100}%, ${(y / 12.5) * 100}%)`,
+        transition: moved
+          ? `transform ${durationMs}ms cubic-bezier(0.25, 0.1, 0.25, 1)`
+          : 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        pointerEvents: 'none',
+        zIndex: 8,
+        willChange: 'transform',
       }}
     >
       <img
@@ -59,6 +76,7 @@ export function FlyingPiece({
         src={pieceSrc(color, type, set)}
         alt=""
         draggable={false}
+        style={{ width: '88%', height: '88%', objectFit: 'contain' }}
       />
     </div>
   );
