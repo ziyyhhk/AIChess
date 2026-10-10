@@ -1,4 +1,6 @@
-/** Semantic game-event sounds for AIChess. Assets under public/sounds/. */
+/** Semantic game-event sounds for AIChess.
+ * Prefers local public/sounds/, falls back to Chess.com public CDN.
+ */
 
 export type SoundId =
   | 'moveSelf'
