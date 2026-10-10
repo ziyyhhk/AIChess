@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState, useEffect } from 'react';
+import React, { useCallback, useRef, useState, useLayoutEffect, useEffect } from 'react';
 import type { Square } from 'chess.js';
 import type { Arrow, SquareHighlight } from '../chess/annotationManager';
 import type { Premove } from '../chess/premoveManager';
@@ -13,12 +13,21 @@ interface BoardPiece {
   square: Square;
 }
 
+interface FlyingState {
+  from: Square;
+  to: Square;
+  color: 'w' | 'b';
+  type: string;
+  key: number;
+}
+
 interface Props {
   pieces: BoardPiece[];
   orientation: 'w' | 'b';
   selected: Square | null;
   legalTargets: Square[];
   lastMove: { from: Square; to: Square } | null;
+  lastRookMove?: { from: Square; to: Square } | null;
   checkSquare: Square | null;
   premove: Premove | null;
   arrows: Arrow[];
@@ -96,9 +105,16 @@ function ArrowPath({
       midX = x1;
       midY = (from.y + Math.sign(gridDy) * 2 + 0.5) * cell;
     }
-    points = [{ x: x1, y: y1 }, { x: midX, y: midY }, { x: x2, y: y2 }];
+    points = [
+      { x: x1, y: y1 },
+      { x: midX, y: midY },
+      { x: x2, y: y2 },
+    ];
   } else {
-    points = [{ x: x1, y: y1 }, { x: x2, y: y2 }];
+    points = [
+      { x: x1, y: y1 },
+      { x: x2, y: y2 },
+    ];
   }
   const out = points.map((p) => ({ ...p }));
   {
@@ -160,7 +176,10 @@ function ArrowPath({
     `L ${base.x + px * headWidth} ${base.y + py * headWidth}`,
     `L ${tip.x} ${tip.y}`,
     `L ${base.x - px * headWidth} ${base.y - py * headWidth}`,
-    ...right.slice().reverse().map((p) => `L ${p}`),
+    ...right
+      .slice()
+      .reverse()
+      .map((p) => `L ${p}`),
     'Z',
   ].join(' ');
   return <path d={pathD} fill={color} opacity={0.9} stroke="none" />;
@@ -188,12 +207,25 @@ function PieceImg({
   );
 }
 
+/** Infer rook squares for a castling king move. */
+function castlingRookMove(
+  from: Square,
+  to: Square
+): { from: Square; to: Square } | null {
+  if (from === 'e1' && to === 'g1') return { from: 'h1', to: 'f1' };
+  if (from === 'e1' && to === 'c1') return { from: 'a1', to: 'd1' };
+  if (from === 'e8' && to === 'g8') return { from: 'h8', to: 'f8' };
+  if (from === 'e8' && to === 'c8') return { from: 'a8', to: 'd8' };
+  return null;
+}
+
 export function ChessBoard({
   pieces,
   orientation,
   selected,
   legalTargets,
   lastMove,
+  lastRookMove,
   checkSquare,
   premove,
   arrows,
@@ -213,38 +245,67 @@ export function ChessBoard({
   const wrapRef = useRef<HTMLDivElement>(null);
   const [dragFrom, setDragFrom] = useState<Square | null>(null);
   const [rightDragFrom, setRightDragFrom] = useState<Square | null>(null);
-  const [flying, setFlying] = useState<{
-    from: Square;
-    to: Square;
-    color: 'w' | 'b';
-    type: string;
-    key: number;
-  } | null>(null);
+  const [flying, setFlying] = useState<FlyingState[]>([]);
   const prevLastRef = useRef<string | null>(null);
   const reduceMotion =
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  useEffect(() => {
+  // Critical: useLayoutEffect so flying is set BEFORE the browser paints
+  // the new board position. That eliminates the one-frame teleport flash.
+  useLayoutEffect(() => {
     if (!animateMoves || reduceMotion || !lastMove) {
       prevLastRef.current = lastMove ? `${lastMove.from}${lastMove.to}` : null;
+      if (!lastMove) setFlying([]);
       return;
     }
     const key = `${lastMove.from}${lastMove.to}`;
     if (prevLastRef.current === key) return;
     prevLastRef.current = key;
+
     const destPiece = pieces.find((p) => p.square === lastMove.to);
-    if (!destPiece) return;
-    setFlying({
-      from: lastMove.from,
-      to: lastMove.to,
-      color: destPiece.color,
-      type: destPiece.type,
-      key: Date.now(),
-    });
-    const t = window.setTimeout(() => setFlying(null), 200);
-    return () => clearTimeout(t);
-  }, [lastMove, pieces, animateMoves, reduceMotion]);
+    if (!destPiece) {
+      setFlying([]);
+      return;
+    }
+
+    const flights: FlyingState[] = [
+      {
+        from: lastMove.from,
+        to: lastMove.to,
+        color: destPiece.color,
+        type: destPiece.type,
+        key: Date.now(),
+      },
+    ];
+
+    // Animate the rook on castling when we can identify it.
+    const rook =
+      lastRookMove ||
+      (destPiece.type === 'k' ? castlingRookMove(lastMove.from, lastMove.to) : null);
+    if (rook) {
+      const rookPiece = pieces.find((p) => p.square === rook.to);
+      if (rookPiece) {
+        flights.push({
+          from: rook.from,
+          to: rook.to,
+          color: rookPiece.color,
+          type: rookPiece.type,
+          key: Date.now() + 1,
+        });
+      }
+    }
+
+    setFlying(flights);
+  }, [lastMove, lastRookMove, pieces, animateMoves, reduceMotion]);
+
+  const clearFlying = useCallback(() => {
+    setFlying([]);
+  }, []);
+
+  useEffect(() => {
+    if (!lastMove && flying.length) setFlying([]);
+  }, [lastMove, flying.length]);
 
   const getSquareFromEvent = useCallback(
     (e: React.MouseEvent | MouseEvent): Square | null => {
@@ -308,6 +369,11 @@ export function ChessBoard({
     return () => window.removeEventListener('keydown', onKey);
   }, [onClearAnnotations]);
 
+  const hiddenSquares = new Set<string>();
+  for (const f of flying) {
+    hiddenSquares.add(f.to);
+  }
+
   const squares: React.ReactNode[] = [];
   for (let y = 0; y < 8; y++) {
     for (let x = 0; x < 8; x++) {
@@ -331,13 +397,18 @@ export function ChessBoard({
       ]
         .filter(Boolean)
         .join(' ');
-      const fileLabel = showCoordinates && y === 7 ? FILES[orientation === 'w' ? x : 7 - x] : null;
-      const rankLabel = showCoordinates && x === 0 ? String(orientation === 'w' ? 8 - y : y + 1) : null;
+      const fileLabel =
+        showCoordinates && y === 7 ? FILES[orientation === 'w' ? x : 7 - x] : null;
+      const rankLabel =
+        showCoordinates && x === 0
+          ? String(orientation === 'w' ? 8 - y : y + 1)
+          : null;
+      const hidePiece = piece && hiddenSquares.has(sq);
       squares.push(
         <div key={sq} className={classes} data-square={sq}>
           {isLegal && !piece && <div className="legal-dot" />}
           {isLegal && piece && <div className="legal-capture" />}
-          {piece && !(flying && flying.to === sq) && (
+          {piece && !hidePiece && (
             <PieceImg
               color={piece.color}
               type={piece.type}
@@ -374,17 +445,22 @@ export function ChessBoard({
       }}
     >
       <div className="chessboard">{squares}</div>
-      {flying && (
+      {flying.length > 0 && (
         <div className="piece-flying-layer" aria-hidden>
-          <FlyingPiece
-            from={flying.from}
-            to={flying.to}
-            color={flying.color}
-            type={flying.type}
-            set={pieceSet}
-            orientation={orientation}
-            animKey={flying.key}
-          />
+          {flying.map((f, i) => (
+            <FlyingPiece
+              key={f.key}
+              from={f.from}
+              to={f.to}
+              color={f.color}
+              type={f.type}
+              set={pieceSet}
+              orientation={orientation}
+              animKey={f.key}
+              durationMs={180}
+              onComplete={i === 0 ? clearFlying : undefined}
+            />
+          ))}
         </div>
       )}
       <div className="board-overlay" aria-hidden>
