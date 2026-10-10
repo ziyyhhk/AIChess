@@ -3,6 +3,8 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'docs/**'
   workflow_dispatch:
 
 permissions:
@@ -47,7 +49,6 @@ jobs:
           mkdir -p docs
           cp -r dist/* docs/
           touch docs/.nojekyll
-          # Ensure base paths work under /AIChess/
           ls -la docs/
 
       - name: Commit docs folder
@@ -58,7 +59,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "No docs changes"
           else
-            git commit -m "chore: update docs/ production build for Pages"
+            git commit -m "chore: update docs/ production build [skip ci]"
             git push
           fi
 
