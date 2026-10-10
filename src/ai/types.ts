@@ -62,6 +62,10 @@ export interface AppSettings {
   stockfishDepth: number;
   stockfishTimeMs: number;
   rememberKeys: boolean;
+  difficulty: 'beginner' | 'easy' | 'medium' | 'hard' | 'expert' | 'custom';
+  customSkillLevel: number;
+  customDepth: number;
+  customMovetimeMs: number;
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -79,4 +83,8 @@ export const DEFAULT_SETTINGS: AppSettings = {
   stockfishDepth: 12,
   stockfishTimeMs: 1500,
   rememberKeys: false,
+  difficulty: 'medium',
+  customSkillLevel: 10,
+  customDepth: 10,
+  customMovetimeMs: 500,
 };
