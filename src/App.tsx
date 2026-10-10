@@ -100,10 +100,7 @@ export default function App() {
 
   const applyMove = useCallback((from: Square, to: Square, promotion?: string) => {
     const move = game.makeMove(from, to, promotion);
-    if (!move) {
-      soundManager.play('illegal');
-      return false as const;
-    }
+    if (!move) return false as const;
     setSelected(null);
     annotRef.current.clear();
     refresh();
@@ -188,8 +185,14 @@ export default function App() {
   const onSelectSquare = (sq: Square) => {
     if (game.isGameOver()) return;
     const piece = game.getPiece(sq);
+
     if (!isPlayerTurn && settings.enablePremoves) {
       if (selected) {
+        if (piece && piece.color === playerColor) {
+          if (selected === sq) setSelected(null);
+          else setSelected(sq);
+          return;
+        }
         premoveRef.current.set(selected, sq);
         soundManager.play('premove');
         setSelected(null);
@@ -200,23 +203,51 @@ export default function App() {
       setSelected(null);
       return;
     }
+
     if (!isPlayerTurn) return;
-    if (selected) {
-      const moves = game.getLegalMoves(selected);
-      const match = moves.find((m) => m.to === sq);
-      if (match && match.promotion) { setPromotion({ from: selected, to: sq }); return; }
-      const m = applyMove(selected, sq);
-      if (m) { playMoveSound(m as any, true); checkGameOver(); }
-      else if (piece && piece.color === playerColor) setSelected(sq);
-      else setSelected(null);
-    } else if (piece && piece.color === playerColor) setSelected(sq);
+
+    if (!selected) {
+      if (piece && piece.color === playerColor) setSelected(sq);
+      return;
+    }
+
+    if (selected === sq) {
+      setSelected(null);
+      return;
+    }
+
+    if (piece && piece.color === playerColor) {
+      setSelected(sq);
+      return;
+    }
+
+    const moves = game.getLegalMoves(selected);
+    const match = moves.find((m) => m.to === sq);
+    if (match && match.promotion) {
+      setPromotion({ from: selected, to: sq });
+      return;
+    }
+    const m = applyMove(selected, sq);
+    if (m) {
+      playMoveSound(m as any, true);
+      checkGameOver();
+    } else {
+      soundManager.play('illegal');
+    }
   };
 
   const onMove = (from: Square, to: Square) => {
     if (game.isGameOver()) return;
+    if (from === to) return;
+
     if (!isPlayerTurn && settings.enablePremoves) {
       const piece = game.getPiece(from);
       if (piece && piece.color === playerColor) {
+        const dest = game.getPiece(to);
+        if (dest && dest.color === playerColor) {
+          setSelected(to);
+          return;
+        }
         premoveRef.current.set(from, to);
         soundManager.play('premove');
         setSelected(null);
@@ -225,11 +256,23 @@ export default function App() {
       return;
     }
     if (!isPlayerTurn) return;
+
+    const destPiece = game.getPiece(to);
+    if (destPiece && destPiece.color === playerColor) {
+      setSelected(to);
+      return;
+    }
+
     const moves = game.getLegalMoves(from);
     const match = moves.find((m) => m.to === to);
     if (match?.promotion) { setPromotion({ from, to }); return; }
     const m = applyMove(from, to);
-    if (m) { playMoveSound(m as any, true); checkGameOver(); }
+    if (m) {
+      playMoveSound(m as any, true);
+      checkGameOver();
+    } else {
+      soundManager.play('illegal');
+    }
   };
 
   const onPromotion = (p: 'q' | 'r' | 'b' | 'n') => {
