@@ -189,16 +189,24 @@ export default function App() {
     if (game.isGameOver()) return;
     const piece = game.getPiece(sq);
     if (!isPlayerTurn && settings.enablePremoves) {
-      if (selected) { premoveRef.current.set(selected, sq); soundManager.play('premove'); setSelected(null); refresh(); return; }
+      if (selected) {
+        premoveRef.current.set(selected, sq);
+        soundManager.play('premove');
+        setSelected(null);
+        refresh();
+        return;
+      }
       if (piece && piece.color === playerColor) { setSelected(sq); return; }
-      setSelected(null); return;
+      setSelected(null);
+      return;
     }
     if (!isPlayerTurn) return;
     if (selected) {
       const moves = game.getLegalMoves(selected);
       const match = moves.find((m) => m.to === sq);
       if (match && match.promotion) { setPromotion({ from: selected, to: sq }); return; }
-      { const m = applyMove(selected, sq); if (m) { playMoveSound(m as any, true); checkGameOver(); } }
+      const m = applyMove(selected, sq);
+      if (m) { playMoveSound(m as any, true); checkGameOver(); }
       else if (piece && piece.color === playerColor) setSelected(sq);
       else setSelected(null);
     } else if (piece && piece.color === playerColor) setSelected(sq);
@@ -209,7 +217,10 @@ export default function App() {
     if (!isPlayerTurn && settings.enablePremoves) {
       const piece = game.getPiece(from);
       if (piece && piece.color === playerColor) {
-        premoveRef.current.set(from, to); soundManager.play('premove'); setSelected(null); refresh();
+        premoveRef.current.set(from, to);
+        soundManager.play('premove');
+        setSelected(null);
+        refresh();
       }
       return;
     }
@@ -217,12 +228,14 @@ export default function App() {
     const moves = game.getLegalMoves(from);
     const match = moves.find((m) => m.to === to);
     if (match?.promotion) { setPromotion({ from, to }); return; }
-    { const m = applyMove(from, to); if (m) { playMoveSound(m as any, true); checkGameOver(); } }
+    const m = applyMove(from, to);
+    if (m) { playMoveSound(m as any, true); checkGameOver(); }
   };
 
   const onPromotion = (p: 'q' | 'r' | 'b' | 'n') => {
     if (!promotion) return;
-    { const m = applyMove(promotion.from, promotion.to, p); if (m) { playMoveSound(m as any, true); checkGameOver(); } }
+    const m = applyMove(promotion.from, promotion.to, p);
+    if (m) { playMoveSound(m as any, true); checkGameOver(); }
     setPromotion(null);
   };
 
