@@ -49,7 +49,7 @@ export type GameResult =
 
 export interface AppSettings {
   boardTheme: 'green' | 'brown' | 'blue' | 'purple';
-  pieceTheme: 'classic' | 'modern';
+  pieceTheme: 'maestro' | 'cburnett' | 'wikipedia';
   showCoordinates: boolean;
   showLegalMoves: boolean;
   showLastMove: boolean;
@@ -66,7 +66,7 @@ export interface AppSettings {
 
 export const DEFAULT_SETTINGS: AppSettings = {
   boardTheme: 'blue',
-  pieceTheme: 'classic',
+  pieceTheme: 'cburnett',
   showCoordinates: true,
   showLegalMoves: true,
   showLastMove: true,

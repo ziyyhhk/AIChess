@@ -2,8 +2,8 @@
 export type PieceSetId = 'maestro' | 'cburnett' | 'wikipedia';
 
 export const PIECE_SETS: { id: PieceSetId; name: string; ext: 'svg' | 'png' }[] = [
-  { id: 'maestro', name: 'Maestro', ext: 'svg' },
   { id: 'cburnett', name: 'CBurnett', ext: 'svg' },
+  { id: 'maestro', name: 'Maestro', ext: 'svg' },
   { id: 'wikipedia', name: 'Wikipedia', ext: 'png' },
 ];
 
@@ -16,7 +16,7 @@ const base = () => {
 export function pieceSrc(
   color: 'w' | 'b',
   type: string,
-  set: PieceSetId = 'maestro'
+  set: PieceSetId = 'cburnett'
 ): string {
   const key = `${color}${type.toUpperCase()}`;
   const meta = PIECE_SETS.find((s) => s.id === set) || PIECE_SETS[0];
