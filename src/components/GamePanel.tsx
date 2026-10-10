@@ -1,5 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { ModelInfo } from '../ai/types';
+import {
+  IconUndo,
+  IconFlip,
+  IconClear,
+} from './Icons';
 
 interface Props {
   model: ModelInfo | undefined;
@@ -13,6 +18,8 @@ interface Props {
   onFlip: () => void;
   onResign: () => void;
   onClearArrows: () => void;
+  onCopyPgn: () => Promise<boolean>;
+  onDownloadPgn: () => void;
   moveHistory: string[];
   difficulty: string;
   onDifficultyChange: (d: string) => void;
@@ -20,6 +27,8 @@ interface Props {
   onToggleSound?: () => void;
   volume?: number;
   onVolumeChange?: (v: number) => void;
+  playerColor: 'w' | 'b';
+  isCheck: boolean;
 }
 
 export function GamePanel({
@@ -34,6 +43,8 @@ export function GamePanel({
   onFlip,
   onResign,
   onClearArrows,
+  onCopyPgn,
+  onDownloadPgn,
   moveHistory,
   difficulty,
   onDifficultyChange,
@@ -41,73 +52,95 @@ export function GamePanel({
   onToggleSound,
   volume = 0.7,
   onVolumeChange,
+  playerColor,
+  isCheck,
 }: Props) {
+  const [pgnFeedback, setPgnFeedback] = useState<string | null>(null);
   const pairs: string[][] = [];
   for (let i = 0; i < moveHistory.length; i += 2) {
     pairs.push([moveHistory[i], moveHistory[i + 1] || '']);
   }
 
+  const handleCopyPgn = async () => {
+    setPgnFeedback(null);
+    try {
+      const ok = await onCopyPgn();
+      setPgnFeedback(ok ? 'Copied to clipboard' : 'Copy failed — try Download');
+    } catch {
+      setPgnFeedback('Copy failed — try Download');
+    }
+    window.setTimeout(() => setPgnFeedback(null), 2200);
+  };
+
   return (
-    <div
-      className="game-panel"
-      style={{
-        width: 'var(--panel-w)',
-        maxWidth: '100%',
-        background: 'var(--bg-panel)',
-        border: '1px solid var(--border)',
-        borderRadius: 'var(--radius)',
-        padding: 14,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 12,
-        maxHeight: 'calc(100vh - 40px)',
-        overflow: 'auto',
-      }}
-    >
-      <div>
-        <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 4 }}>
-          Opponent
-        </div>
-        <div style={{ fontWeight: 600 }}>{model?.name || 'Stockfish'}</div>
-        <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+    <aside className="game-panel" aria-label="Game controls">
+      <section className="gp-section">
+        <div className="gp-label">Opponent</div>
+        <div className="gp-opponent-name">{model?.name || 'Stockfish'}</div>
+        <div className="gp-muted">
           {model?.provider || 'Local Engine'}
           {model?.free ? ' · Free' : ''}
           {model?.requiresKey ? ' · Key required' : ''}
         </div>
-      </div>
+      </section>
 
-      <div>
-        <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 4 }}>
-          Difficulty
-        </div>
+      <section className="gp-section">
+        <div className="gp-label">Difficulty</div>
         <select
+          className="gp-select"
           value={difficulty}
           onChange={(e) => onDifficultyChange(e.target.value)}
-          style={{
-            width: '100%',
-            padding: '8px 10px',
-            borderRadius: 6,
-            border: '1px solid var(--border)',
-            background: 'var(--bg-elevated)',
-            color: 'var(--text)',
-            fontSize: 13,
-          }}
+          aria-label="AI difficulty"
         >
-          <option value="beginner">Beginner (very easy)</option>
+          <option value="beginner">Beginner</option>
           <option value="easy">Easy</option>
           <option value="medium">Medium</option>
           <option value="hard">Hard</option>
           <option value="expert">Expert</option>
         </select>
-      </div>
+      </section>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <section className="gp-section gp-status-block">
+        <div
+          className={`gp-status ${thinking ? 'thinking' : ''} ${isCheck && !gameOver ? 'check' : ''}`}
+        >
+          {thinking ? 'AI is thinking…' : status}
+        </div>
+        {error && <div className="gp-error">{error}</div>}
+      </section>
+
+      <section className="gp-actions">
+        <button type="button" className="btn primary" onClick={onNewGame}>
+          New Game
+        </button>
+        <button
+          type="button"
+          className="btn"
+          onClick={onUndo}
+          disabled={!canUndo || thinking}
+          title="Take back last full move"
+        >
+          <IconUndo /> Takeback
+        </button>
+        <button type="button" className="btn" onClick={onFlip} title="Flip board">
+          <IconFlip /> Flip
+        </button>
+        <button
+          type="button"
+          className="btn danger"
+          onClick={onResign}
+          disabled={gameOver || thinking}
+        >
+          Resign
+        </button>
+      </section>
+
+      <section className="gp-section gp-row">
         <button
           type="button"
           className="btn"
           onClick={onToggleSound}
-          title={soundEnabled ? 'Mute sounds' : 'Unmute sounds'}
-          style={{ flexShrink: 0 }}
+          title={soundEnabled ? 'Mute' : 'Unmute'}
         >
           {soundEnabled ? 'Sound On' : 'Muted'}
         </button>
@@ -118,109 +151,51 @@ export function GamePanel({
           step={0.05}
           value={volume}
           onChange={(e) => onVolumeChange?.(parseFloat(e.target.value))}
-          style={{ flex: 1 }}
+          className="gp-volume"
           title="Volume"
           disabled={!soundEnabled}
+          aria-label="Volume"
         />
-      </div>
+      </section>
 
-      <div
-        style={{
-          padding: '8px 10px',
-          borderRadius: 6,
-          background: thinking ? 'rgba(63,185,80,0.12)' : 'var(--bg-elevated)',
-          fontSize: 13,
-          minHeight: 36,
-        }}
-      >
-        {thinking ? 'AI is thinking…' : status}
-      </div>
-
-      {error && (
-        <div
-          style={{
-            padding: 8,
-            borderRadius: 6,
-            background: 'rgba(248,81,73,0.15)',
-            color: 'var(--danger)',
-            fontSize: 13,
-          }}
-        >
-          {error}
+      <section className="gp-section gp-pgn">
+        <div className="gp-label">PGN</div>
+        <div className="gp-pgn-actions">
+          <button type="button" className="btn" onClick={handleCopyPgn}>
+            Copy PGN
+          </button>
+          <button type="button" className="btn" onClick={onDownloadPgn}>
+            Download
+          </button>
         </div>
-      )}
+        {pgnFeedback && <div className="gp-pgn-feedback">{pgnFeedback}</div>}
+      </section>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-        <button className="btn primary" onClick={onNewGame}>
-          New Game
-        </button>
-        <button className="btn" onClick={onUndo} disabled={!canUndo || thinking}>
-          Takeback
-        </button>
-        <button className="btn" onClick={onFlip}>
-          Flip Board
-        </button>
-        <button className="btn danger" onClick={onResign} disabled={gameOver || thinking}>
-          Resign
-        </button>
-      </div>
-
-      <button className="btn" onClick={onClearArrows} style={{ width: '100%' }}>
-        Clear Arrows
+      <button type="button" className="btn gp-clear" onClick={onClearArrows}>
+        <IconClear /> Clear arrows
       </button>
 
-      <div>
-        <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 6 }}>
-          Move History
+      <section className="gp-section gp-history">
+        <div className="gp-label">
+          Moves
+          <span className="gp-muted"> · {moveHistory.length}</span>
         </div>
-        <div
-          style={{
-            background: 'var(--bg)',
-            borderRadius: 6,
-            padding: 8,
-            maxHeight: 220,
-            overflowY: 'auto',
-            fontFamily: 'ui-monospace, monospace',
-            fontSize: 13,
-          }}
-        >
+        <div className="gp-moves" role="list">
           {pairs.length === 0 && (
-            <span style={{ color: 'var(--text-muted)' }}>No moves yet</span>
+            <span className="gp-muted">No moves yet</span>
           )}
           {pairs.map((p, i) => (
-            <div key={i} style={{ display: 'flex', gap: 8 }}>
-              <span style={{ width: 28, color: 'var(--text-muted)' }}>{i + 1}.</span>
-              <span style={{ width: 56 }}>{p[0]}</span>
-              <span>{p[1]}</span>
+            <div key={i} className="gp-move-row" role="listitem">
+              <span className="gp-move-num">{i + 1}.</span>
+              <span className="gp-san">{p[0]}</span>
+              <span className="gp-san">{p[1]}</span>
             </div>
           ))}
         </div>
-      </div>
-
-      <style>{`
-        .btn {
-          padding: 8px 12px;
-          border-radius: 6px;
-          background: var(--bg-elevated);
-          border: 1px solid var(--border);
-          font-size: 13px;
-          font-weight: 500;
-        }
-        .btn:hover:not(:disabled) {
-          background: #30363d;
-        }
-        .btn.primary {
-          background: var(--accent-dim);
-          border-color: var(--accent);
-          color: #fff;
-        }
-        .btn.primary:hover:not(:disabled) {
-          background: var(--accent);
-        }
-        .btn.danger {
-          color: var(--danger);
-        }
-      `}</style>
-    </div>
+        <div className="gp-side-hint">
+          You play {playerColor === 'w' ? 'White' : 'Black'}
+        </div>
+      </section>
+    </aside>
   );
 }
