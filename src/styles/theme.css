@@ -1,4 +1,4 @@
-/* Board themes inspired by modern chess UIs (original colors) */
+/* Board themes — blue matches Chess.com analysis look */
 .board-theme-green {
   --sq-light: #ebecd0;
   --sq-dark: #739552;
@@ -8,8 +8,8 @@
   --sq-dark: #b58863;
 }
 .board-theme-blue {
-  --sq-light: #cdd6e0;
-  --sq-dark: #6b8aab;
+  --sq-light: #e8edf1;
+  --sq-dark: #7d9bb3;
 }
 .board-theme-purple {
   --sq-light: #e8d5f0;
@@ -20,9 +20,3 @@
 .highlight-red { background: rgba(235, 80, 80, 0.5) !important; }
 .highlight-blue { background: rgba(80, 160, 230, 0.5) !important; }
 .highlight-yellow { background: rgba(230, 180, 40, 0.5) !important; }
-
-/* Thick arrow strokes matching analysis-board style */
-.arrow-green { stroke: #7ac943; fill: #7ac943; }
-.arrow-red { stroke: #e85d5d; fill: #e85d5d; }
-.arrow-blue { stroke: #5cb3e8; fill: #5cb3e8; }
-.arrow-yellow { stroke: #e8b84a; fill: #e8b84a; }
