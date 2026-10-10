@@ -18,8 +18,8 @@ interface Props {
   onFlip: () => void;
   onResign: () => void;
   onClearArrows: () => void;
-  onCopyPgn: () => Promise<boolean>;
-  onDownloadPgn: () => void;
+  onCopyPgn?: () => Promise<boolean>;
+  onDownloadPgn?: () => void;
   moveHistory: string[];
   difficulty: string;
   onDifficultyChange: (d: string) => void;
@@ -27,8 +27,8 @@ interface Props {
   onToggleSound?: () => void;
   volume?: number;
   onVolumeChange?: (v: number) => void;
-  playerColor: 'w' | 'b';
-  isCheck: boolean;
+  playerColor?: 'w' | 'b';
+  isCheck?: boolean;
 }
 
 export function GamePanel({
@@ -52,8 +52,8 @@ export function GamePanel({
   onToggleSound,
   volume = 0.7,
   onVolumeChange,
-  playerColor,
-  isCheck,
+  playerColor = 'w',
+  isCheck = false,
 }: Props) {
   const [pgnFeedback, setPgnFeedback] = useState<string | null>(null);
   const pairs: string[][] = [];
@@ -62,6 +62,11 @@ export function GamePanel({
   }
 
   const handleCopyPgn = async () => {
+    if (!onCopyPgn) {
+      setPgnFeedback('PGN not available yet');
+      window.setTimeout(() => setPgnFeedback(null), 2200);
+      return;
+    }
     setPgnFeedback(null);
     try {
       const ok = await onCopyPgn();
@@ -164,7 +169,7 @@ export function GamePanel({
           <button type="button" className="btn" onClick={handleCopyPgn}>
             Copy PGN
           </button>
-          <button type="button" className="btn" onClick={onDownloadPgn}>
+          <button type="button" className="btn" onClick={() => onDownloadPgn?.()}>
             Download
           </button>
         </div>
