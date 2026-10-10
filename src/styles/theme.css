@@ -1,0 +1,26 @@
+.board-theme-green {
+  --sq-light: #eedeb0;
+  --sq-dark: #769656;
+}
+.board-theme-brown {
+  --sq-light: #f0d9b5;
+  --sq-dark: #b58863;
+}
+.board-theme-blue {
+  --sq-light: #dee3e6;
+  --sq-dark: #8ca2ad;
+}
+.board-theme-purple {
+  --sq-light: #e8d5f0;
+  --sq-dark: #7b5a8c;
+}
+
+.highlight-green { background: rgba(0, 180, 80, 0.45); }
+.highlight-red { background: rgba(220, 50, 50, 0.45); }
+.highlight-blue { background: rgba(50, 120, 220, 0.45); }
+.highlight-yellow { background: rgba(220, 180, 40, 0.45); }
+
+.arrow-green { stroke: #2ecc71; }
+.arrow-red { stroke: #e74c3c; }
+.arrow-blue { stroke: #3498db; }
+.arrow-yellow { stroke: #f1c40f; }
