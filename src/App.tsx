@@ -30,6 +30,14 @@ function loadSettings(): AppSettings {
 export default function App() {
   const [view, setView] = useState<View>('play');
   const [settings, setSettings] = useState<AppSettings>(loadSettings);
+  useEffect(() => {
+    aiManager.setDifficulty(settings.difficulty as any, {
+      skillLevel: settings.customSkillLevel,
+      depth: settings.customDepth,
+      movetimeMs: settings.customMovetimeMs,
+    });
+  }, [settings.difficulty, settings.customSkillLevel, settings.customDepth, settings.customMovetimeMs]);
+
   const [apiKeys, setApiKeys] = useState<Record<string, string>>({});
   const [orientation, setOrientation] = useState<'w' | 'b'>('w');
   const [playerColor, setPlayerColor] = useState<'w' | 'b'>('w');
@@ -112,7 +120,7 @@ export default function App() {
       const legal = game.getLegalUci();
       const res = await aiManager.requestMove({
         fen: game.getFen(), legalMoves: legal, history: game.getHistorySan(),
-        sideToMove: game.getTurn(), timeoutMs: settings.aiTimeoutMs, difficulty: settings.stockfishDepth,
+        sideToMove: game.getTurn(), timeoutMs: settings.aiTimeoutMs,
       }, apiKeys);
       if (game.isGameOver()) return;
       const ok = game.makeUciMove(res.move);
@@ -235,7 +243,7 @@ export default function App() {
                 interactive={!game.isGameOver()} onSelectSquare={onSelectSquare} onMove={onMove}
                 onArrow={(f, t) => { annotRef.current.addArrow(f, t); refresh(); }}
                 onHighlight={(sq) => { annotRef.current.toggleHighlight(sq); refresh(); }}
-                onClearAnnotations={() => { annotRef.current.clear(); premoveRef.current.clear(); refresh(); }}
+                onClearAnnotations={() => { annotRef.current.clear(); refresh(); }}
                 themeClass={`board-theme-${settings.boardTheme}`}
               />
               <div style={{ display: 'flex', justifyContent: 'space-between', width: 'min(560px, 92vw)', fontSize: 13 }}>
@@ -249,6 +257,10 @@ export default function App() {
               onNewGame={newGame} onUndo={undo}
               onFlip={() => setOrientation((o) => (o === 'w' ? 'b' : 'w'))}
               onResign={resign}
+              difficulty={settings.difficulty}
+              onDifficultyChange={(d) =>
+                setSettings((s) => ({ ...s, difficulty: d as AppSettings['difficulty'] }))
+              }
               onClearArrows={() => { annotRef.current.clear(); refresh(); }}
               moveHistory={game.getHistorySan()} />
           </div>
