@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -36,7 +36,31 @@ jobs:
         run: |
           test -d dist
           test -f dist/index.html
+          echo "=== dist/index.html ==="
+          cat dist/index.html
           ls -la dist/
+          ls -la dist/assets/ || true
+
+      - name: Copy build to docs for branch-based Pages
+        run: |
+          rm -rf docs
+          mkdir -p docs
+          cp -r dist/* docs/
+          touch docs/.nojekyll
+          # Ensure base paths work under /AIChess/
+          ls -la docs/
+
+      - name: Commit docs folder
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs
+          if git diff --staged --quiet; then
+            echo "No docs changes"
+          else
+            git commit -m "chore: update docs/ production build for Pages"
+            git push
+          fi
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
