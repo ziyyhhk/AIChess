@@ -242,7 +242,7 @@ export function ChessBoard({
       type: destPiece.type,
       key: Date.now(),
     });
-    const t = window.setTimeout(() => setFlying(null), 180);
+    const t = window.setTimeout(() => setFlying(null), 200);
     return () => clearTimeout(t);
   }, [lastMove, pieces, animateMoves, reduceMotion]);
 
@@ -337,12 +337,12 @@ export function ChessBoard({
         <div key={sq} className={classes} data-square={sq}>
           {isLegal && !piece && <div className="legal-dot" />}
           {isLegal && piece && <div className="legal-capture" />}
-          {piece && (
+          {piece && !(flying && flying.to === sq) && (
             <PieceImg
               color={piece.color}
               type={piece.type}
               set={pieceSet}
-              dimmed={dragFrom === sq || (!!flying && flying.to === sq)}
+              dimmed={dragFrom === sq}
             />
           )}
           {fileLabel && <span className="coord coord-file">{fileLabel}</span>}
