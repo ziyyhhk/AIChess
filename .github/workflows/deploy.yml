@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -25,13 +25,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: npm
 
       - name: Install
-        run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+        run: npm install --legacy-peer-deps
 
       - name: Build
         run: npm run build
+
+      - name: Verify dist
+        run: |
+          test -d dist
+          test -f dist/index.html
+          ls -la dist/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
