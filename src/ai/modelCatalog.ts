@@ -1,6 +1,6 @@
 import type { ModelInfo } from './types';
 
-/** Curated list. Stockfish is the no-key default. Hosted models need user keys. */
+/** Curated fallback list. Free routes change; last verified Oct 2026. */
 export const CURATED_MODELS: ModelInfo[] = [
   {
     id: 'stockfish',
@@ -9,7 +9,8 @@ export const CURATED_MODELS: ModelInfo[] = [
     providerId: 'stockfish',
     free: true,
     requiresKey: false,
-    description: 'Browser chess engine. No API key required. Play immediately.',
+    description:
+      'Real Stockfish in the browser (CDN worker). No API key. Adjust difficulty in the game panel.',
     lastVerified: '2026-10-10',
   },
   {
@@ -19,7 +20,7 @@ export const CURATED_MODELS: ModelInfo[] = [
     providerId: 'gemini',
     free: true,
     requiresKey: true,
-    description: 'Fast model. Free tier via Google AI Studio (your key).',
+    description: 'Fast multimodal model. Free tier available via Google AI Studio.',
     lastVerified: '2026-10-10',
   },
   {
@@ -29,7 +30,17 @@ export const CURATED_MODELS: ModelInfo[] = [
     providerId: 'gemini',
     free: true,
     requiresKey: true,
-    description: 'Previous Flash generation. Free tier with your key.',
+    description: 'Previous generation Flash. Free tier via AI Studio.',
+    lastVerified: '2026-10-10',
+  },
+  {
+    id: 'gemini-flash-lite-latest',
+    name: 'Gemini Flash-Lite',
+    provider: 'Google Gemini',
+    providerId: 'gemini',
+    free: true,
+    requiresKey: true,
+    description: 'Lightweight Flash variant. Free tier available.',
     lastVerified: '2026-10-10',
   },
   {
@@ -39,7 +50,17 @@ export const CURATED_MODELS: ModelInfo[] = [
     providerId: 'openrouter',
     free: true,
     requiresKey: true,
-    description: 'OpenRouter free route. Rate limited. Requires OpenRouter key.',
+    description: 'Google Gemma 4 via OpenRouter free route. Rate limited.',
+    lastVerified: '2026-10-05',
+  },
+  {
+    id: 'google/gemma-4-26b-a4b-it:free',
+    name: 'Gemma 4 26B A4B (free)',
+    provider: 'OpenRouter',
+    providerId: 'openrouter',
+    free: true,
+    requiresKey: true,
+    description: 'Gemma 4 26B MoE free route on OpenRouter.',
     lastVerified: '2026-10-05',
   },
   {
@@ -49,7 +70,7 @@ export const CURATED_MODELS: ModelInfo[] = [
     providerId: 'openrouter',
     free: true,
     requiresKey: true,
-    description: 'NVIDIA free route on OpenRouter. Rate limited.',
+    description: 'NVIDIA free route. High throughput, rate limited.',
     lastVerified: '2026-10-05',
   },
   {
@@ -59,7 +80,17 @@ export const CURATED_MODELS: ModelInfo[] = [
     providerId: 'openrouter',
     free: true,
     requiresKey: true,
-    description: 'Qwen free route. Requires OpenRouter key.',
+    description: 'Qwen free route on OpenRouter.',
+    lastVerified: '2026-10-05',
+  },
+  {
+    id: 'meta-llama/llama-3.3-70b-instruct:free',
+    name: 'Llama 3.3 70B (free)',
+    provider: 'OpenRouter',
+    providerId: 'openrouter',
+    free: true,
+    requiresKey: true,
+    description: 'Meta Llama free route when available.',
     lastVerified: '2026-10-05',
   },
 ];
