@@ -1,26 +1,28 @@
+/* Board themes inspired by modern chess UIs (original colors) */
 .board-theme-green {
-  --sq-light: #eedeb0;
-  --sq-dark: #769656;
+  --sq-light: #ebecd0;
+  --sq-dark: #739552;
 }
 .board-theme-brown {
   --sq-light: #f0d9b5;
   --sq-dark: #b58863;
 }
 .board-theme-blue {
-  --sq-light: #dee3e6;
-  --sq-dark: #8ca2ad;
+  --sq-light: #cdd6e0;
+  --sq-dark: #6b8aab;
 }
 .board-theme-purple {
   --sq-light: #e8d5f0;
   --sq-dark: #7b5a8c;
 }
 
-.highlight-green { background: rgba(0, 180, 80, 0.45); }
-.highlight-red { background: rgba(220, 50, 50, 0.45); }
-.highlight-blue { background: rgba(50, 120, 220, 0.45); }
-.highlight-yellow { background: rgba(220, 180, 40, 0.45); }
+.highlight-green { background: rgba(120, 200, 80, 0.55) !important; }
+.highlight-red { background: rgba(235, 80, 80, 0.5) !important; }
+.highlight-blue { background: rgba(80, 160, 230, 0.5) !important; }
+.highlight-yellow { background: rgba(230, 180, 40, 0.5) !important; }
 
-.arrow-green { stroke: #2ecc71; }
-.arrow-red { stroke: #e74c3c; }
-.arrow-blue { stroke: #3498db; }
-.arrow-yellow { stroke: #f1c40f; }
+/* Thick arrow strokes matching analysis-board style */
+.arrow-green { stroke: #7ac943; fill: #7ac943; }
+.arrow-red { stroke: #e85d5d; fill: #e85d5d; }
+.arrow-blue { stroke: #5cb3e8; fill: #5cb3e8; }
+.arrow-yellow { stroke: #e8b84a; fill: #e8b84a; }

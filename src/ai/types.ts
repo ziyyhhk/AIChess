@@ -1,13 +1,13 @@
-export type UCIMove = string; // e.g. "e2e4", "e7e8q"
+export type UCIMove = string;
 
 export interface AIMoveRequest {
   fen: string;
-  legalMoves: string[]; // UCI
-  history: string[]; // SAN or UCI
+  legalMoves: string[];
+  history: string[];
   sideToMove: 'w' | 'b';
   pgn?: string;
   timeoutMs?: number;
-  difficulty?: number; // 1-20 for engines
+  difficulty?: number;
 }
 
 export interface AIMoveResponse {
@@ -65,7 +65,7 @@ export interface AppSettings {
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
-  boardTheme: 'green',
+  boardTheme: 'blue',
   pieceTheme: 'classic',
   showCoordinates: true,
   showLegalMoves: true,

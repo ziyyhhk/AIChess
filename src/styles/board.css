@@ -4,9 +4,9 @@
   aspect-ratio: 1;
   user-select: none;
   touch-action: none;
-  border-radius: 4px;
+  border-radius: 2px;
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
 }
 
 .chessboard {
@@ -28,78 +28,76 @@
 .square.dark { background: var(--sq-dark); }
 
 .square.selected {
-  box-shadow: inset 0 0 0 3px rgba(255, 255, 0, 0.7);
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 100, 0.85);
 }
 
 .square.last-from,
 .square.last-to {
-  background-color: rgba(255, 255, 0, 0.28);
+  background-image: linear-gradient(rgba(255, 255, 0, 0.32), rgba(255, 255, 0, 0.32));
 }
 
 .square.check {
-  background: radial-gradient(circle, rgba(255,0,0,0.55) 0%, transparent 70%);
+  background-image: radial-gradient(circle at center, rgba(255, 40, 40, 0.65) 0%, rgba(255, 40, 40, 0.25) 55%, transparent 70%);
 }
 
 .square.premove-from,
 .square.premove-to {
-  box-shadow: inset 0 0 0 3px rgba(0, 150, 255, 0.85);
+  box-shadow: inset 0 0 0 3px rgba(0, 140, 255, 0.9);
 }
 
-.piece {
-  width: 88%;
-  height: 88%;
-  font-size: clamp(1.6rem, 7vw, 3.2rem);
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: grab;
+.piece-svg {
+  width: 92%;
+  height: 92%;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.35));
   z-index: 2;
-  transition: transform 0.08s ease;
+  transition: transform 0.08s ease, opacity 0.08s ease;
 }
 
-.piece.dragging {
-  opacity: 0.4;
-  cursor: grabbing;
+.piece-svg.dragging {
+  opacity: 0.35;
 }
 
 .legal-dot {
   position: absolute;
-  width: 28%;
-  height: 28%;
+  width: 26%;
+  height: 26%;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.22);
+  background: rgba(0, 0, 0, 0.18);
   pointer-events: none;
   z-index: 1;
 }
 
 .legal-capture {
   position: absolute;
-  inset: 6%;
+  inset: 5%;
   border-radius: 50%;
-  border: 4px solid rgba(0, 0, 0, 0.2);
+  border: 5px solid rgba(0, 0, 0, 0.16);
   pointer-events: none;
   z-index: 1;
 }
 
 .coord {
   position: absolute;
-  font-size: 10px;
-  font-weight: 600;
-  opacity: 0.7;
+  font-size: 11px;
+  font-weight: 700;
   pointer-events: none;
   z-index: 1;
+  font-family: system-ui, sans-serif;
 }
 
 .coord-file {
   bottom: 2px;
-  right: 3px;
+  right: 4px;
 }
 
 .coord-rank {
   top: 2px;
-  left: 3px;
+  left: 4px;
 }
+
+.square.light .coord { color: var(--sq-dark); opacity: 0.85; }
+.square.dark .coord { color: var(--sq-light); opacity: 0.9; }
 
 .board-overlay {
   position: absolute;
@@ -111,4 +109,5 @@
 .board-overlay svg {
   width: 100%;
   height: 100%;
+  overflow: visible;
 }
