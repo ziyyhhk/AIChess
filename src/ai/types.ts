@@ -1,4 +1,4 @@
-import { DEFAULT_MIN_THINK_MS } from './thinkTime';
+import { DEFAULT_THINK_SETTINGS, type ThinkMode } from './thinkTime';
 
 export type UCIMove = string;
 
@@ -57,11 +57,15 @@ export interface AppSettings {
   showLastMove: boolean;
   enablePremoves: boolean;
   enableSounds: boolean;
+  /** Bundled originals by default; the optional Chess.com pack loads at runtime. */
+  soundPack: 'builtin' | 'chesscom';
   enableAnimations: boolean;
   defaultColor: 'w' | 'b' | 'random';
   defaultOpponent: string;
   aiTimeoutMs: number;
-  /** Minimum time an AI move takes to appear, in ms. Leaves room to premove. */
+  /** How long an AI reply takes to appear: instant, difficulty-based, or custom. */
+  thinkMode: ThinkMode;
+  /** Custom pacing target in ms (used when thinkMode is 'custom'). */
   minThinkMs: number;
   stockfishDepth: number;
   stockfishTimeMs: number;
@@ -70,6 +74,8 @@ export interface AppSettings {
   customSkillLevel: number;
   customDepth: number;
   customMovetimeMs: number;
+  /** Search depth used by the analysis view. */
+  analysisDepth: number;
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -80,11 +86,13 @@ export const DEFAULT_SETTINGS: AppSettings = {
   showLastMove: true,
   enablePremoves: true,
   enableSounds: true,
+  soundPack: 'builtin',
   enableAnimations: true,
   defaultColor: 'w',
   defaultOpponent: 'stockfish',
   aiTimeoutMs: 30000,
-  minThinkMs: DEFAULT_MIN_THINK_MS,
+  thinkMode: DEFAULT_THINK_SETTINGS.mode,
+  minThinkMs: DEFAULT_THINK_SETTINGS.customMs,
   stockfishDepth: 12,
   stockfishTimeMs: 1500,
   rememberKeys: false,
@@ -92,4 +100,5 @@ export const DEFAULT_SETTINGS: AppSettings = {
   customSkillLevel: 10,
   customDepth: 10,
   customMovetimeMs: 500,
+  analysisDepth: 12,
 };

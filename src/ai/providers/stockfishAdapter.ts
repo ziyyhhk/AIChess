@@ -1,4 +1,5 @@
 import type { AIMoveRequest, AIMoveResponse, AIProvider } from '../types';
+import { loadStockfishWorker } from '../../engine/stockfishLoader';
 
 export type StockfishDifficulty =
   | 'beginner'
@@ -136,41 +137,14 @@ export class StockfishAdapter implements AIProvider {
     }
   }
 
+  /**
+   * Engine assets are resolved by the shared loader (local build first, then the
+   * jsDelivr build), so gameplay and analysis can never disagree about which
+   * engine file to use or which error to report.
+   */
   private async createWorker(): Promise<Worker> {
-    const base = import.meta.env.BASE_URL || '/';
-    const localUrl = `${base}engines/stockfish.js`;
-
-    try {
-      const res = await fetch(localUrl, { cache: 'force-cache' });
-      if (res.ok) {
-        const text = await res.text();
-        if (
-          text.length > 5000 &&
-          !text.includes('Stockfish-Lite-Stub') &&
-          !text.includes('Stockfish-Placeholder') &&
-          !text.includes('bestmove (none)')
-        ) {
-          const blob = new Blob([text], { type: 'application/javascript' });
-          return new Worker(URL.createObjectURL(blob));
-        }
-      }
-    } catch {
-      /* CDN fallback */
-    }
-
-    const cdn = 'https://cdn.jsdelivr.net/npm/stockfish.js@10.0.2/stockfish.js';
-    const res = await fetch(cdn);
-    if (!res.ok) {
-      throw new Error(
-        `Stockfish could not load engine files (HTTP ${res.status}). Check network access to the CDN or deploy a local engine under public/engines/.`
-      );
-    }
-    const text = await res.text();
-    if (text.length < 10000) {
-      throw new Error('Stockfish CDN response looks invalid (too small).');
-    }
-    const blob = new Blob([text], { type: 'application/javascript' });
-    return new Worker(URL.createObjectURL(blob));
+    const { worker } = await loadStockfishWorker();
+    return worker;
   }
 
   private terminateWorker() {

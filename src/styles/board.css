@@ -127,15 +127,20 @@
   z-index: 8;
 }
 
+/* The travelling piece. Positioned at the board's top-left corner and moved with
+   `transform`, so one square of travel is exactly 100% at every board size. */
 .piece-flying {
   position: absolute;
+  left: 0;
+  top: 0;
   width: 12.5%;
   height: 12.5%;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
-  will-change: left, top;
+  will-change: transform;
+  z-index: 1;
 }
 
 .piece-flying .piece-img {
@@ -147,6 +152,8 @@
 /* The piece under the pointer while dragging. */
 .piece-drag-ghost {
   position: absolute;
+  left: 0;
+  top: 0;
   width: 12.5%;
   height: 12.5%;
   display: flex;

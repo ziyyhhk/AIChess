@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { ModelInfo } from '../ai/types';
-import { IconUndo, IconFlip, IconClear } from './Icons';
+import { IconUndo, IconFlip, IconClear, IconSearch } from './Icons';
 
 interface Props {
   model: ModelInfo | undefined;
@@ -15,6 +15,8 @@ interface Props {
   onResign: () => void;
   onClearArrows: () => void;
   onCopyPgn?: () => Promise<boolean>;
+  /** The current PGN, fetched only when a fallback is needed. */
+  getPgnText?: () => string;
   onDownloadPgn?: () => void;
   moveHistory: string[];
   difficulty: string;
@@ -28,6 +30,9 @@ interface Props {
   onUseStockfish?: () => void;
   currentModelId?: string;
   premovesEnabled?: boolean;
+  onAnalyze?: () => void;
+  /** The queued premove, when there is one. */
+  premove?: { from: string; to: string } | null;
 }
 
 export function GamePanel({
@@ -43,6 +48,7 @@ export function GamePanel({
   onResign,
   onClearArrows,
   onCopyPgn,
+  getPgnText,
   onDownloadPgn,
   moveHistory,
   difficulty,
@@ -56,8 +62,12 @@ export function GamePanel({
   onUseStockfish,
   currentModelId = 'stockfish',
   premovesEnabled = true,
+  onAnalyze,
+  premove = null,
 }: Props) {
   const [pgnFeedback, setPgnFeedback] = useState<string | null>(null);
+  /* Shown only when the clipboard really refused: the PGN stays selectable. */
+  const [pgnFallback, setPgnFallback] = useState<string | null>(null);
   const pairs: string[][] = [];
   for (let i = 0; i < moveHistory.length; i += 2) {
     pairs.push([moveHistory[i], moveHistory[i + 1] || '']);
@@ -74,13 +84,21 @@ export function GamePanel({
       return;
     }
     setPgnFeedback(null);
+    let ok = false;
     try {
-      const ok = await onCopyPgn();
-      setPgnFeedback(ok ? 'Copied to clipboard' : 'Copy failed. Try Download.');
+      ok = await onCopyPgn();
     } catch {
-      setPgnFeedback('Copy failed. Try Download.');
+      ok = false;
     }
-    window.setTimeout(() => setPgnFeedback(null), 2200);
+    if (ok) {
+      setPgnFallback(null);
+      setPgnFeedback('Copied to clipboard');
+      window.setTimeout(() => setPgnFeedback(null), 2200);
+    } else {
+      // No clipboard access: hand the PGN over as selectable text instead.
+      setPgnFallback(getPgnText ? getPgnText() : null);
+      setPgnFeedback('Copying was blocked — select the text below.');
+    }
   };
 
   const statusClass = ['gp-status', thinking ? 'is-thinking' : '', isCheck && !gameOver && !thinking ? 'is-check' : '']
@@ -139,6 +157,12 @@ export function GamePanel({
           )}
         </div>
         {error && <div className="gp-error" role="alert">{error}</div>}
+        {premove && (
+          <div className="gp-premove" role="status">
+            <span className="gp-premove-dot" aria-hidden />
+            Premove queued: {premove.from} → {premove.to}
+          </div>
+        )}
       </section>
 
       <section className="gp-actions">
@@ -184,6 +208,16 @@ export function GamePanel({
       </section>
 
       <section className="gp-section">
+        <div className="gp-label">Review</div>
+        <button type="button" className="btn btn-block" onClick={() => onAnalyze?.()} disabled={!onAnalyze}>
+          <IconSearch /> Analyse game
+        </button>
+        <div className="gp-muted">
+          Runs the engine over every move already played. The live game is not affected.
+        </div>
+      </section>
+
+      <section className="gp-section">
         <div className="gp-label">Export</div>
         <div className="gp-pgn-actions">
           <button type="button" className="btn" onClick={handleCopyPgn}>
@@ -194,6 +228,17 @@ export function GamePanel({
           </button>
         </div>
         {pgnFeedback && <div className="gp-pgn-feedback" role="status">{pgnFeedback}</div>}
+        {pgnFallback && (
+          <textarea
+            className="gp-pgn-fallback"
+            value={pgnFallback}
+            readOnly
+            rows={6}
+            spellCheck={false}
+            aria-label="Game PGN"
+            onFocus={(e) => e.currentTarget.select()}
+          />
+        )}
       </section>
 
       <section className="gp-section gp-history">
