@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import type { AppSettings } from '../ai/types';
 import { DEFAULT_SETTINGS } from '../ai/types';
-import { MIN_THINK_CHOICES } from '../ai/thinkTime';
+import {
+  THINK_MODE_LABELS,
+  THINK_TARGET_MAX_MS,
+  type ThinkMode,
+} from '../ai/thinkTime';
 
 interface Props {
   settings: AppSettings;
@@ -131,23 +135,50 @@ export function SettingsPanel({ settings, onChange, apiKeys, onSaveKey, onClearK
           <Toggle label="Premoves" checked={settings.enablePremoves} onChange={(v) => set('enablePremoves', v)} />
         </Row>
         <Row
-          label="Minimum thinking time"
-          hint="The AI waits at least this long before it replies. Longer times leave more room to premove."
+          label="AI thinking time"
+          hint="The engine searches immediately; this only controls how long a ready reply waits, so you have time to premove. A slow engine is never delayed further."
         >
           <select
             className="select"
-            value={settings.minThinkMs}
-            onChange={(e) => set('minThinkMs', Number(e.target.value))}
+            value={settings.thinkMode}
+            onChange={(e) => set('thinkMode', e.target.value as ThinkMode)}
           >
-            {MIN_THINK_CHOICES.map((c) => (
-              <option key={c.ms} value={c.ms}>
-                {c.label}
+            {(Object.keys(THINK_MODE_LABELS) as ThinkMode[]).map((mode) => (
+              <option key={mode} value={mode}>
+                {THINK_MODE_LABELS[mode]}
               </option>
             ))}
           </select>
         </Row>
+        {settings.thinkMode === 'custom' && (
+          <Row label="Custom delay" hint={`${(settings.minThinkMs / 1000).toFixed(1)} seconds`}>
+            <input
+              type="range"
+              className="range"
+              min={0}
+              max={THINK_TARGET_MAX_MS}
+              step={100}
+              value={settings.minThinkMs}
+              onChange={(e) => set('minThinkMs', Number(e.target.value))}
+              aria-label="Custom AI thinking delay in milliseconds"
+            />
+          </Row>
+        )}
         <Row label="Sounds">
           <Toggle label="Sounds" checked={settings.enableSounds} onChange={(v) => set('enableSounds', v)} />
+        </Row>
+        <Row
+          label="Sound pack"
+          hint="The bundled pack ships with AIChess. The Chess.com option streams their public files from their CDN at runtime; those files are not part of this repository."
+        >
+          <select
+            className="select"
+            value={settings.soundPack}
+            onChange={(e) => set('soundPack', e.target.value as AppSettings['soundPack'])}
+          >
+            <option value="builtin">Bundled (recommended)</option>
+            <option value="chesscom">Chess.com files (external)</option>
+          </select>
         </Row>
       </section>
 

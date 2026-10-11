@@ -34,7 +34,7 @@ export function parseMoveFromResponse(
     // ignore
   }
 
-  const tokens = cleaned.toLowerCase().split(/[\s,;:"'`()\[\]{}]+/);
+  const tokens = cleaned.toLowerCase().split(/[\s,;:"'`()[\]{}]+/);
   for (const t of tokens) {
     const m = t.match(UCI_RE);
     if (m) {

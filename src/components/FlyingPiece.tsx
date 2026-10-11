@@ -1,91 +1,110 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import { pieceSrc, type PieceSetId } from '../chess/pieceAssets';
+import { flightTransform, type SquarePoint } from './board/flights';
 
-/** A position on the board, in percent of the board's width and height (top-left of a square-sized box). */
-export interface Point {
-  x: number;
-  y: number;
-}
-
-const EASING = 'cubic-bezier(0.22, 0.68, 0.3, 1)';
+const EASING = 'cubic-bezier(0.25, 0.72, 0.28, 1)';
 
 /**
- * A piece sliding from `start` to `end` on top of the board.
+ * One chess piece travelling from `start` to `end`.
  *
- * Uses the Web Animations API on left/top. When the flight is superseded or
- * unmounted, its cleanup marks it finished first, so a cancelled slide never
- * reports completion and cannot clear a newer flight.
+ * The element occupies exactly one square at the board's top-left corner and is
+ * moved with `transform: translate3d(...)`. Translating by percentages of the
+ * element's own size means one square of travel is exactly `100%`, so the path
+ * is identical at every board size and needs no measuring.
+ *
+ * The piece is unmounted when it arrives. When it is unmounted early (a new
+ * move supersedes it, the board is flipped, the game is reset) the animation is
+ * cancelled and completion is *not* reported, so a cancelled slide can never
+ * clear a newer one.
  */
 export function FlyingPiece({
+  flightId,
   color,
   type,
   set,
+  from,
+  to,
   start,
   end,
-  animKey,
-  durationMs = 260,
-  onComplete,
+  durationMs,
+  delayMs = 0,
+  onArrive,
 }: {
+  flightId: string;
   color: 'w' | 'b';
   type: string;
   set: PieceSetId;
-  start: Point;
-  end: Point;
-  animKey: number;
-  durationMs?: number;
-  onComplete?: () => void;
+  from: string;
+  to: string;
+  start: SquarePoint;
+  end: SquarePoint;
+  durationMs: number;
+  delayMs?: number;
+  onArrive: (flightId: string) => void;
 }) {
   const elRef = useRef<HTMLDivElement>(null);
-  const sx = start.x;
-  const sy = start.y;
-  const ex = end.x;
-  const ey = end.y;
+  const arrivedRef = useRef(false);
 
   useLayoutEffect(() => {
     const el = elRef.current;
     if (!el) return;
+    arrivedRef.current = false;
 
-    let finished = false;
-    const finish = () => {
-      if (finished) return;
-      finished = true;
-      onComplete?.();
+    const arrive = () => {
+      if (arrivedRef.current) return;
+      arrivedRef.current = true;
+      onArrive(flightId);
     };
 
-    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) {
-      finish();
+    const reduceMotion =
+      typeof window !== 'undefined' &&
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reduceMotion || durationMs <= 0) {
+      el.style.transform = flightTransform(end);
+      arrive();
       return;
     }
 
-    let anim: Animation | null = null;
+    let animation: Animation | null = null;
     if (typeof el.animate === 'function') {
-      anim = el.animate(
+      animation = el.animate(
         [
-          { left: `${sx}%`, top: `${sy}%` },
-          { left: `${ex}%`, top: `${ey}%` },
+          { transform: flightTransform(start) },
+          { transform: flightTransform(end) },
         ],
-        { duration: durationMs, easing: EASING, fill: 'forwards' }
+        { duration: durationMs, delay: delayMs, easing: EASING, fill: 'forwards' }
       );
-      anim.onfinish = finish;
+      animation.onfinish = arrive;
     } else {
-      // Fallback for browsers without the Web Animations API: a CSS transition.
-      el.style.transition = `left ${durationMs}ms ${EASING}, top ${durationMs}ms ${EASING}`;
-      void el.offsetWidth;
-      el.style.left = `${ex}%`;
-      el.style.top = `${ey}%`;
+      // Very old browsers: fall back to a CSS transition that still moves the
+      // real piece, and settle it with a timer.
+      el.style.transition = `transform ${durationMs}ms ${EASING}`;
+      el.style.transform = flightTransform(end);
     }
-    const fallback = window.setTimeout(finish, durationMs + 80);
+
+    // Safety net: if the animation event never fires, settle the piece anyway so
+    // the board can never be left with a hidden square.
+    const fallback = window.setTimeout(arrive, durationMs + delayMs + 120);
 
     return () => {
-      finished = true;
       window.clearTimeout(fallback);
-      anim?.cancel();
+      animation?.cancel();
     };
-  }, [animKey, sx, sy, ex, ey, durationMs, onComplete]);
+  }, [flightId, start, start.x, start.y, end, end.x, end.y, durationMs, delayMs, onArrive]);
 
   return (
-    <div ref={elRef} className="piece-flying" style={{ left: `${sx}%`, top: `${sy}%` }}>
+    <div
+      ref={elRef}
+      className="piece-flying"
+      data-testid="flying-piece"
+      data-flight-id={flightId}
+      data-from={from}
+      data-to={to}
+      aria-hidden="true"
+      style={{ transform: flightTransform(start) }}
+    >
       <img className="piece-img" src={pieceSrc(color, type, set)} alt="" draggable={false} />
     </div>
   );

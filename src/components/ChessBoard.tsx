@@ -3,14 +3,29 @@ import type { Square } from 'chess.js';
 import type { Arrow, SquareHighlight } from '../chess/annotationManager';
 import type { Premove } from '../chess/premoveManager';
 import { pieceSrc, type PieceSetId } from '../chess/pieceAssets';
-import { FlyingPiece, type Point } from './FlyingPiece';
+import { FlyingPiece } from './FlyingPiece';
+import {
+  buildFlights,
+  FILES,
+  isKnightDelta,
+  flightTransform,
+  pointToSquare,
+  pointerToPoint,
+  pointerToSquare,
+  squareToPoint,
+  type Flight,
+  type FlightRequest,
+  type Orientation,
+  type SquarePoint,
+} from './board/flights';
 
-/** How long a move slides across the board, in ms. Queued premoves wait this long before playing. */
-export const MOVE_ANIMATION_MS = 260;
+/** How long a piece slides across the board, in ms. */
+export const MOVE_ANIMATION_MS = 200;
 
-const FILES = 'abcdefgh';
 const CELL = 12.5; // one square, as a percentage of the board
 const HALF_CELL = CELL / 2;
+/** Never keep more than this many overlays alive at once. */
+const MAX_ACTIVE_FLIGHTS = 4;
 
 interface BoardPiece {
   type: string;
@@ -18,32 +33,20 @@ interface BoardPiece {
   square: Square;
 }
 
-interface Flight {
-  key: number;
-  /** Destination square. The piece is hidden there while it slides in. */
-  square: Square;
-  color: 'w' | 'b';
-  type: string;
-  start: Point;
-  end: Point;
-}
-
 interface DragState {
   from: Square;
   color: 'w' | 'b';
   type: string;
-  /** Top-left of the dragged piece, in percent of the board. */
-  x: number;
-  y: number;
+  /** Top-left of the dragged piece, in square units. */
+  point: SquarePoint;
 }
 
 interface Props {
   pieces: BoardPiece[];
-  orientation: 'w' | 'b';
+  orientation: Orientation;
   selected: Square | null;
   legalTargets: Square[];
   lastMove: { from: Square; to: Square } | null;
-  lastRookMove?: { from: Square; to: Square } | null;
   checkSquare: Square | null;
   premove: Premove | null;
   arrows: Arrow[];
@@ -52,14 +55,22 @@ interface Props {
   showLegalMoves: boolean;
   interactive: boolean;
   onSelectSquare: (sq: Square) => void;
-  onMove: (from: Square, to: Square) => void;
+  /** `dropPoint` is where a dragged piece was released, in square units. */
+  onMove: (from: Square, to: Square, dropPoint?: SquarePoint) => void;
   onArrow: (from: Square, to: Square) => void;
   onHighlight: (sq: Square) => void;
   onClearAnnotations: () => void;
   themeClass: string;
   pieceSet?: PieceSetId;
   animateMoves?: boolean;
-  /** The side the human plays. Only its pieces can be dragged. Defaults to the orientation. */
+  /**
+   * The move to animate. Built by the app's move pipeline, so the animation
+   * always describes the move the rules engine actually executed.
+   */
+  animation: FlightRequest | null;
+  /** Fired once the piece has finished travelling (or immediately if not animated). */
+  onAnimationSettled?: (moveId: string) => void;
+  /** The side the human plays. Only its pieces can be dragged. */
   playerColor?: 'w' | 'b';
 }
 
@@ -70,30 +81,9 @@ const ARROW_COLORS: Record<string, string> = {
   yellow: '#e8b84a',
 };
 
-function squareToCoords(sq: Square, orientation: 'w' | 'b') {
-  const file = sq.charCodeAt(0) - 97;
-  const rank = parseInt(sq[1], 10) - 1;
-  return {
-    x: orientation === 'w' ? file : 7 - file,
-    y: orientation === 'w' ? 7 - rank : rank,
-  };
-}
-
-function squareToPoint(sq: Square, orientation: 'w' | 'b'): Point {
-  const { x, y } = squareToCoords(sq, orientation);
-  return { x: x * CELL, y: y * CELL };
-}
-
-function coordsToSquare(x: number, y: number, orientation: 'w' | 'b'): Square {
-  const file = orientation === 'w' ? x : 7 - x;
-  const rank = orientation === 'w' ? 7 - y : y;
-  return (String.fromCharCode(97 + file) + (rank + 1)) as Square;
-}
-
-function isKnightDelta(dx: number, dy: number) {
-  const ax = Math.abs(dx);
-  const ay = Math.abs(dy);
-  return (ax === 2 && ay === 1) || (ax === 1 && ay === 2);
+function squareToCoords(sq: Square, orientation: Orientation) {
+  const p = squareToPoint(sq, orientation);
+  return { x: p.x, y: p.y };
 }
 
 function ArrowPath({
@@ -225,21 +215,9 @@ function PieceImg({
       src={pieceSrc(color, type, set)}
       alt=""
       draggable={false}
-      style={{ opacity: dimmed ? 0.3 : 1 }}
+      style={{ opacity: dimmed ? 0.28 : 1 }}
     />
   );
-}
-
-/** Infer rook squares for a castling king move. */
-function castlingRookMove(
-  from: Square,
-  to: Square
-): { from: Square; to: Square } | null {
-  if (from === 'e1' && to === 'g1') return { from: 'h1', to: 'f1' };
-  if (from === 'e1' && to === 'c1') return { from: 'a1', to: 'd1' };
-  if (from === 'e8' && to === 'g8') return { from: 'h8', to: 'f8' };
-  if (from === 'e8' && to === 'c8') return { from: 'a8', to: 'd8' };
-  return null;
 }
 
 export function ChessBoard({
@@ -248,7 +226,6 @@ export function ChessBoard({
   selected,
   legalTargets,
   lastMove,
-  lastRookMove,
   checkSquare,
   premove,
   arrows,
@@ -264,99 +241,104 @@ export function ChessBoard({
   themeClass,
   pieceSet = 'cburnett',
   animateMoves = true,
+  animation,
+  onAnimationSettled,
   playerColor,
 }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [drag, setDrag] = useState<DragState | null>(null);
   const [rightDragFrom, setRightDragFrom] = useState<Square | null>(null);
   const [flights, setFlights] = useState<Flight[]>([]);
-  const prevMoveKeyRef = useRef<string | null>(null);
-  // Where a drag was released. The slide starts from there, not from the origin square.
-  const dropHintRef = useRef<{ key: string; point: Point } | null>(null);
-  const reduceMotion =
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const seenAnimationRef = useRef<string | null>(null);
+  const settledRef = useRef<Set<string>>(new Set());
   const ownColor = playerColor ?? orientation;
 
-  // useLayoutEffect so the flight exists before the browser paints the new position.
-  // That prevents a one-frame teleport where the piece appears on its target square.
+  const reduceMotion =
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const settle = useCallback(
+    (moveId: string) => {
+      if (settledRef.current.has(moveId)) return;
+      settledRef.current.add(moveId);
+      onAnimationSettled?.(moveId);
+    },
+    [onAnimationSettled]
+  );
+
+  /**
+   * Start (or skip) the animation for a newly committed move.
+   *
+   * This runs as a layout effect so the travelling piece exists in the same
+   * frame in which the new position is first painted. Without that, the piece
+   * would appear on its destination square for one frame - the "teleport" that
+   * the old implementation showed.
+   */
   useLayoutEffect(() => {
-    if (!lastMove) {
-      prevMoveKeyRef.current = null;
-      dropHintRef.current = null;
-      setFlights([]);
+    if (!animation) {
+      seenAnimationRef.current = null;
+      settledRef.current.clear();
+      setFlights((prev) => (prev.length === 0 ? prev : []));
       return;
     }
-    const key = `${lastMove.from}${lastMove.to}`;
-    if (prevMoveKeyRef.current === key) return;
-    prevMoveKeyRef.current = key;
+    if (seenAnimationRef.current === animation.id) return;
+    seenAnimationRef.current = animation.id;
+    settledRef.current.delete(animation.id);
 
-    const hint = dropHintRef.current;
-    dropHintRef.current = null;
-    if (!animateMoves || reduceMotion) {
-      setFlights([]);
-      return;
-    }
-
-    const mover = pieces.find((p) => p.square === lastMove.to);
-    if (!mover) {
-      setFlights([]);
+    const planned = buildFlights(animation, orientation, MOVE_ANIMATION_MS);
+    if (!animateMoves || reduceMotion || planned.length === 0) {
+      setFlights((prev) => (prev.length === 0 ? prev : []));
+      settle(animation.id);
       return;
     }
 
-    const now = Date.now();
-    const next: Flight[] = [
-      {
-        key: now,
-        square: lastMove.to,
-        color: mover.color,
-        type: mover.type,
-        start: hint && hint.key === key ? hint.point : squareToPoint(lastMove.from, orientation),
-        end: squareToPoint(lastMove.to, orientation),
-      },
-    ];
+    setFlights((prev) => {
+      const keep = prev.filter((f) => f.requestId !== animation.id);
+      return [...keep, ...planned].slice(-MAX_ACTIVE_FLIGHTS);
+    });
 
-    const rook =
-      lastRookMove || (mover.type === 'k' ? castlingRookMove(lastMove.from, lastMove.to) : null);
-    if (rook) {
-      const rookPiece = pieces.find((p) => p.square === rook.to);
-      if (rookPiece) {
-        next.push({
-          key: now + 1,
-          square: rook.to,
-          color: rookPiece.color,
-          type: rookPiece.type,
-          start: squareToPoint(rook.from, orientation),
-          end: squareToPoint(rook.to, orientation),
-        });
-      }
-    }
+    // Whatever happens to the overlay (a newer move, an unmount, a pruned
+    // flight), the app is told when this move is visually done. The premove
+    // queue depends on that and must never stall.
+    const guard = window.setTimeout(() => settle(animation.id), MOVE_ANIMATION_MS + 250);
+    return () => window.clearTimeout(guard);
+  }, [animation, orientation, animateMoves, reduceMotion, settle]);
 
-    setFlights(next);
-  }, [lastMove, lastRookMove, pieces, animateMoves, reduceMotion, orientation]);
+  // The current flights, readable without making the state updater impure.
+  const flightsRef = useRef<Flight[]>([]);
+  useEffect(() => {
+    flightsRef.current = flights;
+  }, [flights]);
 
-  const clearFlights = useCallback(() => setFlights([]), []);
+  const handleArrive = useCallback(
+    (flightId: string) => {
+      const current = flightsRef.current;
+      const flight = current.find((f) => f.id === flightId);
+      if (!flight) return;
+      const next = current.filter((f) => f.id !== flightId);
+      flightsRef.current = next;
+      setFlights(next);
+      // Every flight of this move has landed.
+      if (!next.some((f) => f.requestId === flight.requestId)) settle(flight.requestId);
+    },
+    [settle]
+  );
 
-  /** Pointer position as the top-left of a piece centred under it, in percent of the board. */
-  const pointerToBoard = useCallback((clientX: number, clientY: number): Point | null => {
-    const el = wrapRef.current;
-    if (!el) return null;
-    const rect = el.getBoundingClientRect();
-    return {
-      x: ((clientX - rect.left) / rect.width) * 100 - HALF_CELL,
-      y: ((clientY - rect.top) / rect.height) * 100 - HALF_CELL,
-    };
-  }, []);
+  const pointerToBoardPoint = useCallback(
+    (clientX: number, clientY: number): SquarePoint | null => {
+      const el = wrapRef.current;
+      if (!el) return null;
+      return pointerToPoint(clientX, clientY, el.getBoundingClientRect(), orientation);
+    },
+    [orientation]
+  );
 
   const getSquareFromEvent = useCallback(
     (e: React.MouseEvent | MouseEvent): Square | null => {
       const el = wrapRef.current;
       if (!el) return null;
-      const rect = el.getBoundingClientRect();
-      const x = Math.floor(((e.clientX - rect.left) / rect.width) * 8);
-      const y = Math.floor(((e.clientY - rect.top) / rect.height) * 8);
-      if (x < 0 || x > 7 || y < 0 || y > 7) return null;
-      return coordsToSquare(x, y, orientation);
+      return pointerToSquare(e.clientX, e.clientY, el.getBoundingClientRect(), orientation);
     },
     [orientation]
   );
@@ -377,8 +359,8 @@ export function ChessBoard({
     if (piece) {
       onSelectSquare(sq);
       if (piece.color === ownColor) {
-        const p = pointerToBoard(e.clientX, e.clientY);
-        if (p) setDrag({ from: sq, color: piece.color, type: piece.type, x: p.x, y: p.y });
+        const point = pointerToBoardPoint(e.clientX, e.clientY);
+        if (point) setDrag({ from: sq, color: piece.color, type: piece.type, point });
       }
     } else if (selected) {
       onMove(selected, sq);
@@ -389,8 +371,8 @@ export function ChessBoard({
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!drag) return;
-    const p = pointerToBoard(e.clientX, e.clientY);
-    if (p) setDrag((d) => (d ? { ...d, x: p.x, y: p.y } : d));
+    const point = pointerToBoardPoint(e.clientX, e.clientY);
+    if (point) setDrag((d) => (d ? { ...d, point } : d));
   };
 
   const handleMouseUp = (e: React.MouseEvent) => {
@@ -407,10 +389,8 @@ export function ChessBoard({
     if (!drag) return;
     const to = getSquareFromEvent(e);
     if (to && to !== drag.from) {
-      dropHintRef.current = { key: `${drag.from}${to}`, point: { x: drag.x, y: drag.y } };
-      onMove(drag.from, to);
-      // Only a legal drop plays a slide. Anything else would leave a stale hint behind.
-      if (!legalTargets.includes(to)) dropHintRef.current = null;
+      // Released mid-drag: the piece slides on from where the pointer let go.
+      onMove(drag.from, to, drag.point);
     }
     setDrag(null);
   };
@@ -423,13 +403,13 @@ export function ChessBoard({
     return () => window.removeEventListener('keydown', onKey);
   }, [onClearAnnotations]);
 
-  const hiddenSquares = new Set<string>(flights.map((f) => f.square));
+  const hiddenSquares = new Set(flights.map((f) => f.to as string));
   const premovePiece = premove ? pieces.find((p) => p.square === premove.from) : undefined;
 
   const squares: React.ReactNode[] = [];
   for (let y = 0; y < 8; y++) {
     for (let x = 0; x < 8; x++) {
-      const sq = coordsToSquare(x, y, orientation);
+      const sq = pointToSquare({ x, y }, orientation);
       const isLight = (x + y) % 2 === 0;
       const piece = pieces.find((p) => p.square === sq);
       const isSelected = selected === sq;
@@ -449,10 +429,8 @@ export function ChessBoard({
       ]
         .filter(Boolean)
         .join(' ');
-      const fileLabel =
-        showCoordinates && y === 7 ? FILES[orientation === 'w' ? x : 7 - x] : null;
-      const rankLabel =
-        showCoordinates && x === 0 ? String(orientation === 'w' ? 8 - y : y + 1) : null;
+      const fileLabel = showCoordinates && y === 7 ? FILES[orientation === 'w' ? x : 7 - x] : null;
+      const rankLabel = showCoordinates && x === 0 ? String(orientation === 'w' ? 8 - y : y + 1) : null;
       const isPremoveTarget = !!premove && !!premovePiece && premove.to === sq;
       squares.push(
         <div key={sq} className={classes} data-square={sq}>
@@ -505,18 +483,21 @@ export function ChessBoard({
     >
       <div className="chessboard">{squares}</div>
       {flights.length > 0 && (
-        <div className="piece-flying-layer" aria-hidden>
-          {flights.map((f, i) => (
+        <div className="piece-flying-layer" data-testid="flying-layer" aria-hidden>
+          {flights.map((f) => (
             <FlyingPiece
-              key={f.key}
+              key={f.id}
+              flightId={f.id}
               color={f.color}
               type={f.type}
               set={pieceSet}
+              from={f.from}
+              to={f.to}
               start={f.start}
               end={f.end}
-              animKey={f.key}
               durationMs={MOVE_ANIMATION_MS}
-              onComplete={i === 0 ? clearFlights : undefined}
+              delayMs={f.delayMs}
+              onArrive={handleArrive}
             />
           ))}
         </div>
@@ -525,7 +506,8 @@ export function ChessBoard({
         <div
           className="piece-drag-ghost"
           aria-hidden
-          style={{ left: `${drag.x}%`, top: `${drag.y}%` }}
+          data-testid="drag-ghost"
+          style={{ transform: flightTransform(drag.point) }}
         >
           <img
             className="piece-img"
@@ -543,3 +525,6 @@ export function ChessBoard({
     </div>
   );
 }
+
+/* Keep the constant used by older imports meaningful. */
+export const ANIMATION_HALF_CELL = HALF_CELL;

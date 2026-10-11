@@ -8,7 +8,12 @@ import { GeminiProvider } from './providers/geminiProvider';
 import { OpenRouterProvider } from './providers/openRouterProvider';
 import { OpenAICompatibleProvider } from './providers/openAICompatibleProvider';
 import { getModelById } from './modelCatalog';
-import { DEFAULT_MIN_THINK_MS, clampMinThinkMs, remainingThinkDelay } from './thinkTime';
+import {
+  DEFAULT_THINK_SETTINGS,
+  pickThinkTargetMs,
+  remainingThinkDelay,
+  type ThinkTimeSettings,
+} from './thinkTime';
 
 /** Resolves after `ms`, or rejects as soon as `signal` aborts. */
 function waitMs(ms: number, signal: AbortSignal): Promise<void> {
@@ -39,7 +44,7 @@ export class AIManager {
   private requestId = 0;
   private difficulty: StockfishDifficulty = 'medium';
   private customOpts = { skillLevel: 10, depth: 10, movetimeMs: 1200 };
-  private minThinkMs = DEFAULT_MIN_THINK_MS;
+  private think: ThinkTimeSettings = { ...DEFAULT_THINK_SETTINGS };
 
   setModel(modelId: string) {
     this.currentModelId = modelId;
@@ -60,9 +65,17 @@ export class AIManager {
     stockfishAdapter.setDifficulty(d, this.customOpts);
   }
 
-  /** Every AI move takes at least this long to appear (see thinkTime.ts). */
-  setMinThinkMs(ms: number) {
-    this.minThinkMs = clampMinThinkMs(ms);
+  /**
+   * Pacing for AI replies (see thinkTime.ts). This never changes what the engine
+   * searches - it only controls how long a ready move waits before it is shown.
+   */
+  setThinkTime(settings: ThinkTimeSettings) {
+    this.think = { ...settings };
+  }
+
+  /** The pacing target for the difficulty in play, in ms. */
+  getThinkTargetMs(random?: () => number) {
+    return pickThinkTargetMs(this.difficulty, this.think, random);
   }
 
   getModelId() {
@@ -121,8 +134,10 @@ export class AIManager {
     try {
       const result = await provider.getMove(req, key, controller.signal);
 
-      // Fast answers still wait out the minimum so the player can premove.
-      const wait = remainingThinkDelay(Date.now() - startedAt, this.minThinkMs);
+      // Fast answers still wait out the target so the player can premove; a slow
+      // engine is never delayed further.
+      const target = pickThinkTargetMs(this.difficulty, this.think);
+      const wait = remainingThinkDelay(Date.now() - startedAt, target);
       if (wait > 0) await waitMs(wait, controller.signal);
 
       if (myId !== this.requestId) {
