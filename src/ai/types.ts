@@ -69,7 +69,7 @@ export interface AppSettings {
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
-  boardTheme: 'blue',
+  boardTheme: 'green',
   pieceTheme: 'cburnett',
   showCoordinates: true,
   showLegalMoves: true,
