@@ -12,9 +12,8 @@ function squareToCoords(sq: Square, orientation: 'w' | 'b') {
 }
 
 /**
- * Renders a piece sliding from `from` to `to`.
- * Uses a forced reflow + CSS transition so the browser always paints
- * the start position before animating to the end.
+ * Piece slides from source square to destination using Web Animations API
+ * with left/top as percentages of the board (reliable across browsers).
  */
 export function FlyingPiece({
   from,
@@ -24,7 +23,7 @@ export function FlyingPiece({
   set,
   orientation,
   animKey,
-  durationMs = 180,
+  durationMs = 200,
   onComplete,
 }: {
   from: Square;
@@ -38,57 +37,89 @@ export function FlyingPiece({
   onComplete?: () => void;
 }) {
   const elRef = useRef<HTMLDivElement>(null);
-  const completedRef = useRef(false);
+  const doneRef = useRef(false);
 
   const fc = squareToCoords(from, orientation);
   const tc = squareToCoords(to, orientation);
-
-  // Percentage of the flying element's own size (which is 12.5% of the board).
-  const startX = fc.x * 100;
-  const startY = fc.y * 100;
-  const endX = tc.x * 100;
-  const endY = tc.y * 100;
+  const startLeft = `${fc.x * 12.5}%`;
+  const startTop = `${fc.y * 12.5}%`;
+  const endLeft = `${tc.x * 12.5}%`;
+  const endTop = `${tc.y * 12.5}%`;
 
   useLayoutEffect(() => {
-    completedRef.current = false;
+    doneRef.current = false;
     const el = elRef.current;
     if (!el) return;
 
-    // Start at source with no transition.
-    el.style.transition = 'none';
-    el.style.transform = `translate(${startX}%, ${startY}%)`;
+    // Place at source immediately (no transition).
+    el.style.left = startLeft;
+    el.style.top = startTop;
+    el.style.transform = 'translate(0, 0)';
 
-    // Force reflow so the browser commits the start position.
-    void el.offsetWidth;
-
-    // Then enable transition and move to destination.
-    el.style.transition = `transform ${durationMs}ms cubic-bezier(0.25, 0.1, 0.25, 1)`;
-    el.style.transform = `translate(${endX}%, ${endY}%)`;
-  }, [animKey, startX, startY, endX, endY, durationMs]);
-
-  useEffect(() => {
-    const el = elRef.current;
-    if (!el) return;
+    // Prefer Web Animations API — animates layout positions reliably.
+    let anim: Animation | null = null;
+    try {
+      anim = el.animate(
+        [
+          { left: startLeft, top: startTop },
+          { left: endLeft, top: endTop },
+        ],
+        {
+          duration: durationMs,
+          easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
+          fill: 'forwards',
+        }
+      );
+    } catch {
+      // Fallback: CSS transition on left/top
+      void el.offsetWidth;
+      el.style.transition = `left ${durationMs}ms cubic-bezier(0.25, 0.1, 0.25, 1), top ${durationMs}ms cubic-bezier(0.25, 0.1, 0.25, 1)`;
+      el.style.left = endLeft;
+      el.style.top = endTop;
+    }
 
     const finish = () => {
-      if (completedRef.current) return;
-      completedRef.current = true;
+      if (doneRef.current) return;
+      doneRef.current = true;
+      el.style.left = endLeft;
+      el.style.top = endTop;
       onComplete?.();
     };
 
-    const onEnd = (e: TransitionEvent) => {
-      if (e.propertyName === 'transform') finish();
-    };
+    if (anim) {
+      anim.onfinish = finish;
+      anim.oncancel = finish;
+    }
 
-    el.addEventListener('transitionend', onEnd);
-    // Fallback in case transitionend is missed (tab background, reduced motion, etc.)
-    const fallback = window.setTimeout(finish, durationMs + 80);
+    const fallback = window.setTimeout(finish, durationMs + 50);
 
     return () => {
-      el.removeEventListener('transitionend', onEnd);
-      clearTimeout(fallback);
+      window.clearTimeout(fallback);
+      try {
+        anim?.cancel();
+      } catch {
+        /* ignore */
+      }
     };
-  }, [animKey, durationMs, onComplete]);
+  }, [animKey, startLeft, startTop, endLeft, endTop, durationMs, onComplete]);
+
+  // Reduced motion: jump to end
+  useEffect(() => {
+    if (
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      const el = elRef.current;
+      if (el) {
+        el.style.left = endLeft;
+        el.style.top = endTop;
+      }
+      if (!doneRef.current) {
+        doneRef.current = true;
+        onComplete?.();
+      }
+    }
+  }, [animKey, endLeft, endTop, onComplete]);
 
   return (
     <div
@@ -96,17 +127,16 @@ export function FlyingPiece({
       className="piece-flying"
       style={{
         position: 'absolute',
-        left: 0,
-        top: 0,
+        left: startLeft,
+        top: startTop,
         width: '12.5%',
         height: '12.5%',
-        transform: `translate(${startX}%, ${startY}%)`,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         pointerEvents: 'none',
-        zIndex: 8,
-        willChange: 'transform',
+        zIndex: 10,
+        willChange: 'left, top',
       }}
     >
       <img
@@ -114,7 +144,7 @@ export function FlyingPiece({
         src={pieceSrc(color, type, set)}
         alt=""
         draggable={false}
-        style={{ width: '88%', height: '88%', objectFit: 'contain' }}
+        style={{ width: '90%', height: '90%', objectFit: 'contain' }}
       />
     </div>
   );
