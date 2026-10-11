@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import type { ModelInfo } from '../ai/types';
-import {
-  IconUndo,
-  IconFlip,
-  IconClear,
-} from './Icons';
+import { IconUndo, IconFlip, IconClear } from './Icons';
 
 interface Props {
   model: ModelInfo | undefined;
@@ -29,6 +25,8 @@ interface Props {
   onVolumeChange?: (v: number) => void;
   playerColor?: 'w' | 'b';
   isCheck?: boolean;
+  onUseStockfish?: () => void;
+  currentModelId?: string;
 }
 
 export function GamePanel({
@@ -54,6 +52,8 @@ export function GamePanel({
   onVolumeChange,
   playerColor = 'w',
   isCheck = false,
+  onUseStockfish,
+  currentModelId = 'stockfish',
 }: Props) {
   const [pgnFeedback, setPgnFeedback] = useState<string | null>(null);
   const pairs: string[][] = [];
@@ -61,16 +61,18 @@ export function GamePanel({
     pairs.push([moveHistory[i], moveHistory[i + 1] || '']);
   }
 
+  const isStockfish = currentModelId === 'stockfish' || model?.providerId === 'stockfish';
+
   const handleCopyPgn = async () => {
     if (!onCopyPgn) {
-      setPgnFeedback('PGN not available yet');
-      window.setTimeout(() => setPgnFeedback(null), 2200);
+      setPgnFeedback('PGN not available');
+      window.setTimeout(() => setPgnFeedback(null), 2000);
       return;
     }
     setPgnFeedback(null);
     try {
       const ok = await onCopyPgn();
-      setPgnFeedback(ok ? 'Copied to clipboard' : 'Copy failed — try Download');
+      setPgnFeedback(ok ? 'Copied!' : 'Copy failed — try Download');
     } catch {
       setPgnFeedback('Copy failed — try Download');
     }
@@ -83,10 +85,18 @@ export function GamePanel({
         <div className="gp-label">Opponent</div>
         <div className="gp-opponent-name">{model?.name || 'Stockfish'}</div>
         <div className="gp-muted">
-          {model?.provider || 'Local Engine'}
-          {model?.free ? ' · Free' : ''}
-          {model?.requiresKey ? ' · Key required' : ''}
+          {isStockfish ? 'Built-in · No API key' : `${model?.provider || 'AI'} · Key may be required`}
         </div>
+        {!isStockfish && onUseStockfish && (
+          <button
+            type="button"
+            className="btn primary"
+            style={{ marginTop: 8, width: '100%' }}
+            onClick={onUseStockfish}
+          >
+            Switch to Stockfish
+          </button>
+        )}
       </section>
 
       <section className="gp-section">
@@ -109,7 +119,7 @@ export function GamePanel({
         <div
           className={`gp-status ${thinking ? 'thinking' : ''} ${isCheck && !gameOver ? 'check' : ''}`}
         >
-          {thinking ? 'AI is thinking…' : status}
+          {thinking ? `${model?.name || 'AI'} is thinking…` : status}
         </div>
         {error && <div className="gp-error">{error}</div>}
       </section>
@@ -118,35 +128,19 @@ export function GamePanel({
         <button type="button" className="btn primary" onClick={onNewGame}>
           New Game
         </button>
-        <button
-          type="button"
-          className="btn"
-          onClick={onUndo}
-          disabled={!canUndo || thinking}
-          title="Take back last full move"
-        >
+        <button type="button" className="btn" onClick={onUndo} disabled={!canUndo || thinking}>
           <IconUndo /> Takeback
         </button>
-        <button type="button" className="btn" onClick={onFlip} title="Flip board">
+        <button type="button" className="btn" onClick={onFlip}>
           <IconFlip /> Flip
         </button>
-        <button
-          type="button"
-          className="btn danger"
-          onClick={onResign}
-          disabled={gameOver || thinking}
-        >
+        <button type="button" className="btn danger" onClick={onResign} disabled={gameOver || thinking}>
           Resign
         </button>
       </section>
 
       <section className="gp-section gp-row">
-        <button
-          type="button"
-          className="btn"
-          onClick={onToggleSound}
-          title={soundEnabled ? 'Mute' : 'Unmute'}
-        >
+        <button type="button" className="btn" onClick={onToggleSound}>
           {soundEnabled ? 'Sound On' : 'Muted'}
         </button>
         <input
@@ -157,7 +151,6 @@ export function GamePanel({
           value={volume}
           onChange={(e) => onVolumeChange?.(parseFloat(e.target.value))}
           className="gp-volume"
-          title="Volume"
           disabled={!soundEnabled}
           aria-label="Volume"
         />
@@ -182,13 +175,10 @@ export function GamePanel({
 
       <section className="gp-section gp-history">
         <div className="gp-label">
-          Moves
-          <span className="gp-muted"> · {moveHistory.length}</span>
+          Moves <span className="gp-muted">· {moveHistory.length}</span>
         </div>
         <div className="gp-moves" role="list">
-          {pairs.length === 0 && (
-            <span className="gp-muted">No moves yet</span>
-          )}
+          {pairs.length === 0 && <span className="gp-muted">No moves yet</span>}
           {pairs.map((p, i) => (
             <div key={i} className="gp-move-row" role="listitem">
               <span className="gp-move-num">{i + 1}.</span>
@@ -197,9 +187,7 @@ export function GamePanel({
             </div>
           ))}
         </div>
-        <div className="gp-side-hint">
-          You play {playerColor === 'w' ? 'White' : 'Black'}
-        </div>
+        <div className="gp-side-hint">You play {playerColor === 'w' ? 'White' : 'Black'}</div>
       </section>
     </aside>
   );
