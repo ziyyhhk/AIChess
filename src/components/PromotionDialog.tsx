@@ -1,4 +1,5 @@
 import React from 'react';
+import { pieceSrc } from '../chess/pieceAssets';
 
 interface Props {
   color: 'w' | 'b';
@@ -13,40 +14,25 @@ const PIECES: { p: 'q' | 'r' | 'b' | 'n'; label: string }[] = [
   { p: 'n', label: 'Knight' },
 ];
 
-const UNICODE: Record<string, string> = {
-  wq: '♕', wr: '♖', wb: '♗', wn: '♘',
-  bq: '♛', br: '♜', bb: '♝', bn: '♞',
-};
-
 export function PromotionDialog({ color, onSelect, onCancel }: Props) {
   return (
-    <div
-      style={{
-        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100,
-      }}
-      onClick={onCancel}
-    >
+    <div className="overlay" onClick={onCancel}>
       <div
-        style={{
-          background: 'var(--bg-panel)', border: '1px solid var(--border)',
-          borderRadius: 10, padding: 16, display: 'flex', gap: 10,
-        }}
+        className="dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Choose a piece to promote to"
         onClick={(e) => e.stopPropagation()}
       >
-        {PIECES.map(({ p, label }) => (
-          <button
-            key={p}
-            onClick={() => onSelect(p)}
-            title={label}
-            style={{
-              width: 56, height: 56, fontSize: 32, borderRadius: 8,
-              background: 'var(--bg-elevated)', border: '1px solid var(--border)',
-            }}
-          >
-            {UNICODE[`${color}${p}`]}
-          </button>
-        ))}
+        <div className="dialog-title">Promote pawn</div>
+        <div className="promo-choices">
+          {PIECES.map(({ p, label }) => (
+            <button key={p} type="button" className="promo-btn" onClick={() => onSelect(p)} title={label}>
+              <img src={pieceSrc(color, p)} alt="" draggable={false} />
+              <span>{label}</span>
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

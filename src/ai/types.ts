@@ -1,3 +1,5 @@
+import { DEFAULT_MIN_THINK_MS } from './thinkTime';
+
 export type UCIMove = string;
 
 export interface AIMoveRequest {
@@ -59,6 +61,8 @@ export interface AppSettings {
   defaultColor: 'w' | 'b' | 'random';
   defaultOpponent: string;
   aiTimeoutMs: number;
+  /** Minimum time an AI move takes to appear, in ms. Leaves room to premove. */
+  minThinkMs: number;
   stockfishDepth: number;
   stockfishTimeMs: number;
   rememberKeys: boolean;
@@ -80,6 +84,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   defaultColor: 'w',
   defaultOpponent: 'stockfish',
   aiTimeoutMs: 30000,
+  minThinkMs: DEFAULT_MIN_THINK_MS,
   stockfishDepth: 12,
   stockfishTimeMs: 1500,
   rememberKeys: false,

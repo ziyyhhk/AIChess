@@ -1,11 +1,16 @@
-import React, { useCallback, useRef, useState, useLayoutEffect, useEffect } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { Square } from 'chess.js';
 import type { Arrow, SquareHighlight } from '../chess/annotationManager';
 import type { Premove } from '../chess/premoveManager';
 import { pieceSrc, type PieceSetId } from '../chess/pieceAssets';
-import { FlyingPiece } from './FlyingPiece';
+import { FlyingPiece, type Point } from './FlyingPiece';
+
+/** How long a move slides across the board, in ms. Queued premoves wait this long before playing. */
+export const MOVE_ANIMATION_MS = 260;
 
 const FILES = 'abcdefgh';
+const CELL = 12.5; // one square, as a percentage of the board
+const HALF_CELL = CELL / 2;
 
 interface BoardPiece {
   type: string;
@@ -13,12 +18,23 @@ interface BoardPiece {
   square: Square;
 }
 
-interface FlyingState {
-  from: Square;
-  to: Square;
+interface Flight {
+  key: number;
+  /** Destination square. The piece is hidden there while it slides in. */
+  square: Square;
   color: 'w' | 'b';
   type: string;
-  key: number;
+  start: Point;
+  end: Point;
+}
+
+interface DragState {
+  from: Square;
+  color: 'w' | 'b';
+  type: string;
+  /** Top-left of the dragged piece, in percent of the board. */
+  x: number;
+  y: number;
 }
 
 interface Props {
@@ -43,7 +59,16 @@ interface Props {
   themeClass: string;
   pieceSet?: PieceSetId;
   animateMoves?: boolean;
+  /** The side the human plays. Only its pieces can be dragged. Defaults to the orientation. */
+  playerColor?: 'w' | 'b';
 }
+
+const ARROW_COLORS: Record<string, string> = {
+  green: '#96d45b',
+  red: '#f05c5c',
+  blue: '#5cb8e8',
+  yellow: '#e8b84a',
+};
 
 function squareToCoords(sq: Square, orientation: 'w' | 'b') {
   const file = sq.charCodeAt(0) - 97;
@@ -54,18 +79,16 @@ function squareToCoords(sq: Square, orientation: 'w' | 'b') {
   };
 }
 
+function squareToPoint(sq: Square, orientation: 'w' | 'b'): Point {
+  const { x, y } = squareToCoords(sq, orientation);
+  return { x: x * CELL, y: y * CELL };
+}
+
 function coordsToSquare(x: number, y: number, orientation: 'w' | 'b'): Square {
   const file = orientation === 'w' ? x : 7 - x;
   const rank = orientation === 'w' ? 7 - y : y;
   return (String.fromCharCode(97 + file) + (rank + 1)) as Square;
 }
-
-const ARROW_COLORS: Record<string, string> = {
-  green: '#96d45b',
-  red: '#f05c5c',
-  blue: '#5cb8e8',
-  yellow: '#e8b84a',
-};
 
 function isKnightDelta(dx: number, dy: number) {
   const ax = Math.abs(dx);
@@ -202,7 +225,7 @@ function PieceImg({
       src={pieceSrc(color, type, set)}
       alt=""
       draggable={false}
-      style={{ opacity: dimmed ? 0.35 : 1 }}
+      style={{ opacity: dimmed ? 0.3 : 1 }}
     />
   );
 }
@@ -241,71 +264,89 @@ export function ChessBoard({
   themeClass,
   pieceSet = 'cburnett',
   animateMoves = true,
+  playerColor,
 }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
-  const [dragFrom, setDragFrom] = useState<Square | null>(null);
+  const [drag, setDrag] = useState<DragState | null>(null);
   const [rightDragFrom, setRightDragFrom] = useState<Square | null>(null);
-  const [flying, setFlying] = useState<FlyingState[]>([]);
-  const prevLastRef = useRef<string | null>(null);
+  const [flights, setFlights] = useState<Flight[]>([]);
+  const prevMoveKeyRef = useRef<string | null>(null);
+  // Where a drag was released. The slide starts from there, not from the origin square.
+  const dropHintRef = useRef<{ key: string; point: Point } | null>(null);
   const reduceMotion =
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ownColor = playerColor ?? orientation;
 
-  // Critical: useLayoutEffect so flying is set BEFORE the browser paints
-  // the new board position. That eliminates the one-frame teleport flash.
+  // useLayoutEffect so the flight exists before the browser paints the new position.
+  // That prevents a one-frame teleport where the piece appears on its target square.
   useLayoutEffect(() => {
-    if (!animateMoves || reduceMotion || !lastMove) {
-      prevLastRef.current = lastMove ? `${lastMove.from}${lastMove.to}` : null;
-      if (!lastMove) setFlying([]);
+    if (!lastMove) {
+      prevMoveKeyRef.current = null;
+      dropHintRef.current = null;
+      setFlights([]);
       return;
     }
     const key = `${lastMove.from}${lastMove.to}`;
-    if (prevLastRef.current === key) return;
-    prevLastRef.current = key;
+    if (prevMoveKeyRef.current === key) return;
+    prevMoveKeyRef.current = key;
 
-    const destPiece = pieces.find((p) => p.square === lastMove.to);
-    if (!destPiece) {
-      setFlying([]);
+    const hint = dropHintRef.current;
+    dropHintRef.current = null;
+    if (!animateMoves || reduceMotion) {
+      setFlights([]);
       return;
     }
 
-    const flights: FlyingState[] = [
+    const mover = pieces.find((p) => p.square === lastMove.to);
+    if (!mover) {
+      setFlights([]);
+      return;
+    }
+
+    const now = Date.now();
+    const next: Flight[] = [
       {
-        from: lastMove.from,
-        to: lastMove.to,
-        color: destPiece.color,
-        type: destPiece.type,
-        key: Date.now(),
+        key: now,
+        square: lastMove.to,
+        color: mover.color,
+        type: mover.type,
+        start: hint && hint.key === key ? hint.point : squareToPoint(lastMove.from, orientation),
+        end: squareToPoint(lastMove.to, orientation),
       },
     ];
 
-    // Animate the rook on castling when we can identify it.
     const rook =
-      lastRookMove ||
-      (destPiece.type === 'k' ? castlingRookMove(lastMove.from, lastMove.to) : null);
+      lastRookMove || (mover.type === 'k' ? castlingRookMove(lastMove.from, lastMove.to) : null);
     if (rook) {
       const rookPiece = pieces.find((p) => p.square === rook.to);
       if (rookPiece) {
-        flights.push({
-          from: rook.from,
-          to: rook.to,
+        next.push({
+          key: now + 1,
+          square: rook.to,
           color: rookPiece.color,
           type: rookPiece.type,
-          key: Date.now() + 1,
+          start: squareToPoint(rook.from, orientation),
+          end: squareToPoint(rook.to, orientation),
         });
       }
     }
 
-    setFlying(flights);
-  }, [lastMove, lastRookMove, pieces, animateMoves, reduceMotion]);
+    setFlights(next);
+  }, [lastMove, lastRookMove, pieces, animateMoves, reduceMotion, orientation]);
 
-  const clearFlying = useCallback(() => {
-    setFlying([]);
+  const clearFlights = useCallback(() => setFlights([]), []);
+
+  /** Pointer position as the top-left of a piece centred under it, in percent of the board. */
+  const pointerToBoard = useCallback((clientX: number, clientY: number): Point | null => {
+    const el = wrapRef.current;
+    if (!el) return null;
+    const rect = el.getBoundingClientRect();
+    return {
+      x: ((clientX - rect.left) / rect.width) * 100 - HALF_CELL,
+      y: ((clientY - rect.top) / rect.height) * 100 - HALF_CELL,
+    };
   }, []);
-
-  useEffect(() => {
-    if (!lastMove && flying.length) setFlying([]);
-  }, [lastMove, flying.length]);
 
   const getSquareFromEvent = useCallback(
     (e: React.MouseEvent | MouseEvent): Square | null => {
@@ -320,7 +361,7 @@ export function ChessBoard({
     [orientation]
   );
 
-  const handlePointerDown = (e: React.MouseEvent) => {
+  const handleMouseDown = (e: React.MouseEvent) => {
     if (!interactive) return;
     if (e.button === 2) {
       e.preventDefault();
@@ -334,8 +375,11 @@ export function ChessBoard({
     if (!sq) return;
     const piece = pieces.find((p) => p.square === sq);
     if (piece) {
-      setDragFrom(sq);
       onSelectSquare(sq);
+      if (piece.color === ownColor) {
+        const p = pointerToBoard(e.clientX, e.clientY);
+        if (p) setDrag({ from: sq, color: piece.color, type: piece.type, x: p.x, y: p.y });
+      }
     } else if (selected) {
       onMove(selected, sq);
     } else {
@@ -343,7 +387,13 @@ export function ChessBoard({
     }
   };
 
-  const handlePointerUp = (e: React.MouseEvent) => {
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!drag) return;
+    const p = pointerToBoard(e.clientX, e.clientY);
+    if (p) setDrag((d) => (d ? { ...d, x: p.x, y: p.y } : d));
+  };
+
+  const handleMouseUp = (e: React.MouseEvent) => {
     if (e.button === 2) {
       e.preventDefault();
       const to = getSquareFromEvent(e);
@@ -354,11 +404,15 @@ export function ChessBoard({
       setRightDragFrom(null);
       return;
     }
-    if (dragFrom) {
-      const to = getSquareFromEvent(e);
-      if (to && to !== dragFrom) onMove(dragFrom, to);
-      setDragFrom(null);
+    if (!drag) return;
+    const to = getSquareFromEvent(e);
+    if (to && to !== drag.from) {
+      dropHintRef.current = { key: `${drag.from}${to}`, point: { x: drag.x, y: drag.y } };
+      onMove(drag.from, to);
+      // Only a legal drop plays a slide. Anything else would leave a stale hint behind.
+      if (!legalTargets.includes(to)) dropHintRef.current = null;
     }
+    setDrag(null);
   };
 
   useEffect(() => {
@@ -369,10 +423,8 @@ export function ChessBoard({
     return () => window.removeEventListener('keydown', onKey);
   }, [onClearAnnotations]);
 
-  const hiddenSquares = new Set<string>();
-  for (const f of flying) {
-    hiddenSquares.add(f.to);
-  }
+  const hiddenSquares = new Set<string>(flights.map((f) => f.square));
+  const premovePiece = premove ? pieces.find((p) => p.square === premove.from) : undefined;
 
   const squares: React.ReactNode[] = [];
   for (let y = 0; y < 8; y++) {
@@ -400,20 +452,26 @@ export function ChessBoard({
       const fileLabel =
         showCoordinates && y === 7 ? FILES[orientation === 'w' ? x : 7 - x] : null;
       const rankLabel =
-        showCoordinates && x === 0
-          ? String(orientation === 'w' ? 8 - y : y + 1)
-          : null;
-      const hidePiece = piece && hiddenSquares.has(sq);
+        showCoordinates && x === 0 ? String(orientation === 'w' ? 8 - y : y + 1) : null;
+      const isPremoveTarget = !!premove && !!premovePiece && premove.to === sq;
       squares.push(
         <div key={sq} className={classes} data-square={sq}>
           {isLegal && !piece && <div className="legal-dot" />}
           {isLegal && piece && <div className="legal-capture" />}
-          {piece && !hidePiece && (
+          {piece && !hiddenSquares.has(sq) && (
             <PieceImg
               color={piece.color}
               type={piece.type}
               set={pieceSet}
-              dimmed={dragFrom === sq}
+              dimmed={drag?.from === sq}
+            />
+          )}
+          {isPremoveTarget && premovePiece && (
+            <img
+              className="piece-img piece-premove-ghost"
+              src={pieceSrc(premovePiece.color, premovePiece.type, pieceSet)}
+              alt=""
+              draggable={false}
             />
           )}
           {fileLabel && <span className="coord coord-file">{fileLabel}</span>}
@@ -435,32 +493,46 @@ export function ChessBoard({
   return (
     <div
       ref={wrapRef}
-      className={`chessboard-wrap ${themeClass}`}
-      onMouseDown={handlePointerDown}
-      onMouseUp={handlePointerUp}
+      className={`chessboard-wrap ${themeClass}${drag ? ' is-dragging' : ''}`}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
       onContextMenu={(e) => e.preventDefault()}
       onMouseLeave={() => {
-        setDragFrom(null);
+        setDrag(null);
         setRightDragFrom(null);
       }}
     >
       <div className="chessboard">{squares}</div>
-      {flying.length > 0 && (
+      {flights.length > 0 && (
         <div className="piece-flying-layer" aria-hidden>
-          {flying.map((f, i) => (
+          {flights.map((f, i) => (
             <FlyingPiece
               key={f.key}
-              from={f.from}
-              to={f.to}
               color={f.color}
               type={f.type}
               set={pieceSet}
-              orientation={orientation}
+              start={f.start}
+              end={f.end}
               animKey={f.key}
-              durationMs={180}
-              onComplete={i === 0 ? clearFlying : undefined}
+              durationMs={MOVE_ANIMATION_MS}
+              onComplete={i === 0 ? clearFlights : undefined}
             />
           ))}
+        </div>
+      )}
+      {drag && (
+        <div
+          className="piece-drag-ghost"
+          aria-hidden
+          style={{ left: `${drag.x}%`, top: `${drag.y}%` }}
+        >
+          <img
+            className="piece-img"
+            src={pieceSrc(drag.color, drag.type, pieceSet)}
+            alt=""
+            draggable={false}
+          />
         </div>
       )}
       <div className="board-overlay" aria-hidden>

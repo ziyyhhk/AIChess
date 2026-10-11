@@ -8,7 +8,6 @@ export const PIECE_SETS: { id: PieceSetId; name: string; ext: 'svg' | 'png' }[] 
 ];
 
 const base = () => {
-  // @ts-expect-error Vite injects this
   const b = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.BASE_URL) || '/';
   return b.endsWith('/') ? b : b + '/';
 };

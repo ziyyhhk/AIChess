@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ChessBoard } from './components/ChessBoard';
+import { ChessBoard, MOVE_ANIMATION_MS } from './components/ChessBoard';
 import { AppSidebar } from './components/AppSidebar';
 import { GamePanel } from './components/GamePanel';
 import { AIModelSelector } from './components/AIModelSelector';
@@ -50,12 +50,16 @@ export default function App() {
     });
   }, [settings.difficulty, settings.customSkillLevel, settings.customDepth, settings.customMovetimeMs]);
 
+  useEffect(() => {
+    aiManager.setMinThinkMs(settings.minThinkMs);
+  }, [settings.minThinkMs]);
+
   const [apiKeys, setApiKeys] = useState<Record<string, string>>({});
   const [orientation, setOrientation] = useState<'w' | 'b'>('w');
   const [playerColor, setPlayerColor] = useState<'w' | 'b'>('w');
   const [selected, setSelected] = useState<Square | null>(null);
   const [thinking, setThinking] = useState(false);
-  const [status, setStatus] = useState('Your turn — Stockfish needs no API key');
+  const [status, setStatus] = useState('Your turn. Stockfish needs no API key.');
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -67,6 +71,7 @@ export default function App() {
   const annotRef = useRef(new AnnotationManager());
   const requestingRef = useRef(false);
   const gameStartedAt = useRef(new Date());
+  const premoveTimerRef = useRef<number | null>(null);
 
   const refresh = () => setTick((t) => t + 1);
   const game = gameRef.current;
@@ -142,6 +147,31 @@ export default function App() {
     return false;
   }, []);
 
+  const cancelQueuedPremove = useCallback(() => {
+    if (premoveTimerRef.current !== null) {
+      window.clearTimeout(premoveTimerRef.current);
+      premoveTimerRef.current = null;
+    }
+  }, []);
+
+  // Runs once the AI's move has finished sliding. Plays the queued premove if it still fits.
+  const playQueuedPremove = useCallback(() => {
+    premoveTimerRef.current = null;
+    if (!premoveRef.current.get()) return;
+    if (game.isGameOver() || game.getTurn() !== playerColor) {
+      premoveRef.current.clear();
+      refresh();
+      return;
+    }
+    const pm = premoveRef.current.consumeIfLegal(game.getLegalUci());
+    if (pm) {
+      const m = game.makeMove(pm.from, pm.to, pm.promotion);
+      if (m) playMoveSound(m as any, true);
+    }
+    refresh();
+    checkGameOver();
+  }, [playerColor, playMoveSound, checkGameOver]);
+
   const requestAIMove = useCallback(async () => {
     if (requestingRef.current || game.isGameOver()) return;
     if (game.getTurn() === playerColor) return;
@@ -162,24 +192,25 @@ export default function App() {
       else {
         playMoveSound(moveObj, false);
         setStatus('Your turn');
-        if (settings.enablePremoves) {
-          const pm = premoveRef.current.consumeIfLegal(game.getLegalUci());
-          if (pm) game.makeMove(pm.from, pm.to, pm.promotion);
+        // The AI's move needs to slide on screen before a queued premove plays after it.
+        if (settings.enablePremoves && premoveRef.current.get() && !game.isGameOver()) {
+          cancelQueuedPremove();
+          premoveTimerRef.current = window.setTimeout(playQueuedPremove, MOVE_ANIMATION_MS + 40);
         }
       }
       refresh();
       checkGameOver();
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'AI request failed';
-      if (!msg.includes('Stale') && !msg.includes('Aborted')) {
+      if (!/stale|abort/i.test(msg)) {
         setError(msg);
-        setStatus('Your turn — AI failed');
+        setStatus('Your turn. AI failed.');
       }
     } finally {
       setThinking(false);
       requestingRef.current = false;
     }
-  }, [apiKeys, playerColor, settings, checkGameOver, playMoveSound]);
+  }, [apiKeys, playerColor, settings, checkGameOver, playMoveSound, cancelQueuedPremove, playQueuedPremove]);
 
   useEffect(() => {
     if (!game.isGameOver() && game.getTurn() !== playerColor && !requestingRef.current) {
@@ -289,6 +320,7 @@ export default function App() {
   };
 
   const newGame = () => {
+    cancelQueuedPremove();
     soundManager.play('gameStart');
     aiManager.cancel();
     requestingRef.current = false;
@@ -305,6 +337,7 @@ export default function App() {
 
   const undo = () => {
     if (thinking) return;
+    cancelQueuedPremove();
     aiManager.cancel();
     game.undo(); game.undo();
     premoveRef.current.clear();
@@ -314,6 +347,7 @@ export default function App() {
 
   const resign = () => {
     if (game.isGameOver()) return;
+    cancelQueuedPremove();
     aiManager.cancel();
     setResult(playerColor === 'w' ? 'black' : 'white');
     setShowResult(true); setStatus('Resigned'); setThinking(false);
@@ -395,7 +429,7 @@ export default function App() {
                   {model?.name || 'AI'}
                 </span>
                 <span className="player-bar-status">
-                  {thinking ? 'Thinking…' : game.isCheck() && !isPlayerTurn ? 'Check!' : ''}
+                  {thinking ? 'Thinking' : game.isCheck() && !isPlayerTurn ? 'Check' : ''}
                 </span>
               </div>
               <ChessBoard
@@ -409,7 +443,8 @@ export default function App() {
                 onHighlight={(sq) => { annotRef.current.toggleHighlight(sq); refresh(); }}
                 onClearAnnotations={() => { annotRef.current.clear(); refresh(); }}
                 themeClass={`board-theme-${settings.boardTheme}`}
-                animateMoves={true}
+                animateMoves={settings.enableAnimations}
+                playerColor={playerColor}
               />
               <div className="player-bar">
                 <span className="player-bar-name">
@@ -419,7 +454,7 @@ export default function App() {
                 </span>
                 <span className="player-bar-status muted">
                   {game.getHistorySan().length} moves
-                  {game.isCheck() && isPlayerTurn ? ' · Check!' : ''}
+                  {game.isCheck() && isPlayerTurn ? ' · Check' : ''}
                 </span>
               </div>
             </div>
@@ -451,6 +486,7 @@ export default function App() {
               isCheck={game.isCheck()}
               onUseStockfish={() => selectOpponent('stockfish')}
               currentModelId={aiManager.getModelId()}
+              premovesEnabled={settings.enablePremoves}
             />
           </div>
         )}
@@ -464,12 +500,28 @@ export default function App() {
             onSaveKey={(provider, key) => setApiKeys((k) => ({ ...k, [provider]: key }))}
             onClearKey={(provider) => setApiKeys((k) => { const n = { ...k }; delete n[provider]; return n; })} />
         )}
-        {view === 'history' && (<div className="placeholder-view"><h2>Game History</h2><p>Browser-local history (future).</p></div>)}
-        {view === 'analysis' && (<div className="placeholder-view"><h2>Analysis</h2><p>Use Stockfish as opponent for strong local play.</p></div>)}
+        {view === 'history' && (
+          <div className="placeholder-view">
+            <h1>Game history</h1>
+            <p>Saved games will appear here. This is planned for a later version.</p>
+          </div>
+        )}
+        {view === 'analysis' && (
+          <div className="placeholder-view">
+            <h1>Analysis</h1>
+            <p>Analysis tools are planned. For a strong opponent now, choose Stockfish at Expert difficulty.</p>
+          </div>
+        )}
         {view === 'help' && (
           <div className="placeholder-view help-view">
-            <h2>About AIChess</h2>
-            <p>Play against Stockfish with no API key, or Gemini / OpenRouter free models with your own key.</p>
+            <h1>About AIChess</h1>
+            <p>Play against the built-in Stockfish engine with no key, or against Gemini and OpenRouter models with your own API key.</p>
+            <ul>
+              <li>Drag a piece, or click it and then click the destination.</li>
+              <li>Move while the AI is thinking to queue a premove. It plays as soon as the AI replies.</li>
+              <li>Right-click to draw arrows. Right-click a square to highlight it.</li>
+              <li>The minimum thinking time in Settings controls how long the AI waits before replying.</li>
+            </ul>
           </div>
         )}
       </div>

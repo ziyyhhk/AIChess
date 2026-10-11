@@ -9,57 +9,84 @@ interface Props {
   hasOpenRouterKey: boolean;
 }
 
+const GROUP_LABELS: Record<string, string> = {
+  stockfish: 'Built-in engine',
+  gemini: 'Google Gemini',
+  openrouter: 'OpenRouter free routes',
+};
+
 export function AIModelSelector({ selectedId, onSelect, hasGeminiKey, hasOpenRouterKey }: Props) {
   const [filter, setFilter] = useState('');
+  const query = filter.trim().toLowerCase();
   const filtered = CURATED_MODELS.filter(
     (m) =>
-      m.name.toLowerCase().includes(filter.toLowerCase()) ||
-      m.provider.toLowerCase().includes(filter.toLowerCase()) ||
-      m.id.toLowerCase().includes(filter.toLowerCase())
+      !query ||
+      m.name.toLowerCase().includes(query) ||
+      m.provider.toLowerCase().includes(query) ||
+      m.id.toLowerCase().includes(query)
   );
   const groups: Record<string, ModelInfo[]> = {};
   for (const m of filtered) {
     if (!groups[m.providerId]) groups[m.providerId] = [];
     groups[m.providerId].push(m);
   }
-  const groupLabels: Record<string, string> = {
-    stockfish: 'Built-in Engine (no key)',
-    gemini: 'Google Gemini (your key)',
-    openrouter: 'OpenRouter free routes (your key)',
-  };
+
   return (
-    <div style={{ padding: 16, maxWidth: 720 }}>
-      <h2 style={{ marginBottom: 12 }}>AI Opponents</h2>
-      <p style={{ color: 'var(--text-muted)', fontSize: 14, marginBottom: 16 }}>
-        Stockfish works with no account. Hosted models need your own free-tier API key.
-      </p>
-      <input type="search" placeholder="Search models…" value={filter}
-        onChange={(e) => setFilter(e.target.value)}
-        style={{ width: '100%', padding: '10px 12px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)', marginBottom: 16 }} />
+    <div className="view">
+      <header className="view-head">
+        <h1>Opponents</h1>
+        <p>Stockfish works with no account. Hosted models need your own free API key, set in Settings.</p>
+      </header>
+
+      <div className="search">
+        <input
+          type="search"
+          className="input"
+          placeholder="Search by name or provider"
+          aria-label="Search opponents"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        />
+      </div>
+
+      {filtered.length === 0 && <p className="gp-muted">No opponents match “{filter.trim()}”.</p>}
+
       {Object.entries(groups).map(([gid, models]) => (
-        <div key={gid} style={{ marginBottom: 20 }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-muted)', marginBottom: 8, textTransform: 'uppercase' }}>
-            {groupLabels[gid] || gid}
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <section key={gid} className="model-group">
+          <h2 className="group-title">{GROUP_LABELS[gid] || gid}</h2>
+          <div className="model-grid">
             {models.map((m) => {
-              const ready = !m.requiresKey || (m.providerId === 'gemini' && hasGeminiKey) || (m.providerId === 'openrouter' && hasOpenRouterKey);
+              const ready =
+                !m.requiresKey ||
+                (m.providerId === 'gemini' && hasGeminiKey) ||
+                (m.providerId === 'openrouter' && hasOpenRouterKey);
+              const selected = selectedId === m.id;
               return (
-                <button key={m.id} onClick={() => onSelect(m.id)}
-                  style={{ textAlign: 'left', padding: 12, borderRadius: 8,
-                    border: selectedId === m.id ? '1px solid var(--accent)' : '1px solid var(--border)',
-                    background: selectedId === m.id ? 'rgba(63,185,80,0.1)' : 'var(--bg-panel)' }}>
-                  <div style={{ fontWeight: 600 }}>{m.name}</div>
-                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>
-                    {m.id} · {m.free ? 'Free' : 'Paid'} ·{' '}
-                    {ready ? <span style={{ color: 'var(--accent)' }}>Ready</span> : <span style={{ color: 'var(--warning)' }}>Key needed</span>}
-                  </div>
-                  {m.description && <div style={{ fontSize: 12, marginTop: 4, color: 'var(--text-muted)' }}>{m.description}</div>}
+                <button
+                  key={m.id}
+                  type="button"
+                  className={`model-card${selected ? ' selected' : ''}`}
+                  onClick={() => onSelect(m.id)}
+                  aria-pressed={selected}
+                >
+                  <span className="model-top">
+                    <span className="model-name">{m.name}</span>
+                    {ready ? (
+                      <span className="badge ok">Ready</span>
+                    ) : (
+                      <span className="badge warn">Key needed</span>
+                    )}
+                  </span>
+                  <span className="model-meta">
+                    {m.provider} · {m.free ? 'Free tier' : 'Paid'}
+                    {selected ? ' · Playing now' : ''}
+                  </span>
+                  {m.description && <span className="model-desc">{m.description}</span>}
                 </button>
               );
             })}
           </div>
-        </div>
+        </section>
       ))}
     </div>
   );

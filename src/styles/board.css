@@ -4,12 +4,16 @@
   aspect-ratio: 1;
   user-select: none;
   touch-action: none;
-  border-radius: 4px;
+  border-radius: 6px;
   overflow: hidden;
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.06),
-    inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+    0 12px 40px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.chessboard-wrap.is-dragging,
+.chessboard-wrap.is-dragging * {
+  cursor: grabbing !important;
 }
 
 .chessboard {
@@ -36,7 +40,7 @@
 
 .square.last-from,
 .square.last-to {
-  background-image: linear-gradient(rgba(246, 214, 68, 0.32), rgba(246, 214, 68, 0.32));
+  background-image: linear-gradient(rgba(246, 214, 68, 0.3), rgba(246, 214, 68, 0.3));
 }
 
 .square.check {
@@ -50,7 +54,7 @@
 
 .square.premove-from,
 .square.premove-to {
-  box-shadow: inset 0 0 0 3px rgba(64, 156, 255, 0.95);
+  box-shadow: inset 0 0 0 3px rgba(96, 165, 250, 0.95);
 }
 
 .piece-img {
@@ -59,9 +63,13 @@
   object-fit: contain;
   pointer-events: none;
   user-select: none;
-  z-index: 2;
   display: block;
   filter: drop-shadow(0 1.5px 2px rgba(0, 0, 0, 0.28));
+}
+
+.piece-premove-ghost {
+  opacity: 0.5;
+  position: absolute;
 }
 
 .legal-dot {
@@ -121,6 +129,26 @@
 
 .piece-flying {
   position: absolute;
+  width: 12.5%;
+  height: 12.5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  will-change: left, top;
+}
+
+.piece-flying .piece-img {
+  width: 90%;
+  height: 90%;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
+}
+
+/* The piece under the pointer while dragging. */
+.piece-drag-ghost {
+  position: absolute;
+  width: 12.5%;
+  height: 12.5%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -128,14 +156,8 @@
   z-index: 9;
 }
 
-.piece-flying .piece-img {
-  width: 90%;
-  height: 90%;
-  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.4));
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .piece-flying {
-    transition: none !important;
-  }
+.piece-drag-ghost .piece-img {
+  width: 92%;
+  height: 92%;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.42));
 }

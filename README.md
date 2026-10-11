@@ -14,7 +14,8 @@ A modern, playable chess website where you face **free and configurable AI model
 | Right-click arrows & square highlights | Working |
 | Move history (SAN) | Working |
 | New game / takeback / flip / resign | Working |
-| Built-in Stockfish (lite / stub + random-legal fallback) | Working |
+| Built-in Stockfish (time-controlled search, loaded from CDN) | Working |
+| Minimum AI thinking time (room to premove) | Working, set in Settings |
 | Gemini API adapter | Working (your key) |
 | OpenRouter free-route adapter | Working (your key) |
 | API key settings (session memory) | Working |
@@ -49,9 +50,11 @@ npm test         # unit tests
 
 ### Stockfish (no key)
 
-Select **Stockfish (Built-in)** in AI Opponents. The app ships a lightweight UCI worker stub under `public/engines/`. For stronger play, replace it with the official **stockfish.js** lite single-threaded build from nmrugg/stockfish.js / npm `stockfish`.
+Select **Stockfish (Built-in)** in AI Opponents. The engine is `stockfish.js` 10.0.2, loaded at runtime from jsDelivr as a Web Worker. `public/engines/stockfish.js` is a placeholder. The app detects it and uses the CDN instead.
 
-Even without the full WASM, the adapter falls back to a **legal random move**, so the board always remains playable.
+To host the engine yourself, put a full single-file `stockfish.js` build (over 5 KB) at `public/engines/stockfish.js`. Stockfish is GPL-licensed, so check that licence before you commit a copy to this MIT-licensed repository.
+
+Each Stockfish move is a time-controlled search (`go movetime`). Depth is not a limit. The AI then waits at least the **Minimum thinking time** from Settings (default 1.2 s), so you can queue a premove.
 
 ### Google Gemini (your API key)
 
@@ -75,14 +78,16 @@ Free routes are **rate-limited**. Model availability changes.
 
 ## GitHub Pages deployment
 
-1. Open https://github.com/ziyyhhk/AIChess
-2. **Settings → Pages**
-3. Under **Build and deployment**, set **Source** to **GitHub Actions**
-4. Save if prompted
-5. Open the **Actions** tab and wait for the **Deploy to GitHub Pages** workflow
-6. Visit **https://ziyyhhk.github.io/AIChess/**
+The workflow in `.github/workflows/deploy.yml` publishes the site with the GitHub Pages Actions flow. **Source must be GitHub Actions.** Do not choose "Deploy from a branch", and do not pick the `docs` folder as the source.
 
-Vite is configured with `base: '/AIChess/'`.
+1. Open your repository on GitHub, then **Settings → Pages**.
+2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+3. Push to `main`, or open the **Actions** tab and run **Deploy to GitHub Pages** manually.
+4. When the run is green, open `https://<your-user>.github.io/AIChess/`.
+
+The workflow also regenerates `docs/` from each build. That folder is generated, so edit `src/` and let the workflow refresh it.
+
+Vite is configured with `base: '/AIChess/'`, so the repository name must stay `AIChess`. If you rename the repository, change `base` in `vite.config.ts` to match.
 
 ## License
 

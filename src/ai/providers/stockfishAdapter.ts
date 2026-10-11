@@ -14,30 +14,39 @@ export interface StockfishCustomOptions {
   movetimeMs?: number;
 }
 
+/**
+ * UCI "go" line. Time-controlled on purpose: a depth cap (go depth N) ends the
+ * search as soon as depth N is reached. On shallow levels that takes a few
+ * milliseconds, which is why the AI used to look instant.
+ */
+export function buildGoCommand(movetimeMs: number): string {
+  return `go movetime ${Math.max(100, Math.round(movetimeMs))}`;
+}
+
 export function difficultyToSettings(
   d: StockfishDifficulty,
   custom?: StockfishCustomOptions
 ): { skill: number; depth: number; movetime: number; limitStrength: boolean; elo?: number } {
   switch (d) {
     case 'beginner':
-      return { skill: 0, depth: 1, movetime: 50, limitStrength: true, elo: 800 };
+      return { skill: 0, depth: 1, movetime: 900, limitStrength: true, elo: 800 };
     case 'easy':
-      return { skill: 3, depth: 3, movetime: 100, limitStrength: true, elo: 1100 };
+      return { skill: 3, depth: 3, movetime: 1000, limitStrength: true, elo: 1100 };
     case 'medium':
-      return { skill: 8, depth: 8, movetime: 300, limitStrength: true, elo: 1500 };
+      return { skill: 8, depth: 8, movetime: 1200, limitStrength: true, elo: 1500 };
     case 'hard':
-      return { skill: 15, depth: 12, movetime: 800, limitStrength: false };
+      return { skill: 15, depth: 12, movetime: 1600, limitStrength: false };
     case 'expert':
-      return { skill: 20, depth: 15, movetime: 1500, limitStrength: false };
+      return { skill: 20, depth: 15, movetime: 2200, limitStrength: false };
     case 'custom':
       return {
         skill: custom?.skillLevel ?? 10,
         depth: custom?.depth ?? 10,
-        movetime: custom?.movetimeMs ?? 500,
+        movetime: custom?.movetimeMs ?? 1200,
         limitStrength: (custom?.skillLevel ?? 10) < 15,
       };
     default:
-      return { skill: 8, depth: 8, movetime: 300, limitStrength: true, elo: 1500 };
+      return { skill: 8, depth: 8, movetime: 1200, limitStrength: true, elo: 1500 };
   }
 }
 
@@ -279,8 +288,7 @@ export class StockfishAdapter implements AIProvider {
     this.worker!.postMessage('ucinewgame');
     this.worker!.postMessage(`position fen ${req.fen}`);
 
-    const goCmd = `go depth ${settings.depth} movetime ${settings.movetime}`;
-    this.worker!.postMessage(goCmd);
+    this.worker!.postMessage(buildGoCommand(settings.movetime));
 
     const timeoutMs = Math.max(req.timeoutMs || 15000, settings.movetime + 5000);
 

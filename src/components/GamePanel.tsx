@@ -27,6 +27,7 @@ interface Props {
   isCheck?: boolean;
   onUseStockfish?: () => void;
   currentModelId?: string;
+  premovesEnabled?: boolean;
 }
 
 export function GamePanel({
@@ -54,14 +55,17 @@ export function GamePanel({
   isCheck = false,
   onUseStockfish,
   currentModelId = 'stockfish',
+  premovesEnabled = true,
 }: Props) {
   const [pgnFeedback, setPgnFeedback] = useState<string | null>(null);
   const pairs: string[][] = [];
   for (let i = 0; i < moveHistory.length; i += 2) {
     pairs.push([moveHistory[i], moveHistory[i + 1] || '']);
   }
+  const lastIndex = moveHistory.length - 1;
 
   const isStockfish = currentModelId === 'stockfish' || model?.providerId === 'stockfish';
+  const opponentName = isStockfish ? 'Stockfish' : model?.name || 'AI';
 
   const handleCopyPgn = async () => {
     if (!onCopyPgn) {
@@ -72,77 +76,100 @@ export function GamePanel({
     setPgnFeedback(null);
     try {
       const ok = await onCopyPgn();
-      setPgnFeedback(ok ? 'Copied!' : 'Copy failed — try Download');
+      setPgnFeedback(ok ? 'Copied to clipboard' : 'Copy failed. Try Download.');
     } catch {
-      setPgnFeedback('Copy failed — try Download');
+      setPgnFeedback('Copy failed. Try Download.');
     }
     window.setTimeout(() => setPgnFeedback(null), 2200);
   };
+
+  const statusClass = ['gp-status', thinking ? 'is-thinking' : '', isCheck && !gameOver && !thinking ? 'is-check' : '']
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <aside className="game-panel" aria-label="Game controls">
       <section className="gp-section">
         <div className="gp-label">Opponent</div>
-        <div className="gp-opponent-name">{model?.name || 'Stockfish'}</div>
+        <div className="gp-opponent-name">{opponentName}</div>
         <div className="gp-muted">
-          {isStockfish ? 'Built-in · No API key' : `${model?.provider || 'AI'} · Key may be required`}
+          {isStockfish ? 'Built-in engine. No key needed.' : `${model?.provider || 'AI'}. API key required.`}
         </div>
         {!isStockfish && onUseStockfish && (
-          <button
-            type="button"
-            className="btn primary"
-            style={{ marginTop: 8, width: '100%' }}
-            onClick={onUseStockfish}
-          >
-            Switch to Stockfish
+          <button type="button" className="btn btn-block" onClick={onUseStockfish}>
+            Use Stockfish instead
           </button>
         )}
       </section>
 
-      <section className="gp-section">
-        <div className="gp-label">Difficulty</div>
-        <select
-          className="gp-select"
-          value={difficulty}
-          onChange={(e) => onDifficultyChange(e.target.value)}
-          aria-label="AI difficulty"
-        >
-          <option value="beginner">Beginner</option>
-          <option value="easy">Easy</option>
-          <option value="medium">Medium</option>
-          <option value="hard">Hard</option>
-          <option value="expert">Expert</option>
-        </select>
-      </section>
+      {isStockfish && (
+        <section className="gp-section">
+          <label className="gp-label" htmlFor="gp-difficulty">Difficulty</label>
+          <select
+            id="gp-difficulty"
+            className="select"
+            value={difficulty}
+            onChange={(e) => onDifficultyChange(e.target.value)}
+          >
+            <option value="beginner">Beginner</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+            <option value="expert">Expert</option>
+          </select>
+        </section>
+      )}
 
-      <section className="gp-section gp-status-block">
-        <div
-          className={`gp-status ${thinking ? 'thinking' : ''} ${isCheck && !gameOver ? 'check' : ''}`}
-        >
-          {thinking ? `${model?.name || 'AI'} is thinking…` : status}
+      <section className="gp-section">
+        <div className={statusClass} role="status" aria-live="polite">
+          {thinking ? (
+            <>
+              <span className="thinking-dots" aria-hidden>
+                <i />
+                <i />
+                <i />
+              </span>
+              <span>
+                {opponentName} is thinking.
+                {premovesEnabled ? ' You can queue a premove now.' : ''}
+              </span>
+            </>
+          ) : (
+            status
+          )}
         </div>
-        {error && <div className="gp-error">{error}</div>}
+        {error && <div className="gp-error" role="alert">{error}</div>}
       </section>
 
       <section className="gp-actions">
-        <button type="button" className="btn primary" onClick={onNewGame}>
-          New Game
+        <button type="button" className="btn primary gp-wide" onClick={onNewGame}>
+          New game
         </button>
         <button type="button" className="btn" onClick={onUndo} disabled={!canUndo || thinking}>
           <IconUndo /> Takeback
         </button>
         <button type="button" className="btn" onClick={onFlip}>
-          <IconFlip /> Flip
+          <IconFlip /> Flip board
         </button>
-        <button type="button" className="btn danger" onClick={onResign} disabled={gameOver || thinking}>
+        <button type="button" className="btn danger gp-wide" onClick={onResign} disabled={gameOver || thinking}>
           Resign
         </button>
       </section>
 
-      <section className="gp-section gp-row">
-        <button type="button" className="btn" onClick={onToggleSound}>
-          {soundEnabled ? 'Sound On' : 'Muted'}
-        </button>
+      <section className="gp-section">
+        <div className="gp-row gp-between">
+          <span className="gp-label">Sound</span>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={soundEnabled}
+            aria-label="Sound"
+            className={`toggle${soundEnabled ? ' on' : ''}`}
+            onClick={onToggleSound}
+          >
+            <span className="toggle-knob" />
+          </button>
+        </div>
         <input
           type="range"
           min={0}
@@ -150,45 +177,47 @@ export function GamePanel({
           step={0.05}
           value={volume}
           onChange={(e) => onVolumeChange?.(parseFloat(e.target.value))}
-          className="gp-volume"
+          className="range"
           disabled={!soundEnabled}
           aria-label="Volume"
         />
       </section>
 
-      <section className="gp-section gp-pgn">
-        <div className="gp-label">PGN</div>
+      <section className="gp-section">
+        <div className="gp-label">Export</div>
         <div className="gp-pgn-actions">
           <button type="button" className="btn" onClick={handleCopyPgn}>
             Copy PGN
           </button>
           <button type="button" className="btn" onClick={() => onDownloadPgn?.()}>
-            Download
+            Download PGN
           </button>
         </div>
-        {pgnFeedback && <div className="gp-pgn-feedback">{pgnFeedback}</div>}
+        {pgnFeedback && <div className="gp-pgn-feedback" role="status">{pgnFeedback}</div>}
       </section>
-
-      <button type="button" className="btn gp-clear" onClick={onClearArrows}>
-        <IconClear /> Clear arrows
-      </button>
 
       <section className="gp-section gp-history">
         <div className="gp-label">
-          Moves <span className="gp-muted">· {moveHistory.length}</span>
+          Moves <span className="gp-count">{moveHistory.length}</span>
         </div>
         <div className="gp-moves" role="list">
-          {pairs.length === 0 && <span className="gp-muted">No moves yet</span>}
+          {pairs.length === 0 && <span className="gp-empty">No moves yet</span>}
           {pairs.map((p, i) => (
             <div key={i} className="gp-move-row" role="listitem">
               <span className="gp-move-num">{i + 1}.</span>
-              <span className="gp-san">{p[0]}</span>
-              <span className="gp-san">{p[1]}</span>
+              <span className={`gp-san${lastIndex === i * 2 ? ' is-last' : ''}`}>{p[0]}</span>
+              <span className={`gp-san${lastIndex === i * 2 + 1 ? ' is-last' : ''}`}>{p[1]}</span>
             </div>
           ))}
         </div>
-        <div className="gp-side-hint">You play {playerColor === 'w' ? 'White' : 'Black'}</div>
+        <div className="gp-muted">You play {playerColor === 'w' ? 'White' : 'Black'}</div>
       </section>
+
+      <div className="gp-footer">
+        <button type="button" className="btn ghost btn-block" onClick={onClearArrows}>
+          <IconClear /> Clear arrows
+        </button>
+      </div>
     </aside>
   );
 }

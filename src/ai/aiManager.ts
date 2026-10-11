@@ -8,6 +8,27 @@ import { GeminiProvider } from './providers/geminiProvider';
 import { OpenRouterProvider } from './providers/openRouterProvider';
 import { OpenAICompatibleProvider } from './providers/openAICompatibleProvider';
 import { getModelById } from './modelCatalog';
+import { DEFAULT_MIN_THINK_MS, clampMinThinkMs, remainingThinkDelay } from './thinkTime';
+
+/** Resolves after `ms`, or rejects as soon as `signal` aborts. */
+function waitMs(ms: number, signal: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (signal.aborted) {
+      reject(new Error('AI request aborted'));
+      return;
+    }
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const onAbort = () => {
+      if (timer !== undefined) clearTimeout(timer);
+      reject(new Error('AI request aborted'));
+    };
+    timer = setTimeout(() => {
+      signal.removeEventListener('abort', onAbort);
+      resolve();
+    }, ms);
+    signal.addEventListener('abort', onAbort, { once: true });
+  });
+}
 
 export class AIManager {
   private gemini = new GeminiProvider();
@@ -17,7 +38,8 @@ export class AIManager {
   private abortController: AbortController | null = null;
   private requestId = 0;
   private difficulty: StockfishDifficulty = 'medium';
-  private customOpts = { skillLevel: 10, depth: 10, movetimeMs: 500 };
+  private customOpts = { skillLevel: 10, depth: 10, movetimeMs: 1200 };
+  private minThinkMs = DEFAULT_MIN_THINK_MS;
 
   setModel(modelId: string) {
     this.currentModelId = modelId;
@@ -36,6 +58,11 @@ export class AIManager {
     this.difficulty = d;
     if (custom) this.customOpts = { ...this.customOpts, ...custom };
     stockfishAdapter.setDifficulty(d, this.customOpts);
+  }
+
+  /** Every AI move takes at least this long to appear (see thinkTime.ts). */
+  setMinThinkMs(ms: number) {
+    this.minThinkMs = clampMinThinkMs(ms);
   }
 
   getModelId() {
@@ -72,7 +99,8 @@ export class AIManager {
       this.abortController = null;
     }
     const myId = ++this.requestId;
-    this.abortController = new AbortController();
+    const controller = new AbortController();
+    this.abortController = controller;
     const provider = this.getProvider();
     const info = this.getModelInfo();
 
@@ -89,19 +117,21 @@ export class AIManager {
             ? apiKeys.custom
             : undefined;
 
+    const startedAt = Date.now();
     try {
-      const result = await provider.getMove(
-        req,
-        key,
-        this.abortController.signal
-      );
+      const result = await provider.getMove(req, key, controller.signal);
+
+      // Fast answers still wait out the minimum so the player can premove.
+      const wait = remainingThinkDelay(Date.now() - startedAt, this.minThinkMs);
+      if (wait > 0) await waitMs(wait, controller.signal);
+
       if (myId !== this.requestId) {
         throw new Error('Stale AI request discarded');
       }
       if (!req.legalMoves.includes(result.move)) {
         throw new Error(`Illegal move proposed: ${result.move}`);
       }
-      return result;
+      return { ...result, thinkingMs: Date.now() - startedAt };
     } finally {
       if (myId === this.requestId) {
         this.abortController = null;
