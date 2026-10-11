@@ -78,7 +78,10 @@ export default function App() {
     soundManager.setEnabled(settings.enableSounds !== false);
   }, [settings]);
 
-  useEffect(() => { aiManager.setModel(settings.defaultOpponent); }, []);
+  // Keep AI model locked to settings — prevents silent switch away from Stockfish
+  useEffect(() => {
+    aiManager.setModel(settings.defaultOpponent || 'stockfish');
+  }, [settings.defaultOpponent]);
 
   const pieces = useMemo(() => {
     const board = game.getBoard();
@@ -145,7 +148,8 @@ export default function App() {
     requestingRef.current = true;
     setThinking(true);
     setError(null);
-    setStatus('AI is thinking…');
+    const info = aiManager.getModelInfo();
+    setStatus(`${info?.name || 'AI'} is thinking…`);
     try {
       const legal = game.getLegalUci();
       const res = await aiManager.requestMove({
@@ -315,6 +319,17 @@ export default function App() {
     setShowResult(true); setStatus('Resigned'); setThinking(false);
   };
 
+  const selectOpponent = (id: string) => {
+    aiManager.setModel(id);
+    setSettings((s) => {
+      const next = { ...s, defaultOpponent: id };
+      try { localStorage.setItem('aichess-settings', JSON.stringify(next)); } catch {}
+      return next;
+    });
+    setStatus(id === 'stockfish' ? 'Opponent: Stockfish (no key needed)' : `Opponent: ${getModelById(id)?.name || id}`);
+    refresh();
+  };
+
   const buildPgn = useCallback(() => {
     const whiteName = playerColor === 'w' ? 'Player' : model?.name || 'AI';
     const blackName = playerColor === 'b' ? 'Player' : model?.name || 'AI';
@@ -373,9 +388,15 @@ export default function App() {
         {view === 'play' && (
           <div className="board-and-panel">
             <div className="board-column">
-              <div style={{ display: 'flex', justifyContent: 'space-between', width: 'min(560px, 92vw)', fontSize: 13, color: 'var(--text-muted)' }}>
-                <span>{orientation === 'w' ? 'Black' : 'White'} · {model?.name}</span>
-                <span>{thinking ? 'Thinking…' : game.isCheck() ? 'Check!' : ''}</span>
+              <div className="player-bar">
+                <span className="player-bar-name">
+                  {orientation === 'w' ? 'Black' : 'White'}
+                  <span className="player-bar-sep">·</span>
+                  {model?.name || 'AI'}
+                </span>
+                <span className="player-bar-status">
+                  {thinking ? 'Thinking…' : game.isCheck() && !isPlayerTurn ? 'Check!' : ''}
+                </span>
               </div>
               <ChessBoard
                 pieces={pieces} orientation={orientation} selected={selected}
@@ -388,11 +409,18 @@ export default function App() {
                 onHighlight={(sq) => { annotRef.current.toggleHighlight(sq); refresh(); }}
                 onClearAnnotations={() => { annotRef.current.clear(); refresh(); }}
                 themeClass={`board-theme-${settings.boardTheme}`}
-                animateMoves={settings.enableAnimations !== false}
+                animateMoves={true}
               />
-              <div style={{ display: 'flex', justifyContent: 'space-between', width: 'min(560px, 92vw)', fontSize: 13 }}>
-                <span>{orientation === 'w' ? 'White' : 'Black'} · You</span>
-                <span style={{ color: 'var(--text-muted)' }}>{game.getHistorySan().length} moves</span>
+              <div className="player-bar">
+                <span className="player-bar-name">
+                  {orientation === 'w' ? 'White' : 'Black'}
+                  <span className="player-bar-sep">·</span>
+                  You
+                </span>
+                <span className="player-bar-status muted">
+                  {game.getHistorySan().length} moves
+                  {game.isCheck() && isPlayerTurn ? ' · Check!' : ''}
+                </span>
               </div>
             </div>
             <GamePanel model={model} thinking={thinking} status={status} error={error}
@@ -420,12 +448,15 @@ export default function App() {
               onCopyPgn={onCopyPgn}
               onDownloadPgn={onDownloadPgn}
               playerColor={playerColor}
-              isCheck={game.isCheck()} />
+              isCheck={game.isCheck()}
+              onUseStockfish={() => selectOpponent('stockfish')}
+              currentModelId={aiManager.getModelId()}
+            />
           </div>
         )}
         {view === 'opponents' && (
           <AIModelSelector selectedId={aiManager.getModelId()}
-            onSelect={(id) => { aiManager.setModel(id); setSettings((s) => ({ ...s, defaultOpponent: id })); refresh(); }}
+            onSelect={selectOpponent}
             hasGeminiKey={!!apiKeys.gemini} hasOpenRouterKey={!!apiKeys.openrouter} />
         )}
         {view === 'settings' && (
@@ -433,12 +464,12 @@ export default function App() {
             onSaveKey={(provider, key) => setApiKeys((k) => ({ ...k, [provider]: key }))}
             onClearKey={(provider) => setApiKeys((k) => { const n = { ...k }; delete n[provider]; return n; })} />
         )}
-        {view === 'history' && (<div style={{ padding: 24 }}><h2>Game History</h2><p style={{ color: 'var(--text-muted)', marginTop: 8 }}>Browser-local history (future).</p></div>)}
-        {view === 'analysis' && (<div style={{ padding: 24 }}><h2>Analysis</h2><p style={{ color: 'var(--text-muted)', marginTop: 8 }}>Use Stockfish as opponent for strong play.</p></div>)}
+        {view === 'history' && (<div className="placeholder-view"><h2>Game History</h2><p>Browser-local history (future).</p></div>)}
+        {view === 'analysis' && (<div className="placeholder-view"><h2>Analysis</h2><p>Use Stockfish as opponent for strong local play.</p></div>)}
         {view === 'help' && (
-          <div style={{ padding: 24, maxWidth: 640, lineHeight: 1.6 }}>
+          <div className="placeholder-view help-view">
             <h2>About AIChess</h2>
-            <p style={{ marginTop: 12 }}>Play against Stockfish with no API key, or Gemini / OpenRouter free models with your own key. Premoves and right-click arrows included.</p>
+            <p>Play against Stockfish with no API key, or Gemini / OpenRouter free models with your own key.</p>
           </div>
         )}
       </div>
