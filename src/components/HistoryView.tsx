@@ -11,6 +11,10 @@ interface Props {
   onDownload: (entry: ArchivedGame) => void;
   onDelete: (id: string) => void;
   onClear: () => void;
+  /** Load this game's PGN into analysis and start the engine review. */
+  onAnalyzeGame?: (entry: ArchivedGame) => void;
+  /** Import a PGN string into history and/or analysis. */
+  onImportPgn?: (pgn: string) => void;
 }
 
 /**
@@ -18,9 +22,11 @@ interface Props {
  * first, each one exportable again. Nothing here is invented - a row exists only
  * because a real game was archived.
  */
-export function HistoryView({ games, onCopy, onDownload, onDelete, onClear }: Props) {
+export function HistoryView({ games, onCopy, onDownload, onDelete, onClear, onAnalyzeGame, onImportPgn }: Props) {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
+  const [importText, setImportText] = useState('');
+  const [showImport, setShowImport] = useState(false);
 
   const copy = async (pgn: string, id: string) => {
     const ok = await onCopy(pgn);
@@ -46,6 +52,39 @@ export function HistoryView({ games, onCopy, onDownload, onDelete, onClear }: Pr
           </button>
         )}
       </header>
+
+      {onImportPgn && (
+        <div className="history-import">
+          <button type="button" className="btn ghost" onClick={() => setShowImport((v) => !v)}>
+            {showImport ? 'Hide import' : 'Import PGN'}
+          </button>
+          {showImport && (
+            <div className="history-import-box">
+              <textarea
+                value={importText}
+                onChange={(e) => setImportText(e.target.value)}
+                rows={6}
+                placeholder="Paste a full PGN here…"
+                spellCheck={false}
+              />
+              <button
+                type="button"
+                className="btn primary"
+                disabled={!importText.trim()}
+                onClick={() => {
+                  onImportPgn(importText.trim());
+                  setImportText('');
+                  setShowImport(false);
+                  setNote('PGN imported — opening analysis…');
+                  window.setTimeout(() => setNote(null), 3000);
+                }}
+              >
+                Import and analyse
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {note && <p className="history-note">{note}</p>}
 
@@ -77,6 +116,15 @@ export function HistoryView({ games, onCopy, onDownload, onDelete, onClear }: Pr
                     <span className="history-score">{game.result}</span>
                   </div>
                   <div className="history-actions">
+                    {onAnalyzeGame && (
+                      <button
+                        type="button"
+                        className="btn primary hs-btn"
+                        onClick={() => onAnalyzeGame(game)}
+                      >
+                        Analyse
+                      </button>
+                    )}
                     <button type="button" className="btn hs-btn" onClick={() => void copy(game.pgn, game.id)}>
                       Copy PGN
                     </button>
