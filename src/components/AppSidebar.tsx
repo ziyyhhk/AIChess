@@ -9,7 +9,7 @@ import {
 } from './Icons';
 import { pieceSrc } from '../chess/pieceAssets';
 
-type View = 'play' | 'opponents' | 'history' | 'analysis' | 'settings' | 'help';
+type View = 'play' | 'opponents' | 'history' | 'analysis' | 'puzzles' | 'settings' | 'help';
 
 interface Props {
   active: View;
@@ -21,6 +21,7 @@ const items: { id: View; label: string; Icon: React.FC<React.SVGProps<SVGSVGElem
   { id: 'opponents', label: 'Opponents', Icon: IconBot },
   { id: 'history', label: 'History', Icon: IconHistory },
   { id: 'analysis', label: 'Analysis', Icon: IconSearch },
+  { id: 'puzzles', label: 'Puzzles', Icon: IconSearch },
   { id: 'settings', label: 'Settings', Icon: IconSettings },
   { id: 'help', label: 'About', Icon: IconHelp },
 ];
