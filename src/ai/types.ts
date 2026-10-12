@@ -76,6 +76,8 @@ export interface AppSettings {
   customMovetimeMs: number;
   /** Search depth used by the analysis view. */
   analysisDepth: number;
+  /** Optional live-game engine hints. Off by default. */
+  enableHints: boolean;
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -92,13 +94,14 @@ export const DEFAULT_SETTINGS: AppSettings = {
   defaultOpponent: 'stockfish',
   aiTimeoutMs: 30000,
   thinkMode: DEFAULT_THINK_SETTINGS.mode,
-  minThinkMs: DEFAULT_THINK_SETTINGS.customMs,
+  minThinkMs: DEFAULT_THINK_SETTINGS.minThinkMs,
   stockfishDepth: 12,
-  stockfishTimeMs: 1500,
+  stockfishTimeMs: 1000,
   rememberKeys: false,
   difficulty: 'medium',
   customSkillLevel: 10,
-  customDepth: 10,
-  customMovetimeMs: 500,
+  customDepth: 12,
+  customMovetimeMs: 1000,
   analysisDepth: 12,
+  enableHints: false,
 };
