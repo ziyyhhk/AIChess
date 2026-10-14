@@ -78,6 +78,8 @@ export interface AppSettings {
   analysisDepth: number;
   /** Optional live-game engine hints. Off by default. */
   enableHints: boolean;
+  /** Approximate self-rating for tier icon (optional). */
+  playerRating: number | null;
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -102,6 +104,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   customSkillLevel: 10,
   customDepth: 12,
   customMovetimeMs: 1000,
-  analysisDepth: 12,
+  analysisDepth: 18,
   enableHints: false,
+  playerRating: null,
 };
