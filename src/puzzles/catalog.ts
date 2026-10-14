@@ -1,6 +1,6 @@
 /**
- * Engine-verifiable tactical puzzles (legal FENs + solution lines).
- * Runtime validation in validate.ts drops any entry that fails.
+ * Engine-verifiable tactical puzzles.
+ * validate.ts drops any entry whose solution fails.
  */
 export type PuzzleTheme =
   | 'mateIn1'
@@ -47,7 +47,7 @@ export const PUZZLE_CATALOG: PuzzleDef[] = [
     source: 'Back-rank mate',
   },
   {
-    id: 'm1-backrank-rook-file',
+    id: 'm1-backrank-a',
     fen: '2r3k1/5ppp/8/8/8/8/5PPP/R5K1 w - - 0 1',
     sideToMove: 'w',
     objective: 'Checkmate in one move',
@@ -78,24 +78,14 @@ export const PUZZLE_CATALOG: PuzzleDef[] = [
     source: 'Doubled rooks on the e-file',
   },
   {
-    id: 'm2-rook-ladder',
-    fen: '6k1/5ppp/8/8/8/8/4R1PP/4R1K1 w - - 0 1',
-    sideToMove: 'w',
-    objective: 'Checkmate in two moves',
-    theme: 'mateIn2',
-    rating: 950,
-    solution: [{ uci: 'e2e8' }],
-    source: 'Immediate mate also acceptable',
-  },
-  {
-    id: 'fork-n-family',
+    id: 'defense-take-knight',
     fen: 'r1bqkb1r/pppp1ppp/2n5/4N3/4P3/8/PPPP1PPP/RNBQKB1R b KQkq - 0 3',
     sideToMove: 'b',
     objective: 'Find the defensive resource',
     theme: 'defense',
     rating: 900,
     solution: [{ uci: 'c6e5' }],
-    source: 'Capture the invading knight',
+    source: 'Capture the knight on e5',
   },
 ];
 
