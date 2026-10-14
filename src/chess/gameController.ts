@@ -179,4 +179,9 @@ export class GameController {
     }
     return null;
   }
+
+  /** Alias used by the play board for check highlighting. */
+  getCheckSquare(): Square | null {
+    return this.getKingInCheck();
+  }
 }
