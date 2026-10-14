@@ -1,10 +1,8 @@
 /** Piece image sets bundled under public/assets/pieces/ */
-export type PieceSetId = 'maestro' | 'cburnett' | 'wikipedia';
+export type PieceSetId = 'cburnett' | 'maestro' | 'wikipedia';
 
 export const PIECE_SETS: { id: PieceSetId; name: string; ext: 'svg' | 'png' }[] = [
   { id: 'cburnett', name: 'CBurnett', ext: 'svg' },
-  { id: 'maestro', name: 'Maestro', ext: 'svg' },
-  { id: 'wikipedia', name: 'Wikipedia', ext: 'png' },
 ];
 
 const base = () => {
@@ -12,12 +10,19 @@ const base = () => {
   return b.endsWith('/') ? b : b + '/';
 };
 
+/** Always resolve to a set that has files on disk. */
+function resolveSet(set: PieceSetId): { id: string; ext: 'svg' | 'png' } {
+  // Only cburnett is fully shipped; others fall back so images never 404.
+  if (set === 'cburnett') return { id: 'cburnett', ext: 'svg' };
+  return { id: 'cburnett', ext: 'svg' };
+}
+
 export function pieceSrc(
   color: 'w' | 'b',
   type: string,
   set: PieceSetId = 'cburnett'
 ): string {
   const key = `${color}${type.toUpperCase()}`;
-  const meta = PIECE_SETS.find((s) => s.id === set) || PIECE_SETS[0];
+  const meta = resolveSet(set);
   return `${base()}assets/pieces/${meta.id}/${key}.${meta.ext}`;
 }
