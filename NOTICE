@@ -1,0 +1,5 @@
+AIChess (MIT) loads Stockfish at runtime from the jsDelivr CDN
+(cdn.jsdelivr.net/npm/stockfish.js@10.0.2) when public/engines/stockfish.js
+is only a placeholder. Stockfish is licensed under GPL-3.0. The engine binary
+is not redistributed in this repository; the CDN copy is fetched by the browser.
+See https://github.com/official-stockfish/Stockfish for Stockfish licence terms.
