@@ -1,19 +1,13 @@
 /**
  * The analysis run.
  *
- * It walks a *snapshot* of the game history (never the live game), reconstructs
- * every position from the moves, and asks the engine for:
- *
- *   - the evaluation and best line of the position before each move
- *     (searched with MultiPV 2 so the second-best move is known),
- *   - the evaluation of the position after each move.
- *
- * Because the position after ply N is the position before ply N+1, a game of N
- * moves needs only N+1 searches, and consecutive positions are evaluated at the
- * same depth, which is what makes the centipawn losses comparable.
+ * Walks a snapshot of game history. With an EvaluatorPool, positions are
+ * evaluated in parallel (up to 4 single-threaded workers). MultiPV 3 supports
+ * measured brilliant/great detection. Depth and shallow flags are recorded per ply.
  */
 import { Chess, type Move } from 'chess.js';
 import type { Evaluator, PositionEvaluation } from './evaluator';
+import type { EvaluatorPool } from './workerPool';
 import {
   classifyMove,
   computeAccuracy,
@@ -27,6 +21,12 @@ import {
 } from './classification';
 import { isBookPosition } from './openingBook';
 
+/** Minimum depth for reliable grading. Positions below this are marked shallow. */
+export const MIN_GRADING_DEPTH = 18;
+
+/** MultiPV lines used when classifying. */
+export const GRADING_MULTI_PV = 3;
+
 export interface AnalysisPlyInput {
   ply: number;
   moveNumber: number;
@@ -38,11 +38,8 @@ export interface AnalysisPlyInput {
 }
 
 export interface AnalyzedPly extends AnalysisPlyInput {
-  /** Engine evaluation of the position after the move, white's point of view. */
   evalCpWhite: number;
-  /** The same evaluation seen from the point of view of the side that moved. */
   evalCpMover: number;
-  /** Evaluation before the move, white's point of view. */
   evalBeforeCpWhite: number;
   lossCp: number;
   accuracy: number;
@@ -54,13 +51,14 @@ export interface AnalyzedPly extends AnalysisPlyInput {
   secondBest: { uci: string; san: string; cp: number } | null;
   mateFor: 'w' | 'b' | null;
   mateIn: number | null;
+  searchDepth: number;
+  shallow: boolean;
 }
 
 export interface AnalysisProgress {
   phase: 'starting' | 'evaluating' | 'finished' | 'cancelled';
   completed: number;
   total: number;
-  /** Move number currently being evaluated. */
   moveNumber: number;
   side: 'w' | 'b' | null;
   san: string | null;
@@ -78,11 +76,11 @@ export interface AnalysisSummary {
   engineLabel: string;
   engineKind: 'stockfish' | 'builtin';
   depth: number;
+  minGradeDepth: number;
   totalMoves: number;
   startedAt: number;
   finishedAt: number;
   aborted: boolean;
-  /** Present when Stockfish was unavailable and the fallback engine was used. */
   warning: string | null;
 }
 
@@ -102,7 +100,6 @@ export function toUci(move: Pick<Move, 'from' | 'to' | 'promotion'>): string {
   return `${move.from}${move.to}${move.promotion ?? ''}`;
 }
 
-/** Snapshot helper: turn the game's verbose history into analysis input. */
 export function buildAnalysisPlies(moves: Move[]): AnalysisPlyInput[] {
   return moves.map((move, index) => ({
     ply: index + 1,
@@ -117,7 +114,6 @@ export function buildAnalysisPlies(moves: Move[]): AnalysisPlyInput[] {
 
 const PIECE_CP: Record<string, number> = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 0 };
 
-/** SAN for a UCI move in a given position, or null when it is not legal there. */
 export function uciToSan(fen: string, uci: string): string | null {
   if (!uci || uci.length < 4) return null;
   try {
@@ -133,7 +129,6 @@ export function uciToSan(fen: string, uci: string): string | null {
   }
 }
 
-/** Convert an engine PV (UCI moves) into SAN for display. */
 export function pvToSan(fen: string, pv: string[], limit = 6): string[] {
   const out: string[] = [];
   try {
@@ -154,7 +149,6 @@ export function pvToSan(fen: string, pv: string[], limit = 6): string[] {
   return out;
 }
 
-/** Material the move offers: value of the moving piece minus what it captured. */
 export function sacrificeValueCentiPawns(
   fenAfter: string,
   squareOfMovedPiece: string,
@@ -176,7 +170,7 @@ export function sacrificeValueCentiPawns(
 export interface AnalyzeGameOptions {
   plies: AnalysisPlyInput[];
   evaluator: Evaluator;
-  /** Search depth per position. */
+  pool?: EvaluatorPool | null;
   depth: number;
   startFen: string;
   signal: AbortSignal;
@@ -185,6 +179,8 @@ export interface AnalyzeGameOptions {
   warning?: string | null;
   players?: { white: string; black: string };
   result?: string | null;
+  priorityPly?: number | null;
+  timeBudgetMs?: number;
 }
 
 function emptyCounts(): Record<MoveClassification, number> {
@@ -201,6 +197,28 @@ function emptyCounts(): Record<MoveClassification, number> {
     miss: 0,
     forced: 0,
   };
+}
+
+/** Indices ordered so focus ply is first, then neighbors outward. */
+export function buildPlyOrder(n: number, priorityPly: number | null): number[] {
+  if (n <= 0) return [];
+  if (priorityPly == null || priorityPly < 1) return Array.from({ length: n }, (_, i) => i);
+  const focus = Math.min(n, Math.max(1, priorityPly)) - 1;
+  const seen = new Set<number>();
+  const out: number[] = [];
+  const push = (i: number) => {
+    if (i >= 0 && i < n && !seen.has(i)) {
+      seen.add(i);
+      out.push(i);
+    }
+  };
+  push(focus);
+  for (let d = 1; d < n; d++) {
+    push(focus - d);
+    push(focus + d);
+  }
+  for (let i = 0; i < n; i++) push(i);
+  return out;
 }
 
 export async function analyzeGame(options: AnalyzeGameOptions): Promise<GameAnalysis> {
@@ -237,11 +255,25 @@ export async function analyzeGame(options: AnalyzeGameOptions): Promise<GameAnal
   emit({ phase: 'starting', completed: 0 });
   throwIfCancelled();
 
-  // The position before the first move.
+  const multiPv = GRADING_MULTI_PV;
+  const pool = options.pool ?? null;
+
+  if (pool && plies.length > 0) {
+    return analyzeGameParallel({
+      ...options,
+      pool,
+      multiPv,
+      startedAt,
+      emit,
+      throwIfCancelled,
+      thresholds,
+    });
+  }
+
   let before: PositionEvaluation = await evaluator.evaluate(options.startFen, {
     depth,
     signal,
-    multiPv: 2,
+    multiPv,
   });
 
   for (const ply of plies) {
@@ -250,8 +282,6 @@ export async function analyzeGame(options: AnalyzeGameOptions): Promise<GameAnal
     try {
       after = await evaluator.evaluate(ply.fenAfter, { depth, signal, multiPv: 1 });
     } catch (error) {
-      // A cancelled search rejects: keep everything analysed so far instead of
-      // throwing the whole run away.
       if (signal.aborted) break;
       throw error;
     }
@@ -275,7 +305,7 @@ export async function analyzeGame(options: AnalyzeGameOptions): Promise<GameAnal
       movedPiece = played?.piece ?? 'p';
       capturedPiece = played?.captured;
     } catch {
-      /* the plies come from the rules engine, this cannot normally happen */
+      /* ignore */
     }
 
     const sacrifice = sacrificeValueCentiPawns(ply.fenAfter, ply.uci.slice(2, 4), movedPiece, capturedPiece);
@@ -321,17 +351,19 @@ export async function analyzeGame(options: AnalyzeGameOptions): Promise<GameAnal
       critical: result.critical,
       reason: result.reason,
       bestMove: before.bestMove ? { uci: before.bestMove, san: bestSan ?? before.bestMove } : null,
-      bestLineSan: result.playedBest ? pvToSan(ply.fenBefore, before.pv) : pvToSan(ply.fenBefore, [before.bestMove, ...before.pv.slice(1)]),
+      bestLineSan: result.playedBest
+        ? pvToSan(ply.fenBefore, before.pv)
+        : pvToSan(ply.fenBefore, [before.bestMove, ...before.pv.slice(1)]),
       secondBest:
         secondSan && before.secondBest
           ? { uci: before.secondBest.move, san: secondSan, cp: before.secondBest.score.value }
           : null,
       mateFor,
       mateIn,
+      searchDepth: before.depth || depth,
+      shallow: (before.depth || depth) < MIN_GRADING_DEPTH,
     });
 
-    // The position after this move is the position before the next one: reuse it
-    // so both are evaluated at the same depth.
     before = after;
     emit({ completed: analyzed.length });
   }
@@ -367,6 +399,7 @@ export async function analyzeGame(options: AnalyzeGameOptions): Promise<GameAnal
       engineLabel: evaluator.label,
       engineKind: evaluator.kind,
       depth,
+      minGradeDepth: MIN_GRADING_DEPTH,
       totalMoves: analyzed.length,
       startedAt,
       finishedAt,
@@ -376,7 +409,184 @@ export async function analyzeGame(options: AnalyzeGameOptions): Promise<GameAnal
   };
 }
 
-/** Format a white-relative centipawn value the way chess sites do. */
+async function analyzeGameParallel(
+  options: AnalyzeGameOptions & {
+    pool: EvaluatorPool;
+    multiPv: number;
+    startedAt: number;
+    emit: (p: Partial<AnalysisProgress>) => void;
+    throwIfCancelled: () => void;
+    thresholds: ClassificationThresholds;
+  }
+): Promise<GameAnalysis> {
+  const { plies, pool, depth, signal, multiPv, thresholds } = options;
+  const total = plies.length;
+  const beforeEvals: PositionEvaluation[] = new Array(total);
+  const afterEvals: PositionEvaluation[] = new Array(total);
+  const order = buildPlyOrder(total, options.priorityPly ?? null);
+
+  let completed = 0;
+  const report = () => {
+    options.emit({
+      phase: 'evaluating',
+      completed,
+      total,
+      moveNumber: plies[Math.min(Math.floor(completed), total - 1)]?.moveNumber ?? 0,
+      side: plies[Math.min(Math.floor(completed), total - 1)]?.side ?? null,
+      san: plies[Math.min(Math.floor(completed), total - 1)]?.san ?? null,
+      depth,
+      engineLabel: pool.label,
+    });
+  };
+
+  await Promise.all(
+    order.map(async (idx) => {
+      options.throwIfCancelled();
+      const ply = plies[idx];
+      beforeEvals[idx] = await pool.withEvaluator((ev) =>
+        ev.evaluate(ply.fenBefore, { depth, signal, multiPv })
+      );
+      completed += 0.5;
+      report();
+    })
+  );
+
+  await Promise.all(
+    order.map(async (idx) => {
+      options.throwIfCancelled();
+      const ply = plies[idx];
+      afterEvals[idx] = await pool.withEvaluator((ev) =>
+        ev.evaluate(ply.fenAfter, { depth, signal, multiPv: 1 })
+      );
+      completed += 0.5;
+      report();
+    })
+  );
+
+  const analyzed: AnalyzedPly[] = [];
+  for (let i = 0; i < total; i++) {
+    const ply = plies[i];
+    const before = beforeEvals[i];
+    const after = afterEvals[i];
+    if (!before || !after) continue;
+
+    const evalBeforeCpWhite = cpFromPov(before.score, 'w', ply.side);
+    const evalAfterCpWhite = cpFromPov(after.score, 'w', ply.side === 'w' ? 'b' : 'w');
+    const evalCpMover = evalAfterCpWhite * (ply.side === 'w' ? 1 : -1);
+
+    let legalMoveCount = 0;
+    let movedPiece = 'p';
+    let capturedPiece: string | undefined;
+    try {
+      const chessBefore = new Chess(ply.fenBefore);
+      legalMoveCount = chessBefore.moves().length;
+      const played = chessBefore.move({
+        from: ply.uci.slice(0, 2),
+        to: ply.uci.slice(2, 4),
+        promotion: ply.uci.length > 4 ? ply.uci[4] : undefined,
+      });
+      movedPiece = played?.piece ?? 'p';
+      capturedPiece = played?.captured;
+    } catch {
+      /* ignore */
+    }
+
+    const sacrifice = sacrificeValueCentiPawns(ply.fenAfter, ply.uci.slice(2, 4), movedPiece, capturedPiece);
+    const result = classifyMove(
+      {
+        moverColor: ply.side,
+        cpBeforeWhite: evalBeforeCpWhite,
+        cpAfterWhite: evalAfterCpWhite,
+        before,
+        playedUci: ply.uci,
+        legalMoveCount,
+        isBookPosition: isBookPosition(ply.fenBefore),
+        canBeCaptured: sacrifice.canBeCaptured,
+        sacrificeCp: sacrifice.sacrificeCp,
+      },
+      thresholds
+    );
+
+    const bestSan = uciToSan(ply.fenBefore, before.bestMove);
+    const secondSan = before.secondBest?.move ? uciToSan(ply.fenBefore, before.secondBest.move) : null;
+    const mateFor =
+      isMateScore(before.score) && before.score.type === 'mate' && before.score.value > 0
+        ? ply.side
+        : isMateScore(after.score) && after.score.type === 'mate' && after.score.value > 0
+          ? (ply.side === 'w' ? 'b' : 'w')
+          : null;
+    const mateIn =
+      mateFor === ply.side && isMateScore(before.score) && before.score.type === 'mate'
+        ? Math.abs(before.score.value)
+        : mateFor && isMateScore(after.score) && after.score.type === 'mate'
+          ? Math.abs(after.score.value)
+          : null;
+
+    analyzed.push({
+      ...ply,
+      evalCpWhite: evalAfterCpWhite,
+      evalCpMover,
+      evalBeforeCpWhite,
+      lossCp: result.lossCp,
+      accuracy: moveAccuracy(result.lossCp),
+      classification: result.classification,
+      critical: result.critical,
+      reason: result.reason,
+      bestMove: before.bestMove ? { uci: before.bestMove, san: bestSan ?? before.bestMove } : null,
+      bestLineSan: result.playedBest
+        ? pvToSan(ply.fenBefore, before.pv)
+        : pvToSan(ply.fenBefore, [before.bestMove, ...before.pv.slice(1)]),
+      secondBest:
+        secondSan && before.secondBest
+          ? { uci: before.secondBest.move, san: secondSan, cp: before.secondBest.score.value }
+          : null,
+      mateFor,
+      mateIn,
+      searchDepth: before.depth || depth,
+      shallow: (before.depth || depth) < MIN_GRADING_DEPTH,
+    });
+  }
+
+  const counts = emptyCounts();
+  for (const ply of analyzed) counts[ply.classification] += 1;
+  const accuracy = computeAccuracy(
+    analyzed.map((p) => ({ moverColor: p.side, lossCp: p.lossCp, classification: p.classification }))
+  );
+  const finishedAt = Date.now();
+  const cancelled = signal.aborted;
+  options.onProgress?.({
+    phase: cancelled ? 'cancelled' : 'finished',
+    completed: analyzed.length,
+    total,
+    moveNumber: plies[total - 1]?.moveNumber ?? 0,
+    side: null,
+    san: null,
+    depth,
+    engineLabel: pool.label,
+  });
+
+  return {
+    plies: analyzed,
+    summary: {
+      players: options.players ?? { white: 'White', black: 'Black' },
+      result: options.result ?? null,
+      counts,
+      criticalCount: analyzed.filter((p) => p.critical).length,
+      accuracy: { white: accuracy.white, black: accuracy.black },
+      accuracySample: accuracy.sampleSize,
+      engineLabel: pool.label,
+      engineKind: 'stockfish',
+      depth,
+      minGradeDepth: MIN_GRADING_DEPTH,
+      totalMoves: analyzed.length,
+      startedAt: options.startedAt,
+      finishedAt,
+      aborted: cancelled,
+      warning: options.warning ?? pool.warning,
+    },
+  };
+}
+
 export function formatEvaluation(cp: number): string {
   if (Math.abs(cp) >= MATE_CP - 1000) {
     return cp > 0 ? '+M' : '-M';
