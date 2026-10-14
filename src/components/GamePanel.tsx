@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import type { ModelInfo } from '../ai/types';
 import { IconUndo, IconFlip, IconClear, IconSearch } from './Icons';
+import { RatingTierIcon } from './RatingTierIcon';
+import { ratingFromDifficulty } from '../ui/ratingTiers';
 
 interface Props {
   model: ModelInfo | undefined;
@@ -15,7 +17,6 @@ interface Props {
   onResign: () => void;
   onClearArrows: () => void;
   onCopyPgn?: () => Promise<boolean>;
-  /** The current PGN, fetched only when a fallback is needed. */
   getPgnText?: () => string;
   onDownloadPgn?: () => void;
   moveHistory: string[];
@@ -31,8 +32,8 @@ interface Props {
   currentModelId?: string;
   premovesEnabled?: boolean;
   onAnalyze?: () => void;
-  /** The queued premove, when there is one. */
   premove?: { from: string; to: string } | null;
+  playerRating?: number | null;
 }
 
 export function GamePanel({
@@ -64,9 +65,9 @@ export function GamePanel({
   premovesEnabled = true,
   onAnalyze,
   premove = null,
+  playerRating = null,
 }: Props) {
   const [pgnFeedback, setPgnFeedback] = useState<string | null>(null);
-  /* Shown only when the clipboard really refused: the PGN stays selectable. */
   const [pgnFallback, setPgnFallback] = useState<string | null>(null);
   const pairs: string[][] = [];
   for (let i = 0; i < moveHistory.length; i += 2) {
@@ -78,26 +79,20 @@ export function GamePanel({
   const opponentName = isStockfish ? 'Stockfish' : model?.name || 'AI';
 
   const handleCopyPgn = async () => {
-    if (!onCopyPgn) {
-      setPgnFeedback('PGN not available');
-      window.setTimeout(() => setPgnFeedback(null), 2000);
-      return;
-    }
-    setPgnFeedback(null);
-    let ok = false;
+    setPgnFallback(null);
+    if (!onCopyPgn) return;
     try {
-      ok = await onCopyPgn();
+      const ok = await onCopyPgn();
+      if (ok) {
+        setPgnFeedback('PGN copied');
+        setTimeout(() => setPgnFeedback(null), 2000);
+      } else {
+        setPgnFeedback('Copying was blocked — select the text below.');
+        if (getPgnText) setPgnFallback(getPgnText());
+      }
     } catch {
-      ok = false;
-    }
-    if (ok) {
-      setPgnFallback(null);
-      setPgnFeedback('Copied to clipboard');
-      window.setTimeout(() => setPgnFeedback(null), 2200);
-    } else {
-      // No clipboard access: hand the PGN over as selectable text instead.
-      setPgnFallback(getPgnText ? getPgnText() : null);
       setPgnFeedback('Copying was blocked — select the text below.');
+      if (getPgnText) setPgnFallback(getPgnText());
     }
   };
 
@@ -109,7 +104,10 @@ export function GamePanel({
     <aside className="game-panel" aria-label="Game controls">
       <section className="gp-section">
         <div className="gp-label">Opponent</div>
-        <div className="gp-opponent-name">{opponentName}</div>
+        <div className="gp-opponent-name">
+          <RatingTierIcon rating={isStockfish ? ratingFromDifficulty(difficulty) : null} size={14} />
+          {' '}{opponentName}
+        </div>
         <div className="gp-muted">
           {isStockfish ? 'Built-in engine. No key needed.' : `${model?.provider || 'AI'}. API key required.`}
         </div>
@@ -158,15 +156,12 @@ export function GamePanel({
         </div>
         {error && <div className="gp-error" role="alert">{error}</div>}
         {premove && (
-          <div className="gp-premove" role="status">
-            <span className="gp-premove-dot" aria-hidden />
-            Premove queued: {premove.from} → {premove.to}
-          </div>
+          <div className="gp-premove">Premove: {premove.from}→{premove.to}</div>
         )}
       </section>
 
-      <section className="gp-actions">
-        <button type="button" className="btn primary gp-wide" onClick={onNewGame}>
+      <section className="gp-section gp-actions">
+        <button type="button" className="btn primary" onClick={onNewGame}>
           New game
         </button>
         <button type="button" className="btn" onClick={onUndo} disabled={!canUndo || thinking}>
@@ -178,91 +173,52 @@ export function GamePanel({
         <button type="button" className="btn danger gp-wide" onClick={onResign} disabled={gameOver || thinking}>
           Resign
         </button>
-      </section>
-
-      <section className="gp-section">
-        <div className="gp-row gp-between">
-          <span className="gp-label">Sound</span>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={soundEnabled}
-            aria-label="Sound"
-            className={`toggle${soundEnabled ? ' on' : ''}`}
-            onClick={onToggleSound}
-          >
-            <span className="toggle-knob" />
+        {onAnalyze && (
+          <button type="button" className="btn gp-wide" onClick={onAnalyze} disabled={moveHistory.length === 0}>
+            <IconSearch /> Analyse game
           </button>
-        </div>
-        <input
-          type="range"
-          min={0}
-          max={1}
-          step={0.05}
-          value={volume}
-          onChange={(e) => onVolumeChange?.(parseFloat(e.target.value))}
-          className="range"
-          disabled={!soundEnabled}
-          aria-label="Volume"
-        />
-      </section>
-
-      <section className="gp-section">
-        <div className="gp-label">Review</div>
-        <button type="button" className="btn btn-block" onClick={() => onAnalyze?.()} disabled={!onAnalyze}>
-          <IconSearch /> Analyse game
+        )}
+        <button type="button" className="btn" onClick={onClearArrows}>
+          <IconClear /> Clear arrows
         </button>
-        <div className="gp-muted">
-          Runs the engine over every move already played. The live game is not affected.
-        </div>
-      </section>
-
-      <section className="gp-section">
-        <div className="gp-label">Export</div>
-        <div className="gp-pgn-actions">
-          <button type="button" className="btn" onClick={handleCopyPgn}>
+        {onCopyPgn && (
+          <button type="button" className="btn" onClick={() => void handleCopyPgn()}>
             Copy PGN
           </button>
-          <button type="button" className="btn" onClick={() => onDownloadPgn?.()}>
+        )}
+        {onDownloadPgn && (
+          <button type="button" className="btn" onClick={onDownloadPgn}>
             Download PGN
           </button>
-        </div>
-        {pgnFeedback && <div className="gp-pgn-feedback" role="status">{pgnFeedback}</div>}
-        {pgnFallback && (
-          <textarea
-            className="gp-pgn-fallback"
-            value={pgnFallback}
-            readOnly
-            rows={6}
-            spellCheck={false}
-            aria-label="Game PGN"
-            onFocus={(e) => e.currentTarget.select()}
-          />
+        )}
+        {onToggleSound && (
+          <button type="button" className="btn" onClick={onToggleSound}>
+            Sound: {soundEnabled ? 'On' : 'Off'}
+          </button>
         )}
       </section>
 
-      <section className="gp-section gp-history">
-        <div className="gp-label">
-          Moves <span className="gp-count">{moveHistory.length}</span>
-        </div>
-        <div className="gp-moves" role="list">
-          {pairs.length === 0 && <span className="gp-empty">No moves yet</span>}
-          {pairs.map((p, i) => (
-            <div key={i} className="gp-move-row" role="listitem">
-              <span className="gp-move-num">{i + 1}.</span>
-              <span className={`gp-san${lastIndex === i * 2 ? ' is-last' : ''}`}>{p[0]}</span>
-              <span className={`gp-san${lastIndex === i * 2 + 1 ? ' is-last' : ''}`}>{p[1]}</span>
-            </div>
-          ))}
-        </div>
-        <div className="gp-muted">You play {playerColor === 'w' ? 'White' : 'Black'}</div>
-      </section>
+      {pgnFeedback && <div className="gp-muted">{pgnFeedback}</div>}
+      {pgnFallback && (
+        <textarea className="gp-pgn-fallback" readOnly rows={4} value={pgnFallback} />
+      )}
 
-      <div className="gp-footer">
-        <button type="button" className="btn ghost btn-block" onClick={onClearArrows}>
-          <IconClear /> Clear arrows
-        </button>
-      </div>
+      <section className="gp-section">
+        <div className="gp-label">Moves</div>
+        <ol className="gp-moves">
+          {pairs.map((pair, i) => (
+            <li key={i}>
+              <span className="gp-move-num">{i + 1}.</span>
+              <span className={lastIndex === i * 2 ? 'is-last' : ''}>{pair[0]}</span>
+              {pair[1] && <span className={lastIndex === i * 2 + 1 ? 'is-last' : ''}>{pair[1]}</span>}
+            </li>
+          ))}
+        </ol>
+        <div className="gp-muted">
+          <RatingTierIcon rating={playerRating} size={12} />
+          {' '}You play {playerColor === 'w' ? 'White' : 'Black'}
+        </div>
+      </section>
     </aside>
   );
 }
