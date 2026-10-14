@@ -48,7 +48,7 @@ export const PUZZLE_CATALOG: PuzzleDef[] = [
   },
   {
     id: 'm1-backrank-a',
-    fen: '2r3k1/5ppp/8/8/8/8/5PPP/R5K1 w - - 0 1',
+    fen: '6k1/5ppp/8/8/8/8/5PPP/R6K w - - 0 1',
     sideToMove: 'w',
     objective: 'Checkmate in one move',
     theme: 'mateIn1',
@@ -78,6 +78,26 @@ export const PUZZLE_CATALOG: PuzzleDef[] = [
     source: 'Doubled rooks on the e-file',
   },
   {
+    id: 'm1-queen-corner',
+    fen: '6k1/5ppp/8/8/8/5Q2/5PPP/6K1 w - - 0 1',
+    sideToMove: 'w',
+    objective: 'Checkmate in one move',
+    theme: 'mateIn1',
+    rating: 700,
+    solution: [{ uci: 'f3a8' }],
+    source: 'Queen to a8 mate',
+  },
+  {
+    id: 'm1-queen-back',
+    fen: '6k1/5ppp/8/8/8/8/5PPP/4Q1K1 w - - 0 1',
+    sideToMove: 'w',
+    objective: 'Checkmate in one move',
+    theme: 'mateIn1',
+    rating: 720,
+    solution: [{ uci: 'e1e8' }],
+    source: 'Queen back-rank mate',
+  },
+  {
     id: 'defense-take-knight',
     fen: 'r1bqkb1r/pppp1ppp/2n5/4N3/4P3/8/PPPP1PPP/RNBQKB1R b KQkq - 0 3',
     sideToMove: 'b',
@@ -86,6 +106,16 @@ export const PUZZLE_CATALOG: PuzzleDef[] = [
     rating: 900,
     solution: [{ uci: 'c6e5' }],
     source: 'Capture the knight on e5',
+  },
+  {
+    id: 'm1-rook-open',
+    fen: '6k1/5ppp/8/8/8/8/5PPP/R5K1 w - - 0 1',
+    sideToMove: 'w',
+    objective: 'Checkmate in one move',
+    theme: 'mateIn1',
+    rating: 780,
+    solution: [{ uci: 'a1a8' }],
+    source: 'Rook on open a-file',
   },
 ];
 
