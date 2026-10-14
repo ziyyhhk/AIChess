@@ -58,6 +58,7 @@
 }
 
 .piece-img {
+  color-scheme: only light;
   width: 90%;
   height: 90%;
   object-fit: contain;
@@ -144,6 +145,7 @@
 }
 
 .piece-flying .piece-img {
+  color-scheme: only light;
   width: 90%;
   height: 90%;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
@@ -164,6 +166,7 @@
 }
 
 .piece-drag-ghost .piece-img {
+  color-scheme: only light;
   width: 92%;
   height: 92%;
   filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.42));
