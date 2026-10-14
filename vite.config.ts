@@ -9,14 +9,11 @@ export default defineConfig({
     sourcemap: true,
   },
   server: {
-    host: '0.0.0.0',
+    host: 'localhost',
     port: 5173,
-    // The app is also served through preview proxies that use their own host name.
-    allowedHosts: true,
   },
   preview: {
-    host: '0.0.0.0',
+    host: 'localhost',
     port: 4173,
-    allowedHosts: true,
   },
 })
