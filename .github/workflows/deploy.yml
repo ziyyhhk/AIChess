@@ -3,18 +3,17 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - 'docs/**'
   workflow_dispatch:
 
+# Only the deploy job needs pages/id-token. contents is not required.
 permissions:
-  contents: write
   pages: write
   id-token: write
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  # Do not cancel in-progress deploys; a concurrent push waits its turn.
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -27,9 +26,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: 'npm'
 
       - name: Install
-        run: npm install --legacy-peer-deps
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
 
       - name: Build
         run: npm run build
@@ -38,30 +39,8 @@ jobs:
         run: |
           test -d dist
           test -f dist/index.html
-          echo "=== dist/index.html ==="
-          cat dist/index.html
           ls -la dist/
           ls -la dist/assets/ || true
-
-      - name: Copy build to docs for branch-based Pages
-        run: |
-          rm -rf docs
-          mkdir -p docs
-          cp -r dist/* docs/
-          touch docs/.nojekyll
-          ls -la docs/
-
-      - name: Commit docs folder
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs
-          if git diff --staged --quiet; then
-            echo "No docs changes"
-          else
-            git commit -m "chore: update docs/ production build [skip ci]"
-            git push
-          fi
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
