@@ -164,6 +164,25 @@ export function SettingsPanel({ settings, onChange, apiKeys, onSaveKey, onClearK
             />
           </Row>
         )}
+        <Row
+          label="Your rating"
+          hint="Optional. Used only for the tier icon next to your name. Leave blank if you prefer unrated."
+        >
+          <input
+            type="number"
+            className="input"
+            min={0}
+            max={3500}
+            step={50}
+            placeholder="e.g. 1200"
+            value={settings.playerRating ?? ''}
+            onChange={(e) => {
+              const v = e.target.value.trim();
+              set('playerRating', v === '' ? null : Math.max(0, Math.min(3500, Number(v) || 0)));
+            }}
+            aria-label="Your approximate rating"
+          />
+        </Row>
         <Row label="Sounds">
           <Toggle label="Sounds" checked={settings.enableSounds} onChange={(v) => set('enableSounds', v)} />
         </Row>
