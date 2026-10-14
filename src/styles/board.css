@@ -1,0 +1,168 @@
+.chessboard-wrap {
+  position: relative;
+  width: min(640px, 94vw);
+  aspect-ratio: 1;
+  user-select: none;
+  touch-action: none;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.32);
+}
+
+.chessboard-wrap.is-dragging,
+.chessboard-wrap.is-dragging * {
+  cursor: grabbing !important;
+}
+
+.chessboard {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  width: 100%;
+  height: 100%;
+}
+
+.square {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.square.light { background: var(--sq-light); }
+.square.dark { background: var(--sq-dark); }
+
+.square.selected {
+  outline: 3px solid rgba(255, 214, 10, 0.9);
+  outline-offset: -3px;
+}
+
+.square.last-from,
+.square.last-to {
+  box-shadow: inset 0 0 0 999px rgba(232, 200, 90, 0.34);
+}
+
+.square.check {
+  box-shadow: inset 0 0 0 999px rgba(224, 48, 48, 0.42);
+}
+
+.square.premove-from,
+.square.premove-to {
+  outline: 3px solid rgba(96, 165, 250, 0.95);
+  outline-offset: -3px;
+}
+
+.piece-img {
+  color-scheme: only light;
+  width: 90%;
+  height: 90%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  display: block;
+  filter: drop-shadow(0 1.5px 2px rgba(0, 0, 0, 0.28));
+}
+
+.piece-premove-ghost {
+  opacity: 0.5;
+  position: absolute;
+}
+
+.legal-dot {
+  position: absolute;
+  width: 22%;
+  height: 22%;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.18);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.legal-capture {
+  position: absolute;
+  inset: 5%;
+  border-radius: 50%;
+  border: 5px solid rgba(0, 0, 0, 0.16);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.coord {
+  position: absolute;
+  font-size: 11px;
+  font-weight: 700;
+  pointer-events: none;
+  z-index: 1;
+  font-family: system-ui, -apple-system, sans-serif;
+  line-height: 1;
+}
+
+.coord-file { bottom: 3px; right: 4px; }
+.coord-rank { top: 3px; left: 4px; }
+
+.square.light .coord { color: var(--sq-dark); opacity: 0.88; }
+.square.dark .coord { color: var(--sq-light); opacity: 0.92; }
+
+.board-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.board-overlay svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.piece-flying-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 8;
+}
+
+/* The travelling piece. Positioned at the board's top-left corner and moved with
+   `transform`, so one square of travel is exactly 100% at every board size. */
+.piece-flying {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 12.5%;
+  height: 12.5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  will-change: transform;
+  z-index: 1;
+}
+
+.piece-flying .piece-img {
+  color-scheme: only light;
+  width: 90%;
+  height: 90%;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
+}
+
+/* The piece under the pointer while dragging. */
+.piece-drag-ghost {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 12.5%;
+  height: 12.5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 9;
+}
+
+.piece-drag-ghost .piece-img {
+  color-scheme: only light;
+  width: 92%;
+  height: 92%;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.42));
+}

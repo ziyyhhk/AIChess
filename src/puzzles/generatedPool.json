@@ -1,0 +1,3642 @@
+[
+ {
+  "id": "gen-101rkpi",
+  "fen": "rn2kbnr/p2p1p2/b6p/PppNp1BQ/4P3/3Pq1PN/RPP4P/3K1B1R w kq - 1 14",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 945,
+  "solution": [
+   {
+    "uci": "d5c7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-10enss0",
+  "fen": "rnb4r/2pp4/1p1k1qpp/p3p3/P2P1Q2/2N1PNn1/1PPK1P1P/R1B2B1R w - - 6 16",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 915,
+  "solution": [
+   {
+    "uci": "f4f6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-11qx4q8",
+  "fen": "rnbqkb2/3pnpp1/2p3p1/pp2p3/1PN4r/5N1B/P1PPPP1P/R1BQK2R w KQq - 2 9",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "c4d6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-11see0",
+  "fen": "r3k3/2bn2Q1/p1bP1p2/1Pp3p1/4NpP1/1K1B1N1P/1P6/1R5R w - - 1 38",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 845,
+  "solution": [
+   {
+    "uci": "g7e7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-11vm0qw",
+  "fen": "rnk3nr/1pP3pp/3b4/pN2pP1Q/1RbP4/P2P4/2PKNP1P/2B2q2 w - - 4 22",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 935,
+  "solution": [
+   {
+    "uci": "h5e8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-12mlkpq",
+  "fen": "r1bqkb1r/p1ppp3/2n2npp/5p2/P1BPPPQ1/2p4P/RPP3P1/2B1K1NR w Kkq - 1 12",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "g4g6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-12tc5oe",
+  "fen": "5b1r/1n1p3r/pNb4p/1P5P/3k1pP1/P2N4/1P3K2/R1R2B2 w - - 1 38",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 870,
+  "solution": [
+   {
+    "uci": "c1c4"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-13p07md",
+  "fen": "rn4nr/4Q3/p3q2p/2ppkp1P/P1P1b3/N1PPPPP1/8/R1B2KN1 w - - 0 24",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 905,
+  "solution": [
+   {
+    "uci": "f3f4"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-13u3d5o",
+  "fen": "Q7/r2b1B1k/1r1p1p1p/p1n1p3/P3PPpn/1P2R3/2P5/2R1KNN1 w - - 15 43",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 880,
+  "solution": [
+   {
+    "uci": "a8g8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-13wyy8a",
+  "fen": "1n2k1nr/r1Q5/P3b3/6p1/3R3p/8/1PPP2P1/1NB1KBN1 w - - 0 45",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 860,
+  "solution": [
+   {
+    "uci": "d4d8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-13yyoi",
+  "fen": "2b1k3/6r1/p1nQr1p1/PR6/3q2P1/3PBR2/NP2K3/3B4 w - - 2 46",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 860,
+  "solution": [
+   {
+    "uci": "f3f8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-14flmng",
+  "fen": "rnbq1b1r/2ppkp1p/6pn/pp1Qp3/3P2P1/4P3/PPP2P1P/RNB1KBNR w KQ - 2 9",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "d5e5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-164ldm7",
+  "fen": "1nR2b2/3br2p/pk3p2/3qpP1r/p1Q1P1K1/6P1/1B1P2P1/5B2 w - - 4 47",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 905,
+  "solution": [
+   {
+    "uci": "c4c7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-16eqqam",
+  "fen": "1rbk4/1Pp1r3/3p1Q2/pp1NP2p/1N4pP/PP4P1/4PR2/n2K1B2 w - - 2 36",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 850,
+  "solution": [
+   {
+    "uci": "f6e7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-16i86e2",
+  "fen": "3k1rn1/3P1r2/p2Q4/p1N1Kp2/2b3pP/4b3/1P4R1/r7 w - - 2 48",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 900,
+  "solution": [
+   {
+    "uci": "c5b7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-16jjdm3",
+  "fen": "1bb2k2/rp1p2p1/n5nr/p5Q1/2BPp2p/N1P5/PBq3NP/R5RK w - - 0 30",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 940,
+  "solution": [
+   {
+    "uci": "g5d8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-16vlh69",
+  "fen": "4kbnr/4pb2/r7/p1QpPppp/2P5/B1q2PPP/P2P4/1N2KBNR w Kk - 0 21",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 910,
+  "solution": [
+   {
+    "uci": "c5c8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-177wf8l",
+  "fen": "rN1k2r1/1b3p1p/ppp2p2/5Q2/PPB1pbnP/8/2PP1PP1/R1B2RK1 w - - 3 21",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 885,
+  "solution": [
+   {
+    "uci": "f5d7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-17c0t9e",
+  "fen": "r4Q2/pb5k/nbp1N2r/1p1p4/7p/3p4/R1P1P1PP/3K1B1R w - - 2 32",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 880,
+  "solution": [
+   {
+    "uci": "f8g7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-181uibo",
+  "fen": "6Qb/1p6/BnPp3k/1n3p2/3pPP2/P4R2/3N3P/R1K1B3 w - - 2 44",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 810,
+  "solution": [
+   {
+    "uci": "f3h3"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-18cb1x2",
+  "fen": "1r6/6Rp/2kP4/p4P2/P2Q2b1/2P3n1/3B2R1/n3K3 w - - 5 50",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 830,
+  "solution": [
+   {
+    "uci": "g7c7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-18x6iq1",
+  "fen": "rnb2bn1/pp6/k5pr/PNp1p2p/2P1p1q1/1Q3P1N/1P1PB1PP/R1B1K2R w K - 1 22",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 945,
+  "solution": [
+   {
+    "uci": "b5c7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-190dp5e",
+  "fen": "r1bqkb1r/1pppp1p1/5p2/p6p/Pn1P2PP/1PP5/R1Q1P1P1/1NB1KBNR w Kkq - 0 10",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 920,
+  "solution": [
+   {
+    "uci": "c2g6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-194jgpv",
+  "fen": "4k2r/p5pp/1p2PQ2/PK4pP/1Bp3P1/R4b2/2P4R/1N3n2 w - - 1 36",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 820,
+  "solution": [
+   {
+    "uci": "f6e7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-196tgjk",
+  "fen": "3k4/b2p1p1n/b1P4p/p6P/1r2pP1P/N5R1/4P3/3QKB2 w - - 0 32",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 845,
+  "solution": [
+   {
+    "uci": "d1d7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-198es9o",
+  "fen": "rn1q1bnr/p1p1k2p/1p1p2p1/4N3/2Q2P2/2P1P3/PP1P2PP/RNB1KBR1 w Q - 1 11",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 910,
+  "solution": [
+   {
+    "uci": "c4f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-19s6nsy",
+  "fen": "r1n4r/2p3pp/2Q2n2/3Npk2/1B1P1N1P/pb3P2/2PR4/2K2R2 w - - 2 36",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 875,
+  "solution": [
+   {
+    "uci": "c6e6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1alag2g",
+  "fen": "r4k1r/pqp1npp1/8/n2Qp1Np/1bp1bP2/P2P2P1/5K1P/1RB2B1R w - - 3 20",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 945,
+  "solution": [
+   {
+    "uci": "d5f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1ayo5m",
+  "fen": "1nbqk1nr/r1p1p2p/pp1p4/5Qp1/1P2Pb2/3PN1P1/P1P1BP1P/R1B1K1NR w KQk - 1 11",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 945,
+  "solution": [
+   {
+    "uci": "e2h5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1aysv3u",
+  "fen": "3b1k2/3R1n1b/p7/1rP5/P1N3pp/4KQ2/6r1/5R2 w - - 0 41",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 865,
+  "solution": [
+   {
+    "uci": "f3f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1b27qzy",
+  "fen": "rn2kb2/4ppr1/Q1p3pp/4n3/qP2pPP1/2Bp4/P1P4P/R2K1BNR w q - 1 22",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 915,
+  "solution": [
+   {
+    "uci": "a6c8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1b2t1ui",
+  "fen": "rkr5/p1p2pbn/4N2p/2P1n3/5pqP/P3P2B/2KN4/3R3R w - - 3 33",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 905,
+  "solution": [
+   {
+    "uci": "d1b1"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1bh98sr",
+  "fen": "4k3/1P2Bp1p/2b2P2/8/2pQ1P2/r1N3KN/1r5P/1R3B1R w - - 9 50",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 805,
+  "solution": [
+   {
+    "uci": "d4d8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1bvrua2",
+  "fen": "4k3/q2rpN2/1p2Pb2/2P5/P3p1Qr/1pP1K3/3B2BP/RNR3n1 w - - 1 41",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 870,
+  "solution": [
+   {
+    "uci": "g4g8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1cqtt7",
+  "fen": "r1b1k2b/p7/n1P2Pr1/1p3p1p/1QPq1p2/P5PR/2RBP3/1NK2BN1 w - - 2 29",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 905,
+  "solution": [
+   {
+    "uci": "b4e7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1daybqm",
+  "fen": "rnb2b2/ppppqppr/3kpn2/7p/1P4P1/N2P4/P1PQPPBP/R1B1K1NR w KQ - 3 8",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "a3c4"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1dh0n66",
+  "fen": "r1bqkbnr/1pppp2p/5p2/6p1/pP1NP2P/2N5/P1PP1nPR/R1BQKB2 w Qkq - 0 9",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "d1h5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1ekcmyq",
+  "fen": "1rQqkb1r/p3pp2/1p1p2pp/2p4P/P1P1nP2/6PB/1PnPP3/RNB2KNR w k - 4 12",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 920,
+  "solution": [
+   {
+    "uci": "h3d7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1emz028",
+  "fen": "r2k1bnr/n1p3p1/bp3N1p/p1q2Q1P/PPPp4/4pPK1/R2PP1P1/1NB2B1R w - - 6 20",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 945,
+  "solution": [
+   {
+    "uci": "f5d7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1ez8hn8",
+  "fen": "2rqkbnr/pbppp1p1/1Q6/1P3p1p/2n2P2/2P4P/P2PP1P1/RNB1KBNR w KQk - 0 9",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 945,
+  "solution": [
+   {
+    "uci": "b6g6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1ezbg52",
+  "fen": "r2k4/2p3Q1/2Pp1p2/p3n3/1p3pb1/1P5P/PbPBPPN1/4KB1R w - - 2 26",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 850,
+  "solution": [
+   {
+    "uci": "g7f8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1frs1qo",
+  "fen": "rnb3kr/p1N2p1p/1ppp2p1/5Q1n/P1B1P1P1/2P2P2/2P4P/R3K1NR w KQ - 2 16",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 885,
+  "solution": [
+   {
+    "uci": "f5f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1gy3c5j",
+  "fen": "2br4/3n2pp/r2p4/3Bk1PP/P3P2R/8/2NbP3/RK4N1 w - - 7 41",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 865,
+  "solution": [
+   {
+    "uci": "g1f3"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1h1n8td",
+  "fen": "3rnk2/p1b2p1P/n6p/Ppp1R3/7p/3N1p1b/2P2P2/1R1K3B w - - 3 41",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 885,
+  "solution": [
+   {
+    "uci": "h7h8q"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1h48uem",
+  "fen": "r1k3r1/1bP5/p5n1/1p1N1qbp/1P2PBpP/NP6/1R6/1R1Q2K1 w - - 5 35",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 900,
+  "solution": [
+   {
+    "uci": "d5b6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1ha2ufx",
+  "fen": "r1b5/p1nk1pbr/2np1Q2/NB2p1pp/P2pP3/1PP1B2N/1R3PPP/4K2R w K - 1 17",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 915,
+  "solution": [
+   {
+    "uci": "b5c6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1hd50bn",
+  "fen": "1n6/1b1pb1rp/B6k/p1p2Pq1/1P2pB2/P4PP1/1Rn2K2/1N2R3 w - - 0 33",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 905,
+  "solution": [
+   {
+    "uci": "e1h1"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1hgfqzs",
+  "fen": "rnqb2nr/pb3p1p/2p2k2/RN1ppB2/4PPQ1/1p1P2P1/1PP4P/2B1KR2 w - - 0 19",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 945,
+  "solution": [
+   {
+    "uci": "g4g5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1hro1fa",
+  "fen": "r1br4/pp1n2p1/q1p5/4kpNB/2Pp3P/PP1PPpP1/R2K1P2/Q4R2 w - - 1 26",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 885,
+  "solution": [
+   {
+    "uci": "a1d4"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1ht7hat",
+  "fen": "1r1k1bn1/2qpp3/bp3Q1n/pBp1Pp2/P1P4r/1P4PP/R2P1PR1/1NB2KN1 w - - 7 23",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 940,
+  "solution": [
+   {
+    "uci": "f6f8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1hwfoz2",
+  "fen": "k7/2p2p2/5QNr/3pb2p/PR4p1/3NP1P1/3P3R/2B1KB2 w - - 3 30",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 785,
+  "solution": [
+   {
+    "uci": "f6a6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1i42qmo",
+  "fen": "5bbr/p1p5/1Q5n/p2P1kP1/1r1p4/1PN2P2/7R/5K2 w - - 0 39",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 870,
+  "solution": [
+   {
+    "uci": "b6f6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1i5lgur",
+  "fen": "3rk3/nR4R1/2p4P/1b1pp3/3P1N2/2b5/3pP2r/N2Q1K2 w - - 4 36",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 870,
+  "solution": [
+   {
+    "uci": "g7g8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1iap71r",
+  "fen": "r4b1r/p3p3/bP2k1qp/2p1B1pP/NPPPQ2N/5p2/R4KBP/7R w - - 0 33",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 880,
+  "solution": [
+   {
+    "uci": "e4d5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1icg73s",
+  "fen": "1r1nb2r/5p1k/3q1B2/p1Pp2Qp/P3NPP1/2p4P/PR2P1B1/4K1R1 w - - 1 43",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 875,
+  "solution": [
+   {
+    "uci": "g5g7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1ix8l1t",
+  "fen": "2nQ3n/1p3k2/5p1B/r2P1P2/P1r2P2/7p/4N2P/K2R1B2 w - - 1 41",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 835,
+  "solution": [
+   {
+    "uci": "d8f8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1j38yjx",
+  "fen": "3rkbnr/pP1n3p/8/1N1pNQ2/2q2p2/PP5P/R2PP1PR/2BK1B2 w k - 0 18",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 900,
+  "solution": [
+   {
+    "uci": "f5f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1j6mu9h",
+  "fen": "3k1bnr/1p6/1p2BpNp/pP4N1/1n1r2P1/2R1BP2/2R4P/1K6 w - - 0 46",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 875,
+  "solution": [
+   {
+    "uci": "c3c8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1jmemqa",
+  "fen": "r1bq1k2/2Q2rb1/1n3p2/1p1pp1pp/2P4P/P3PPN1/2p2K2/3B2NR w - - 8 39",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 915,
+  "solution": [
+   {
+    "uci": "c7d8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1jn2uyo",
+  "fen": "1n6/5Q2/bpk4b/pN2p1pP/P4PP1/1PnP4/7R/2R1KBN1 w - - 1 39",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 840,
+  "solution": [
+   {
+    "uci": "c1c3"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1jo2c9f",
+  "fen": "3Q2R1/1kNq1p2/1Pp2r2/6b1/p3P2p/8/PP6/1R2KB2 w - - 1 42",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 810,
+  "solution": [
+   {
+    "uci": "d8b8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1joi4ni",
+  "fen": "r5r1/2p2k2/1nn5/pp1P1pPp/3B2Q1/bP5N/2P4P/4RRK1 w - - 8 40",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 875,
+  "solution": [
+   {
+    "uci": "g4f5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1jxms0h",
+  "fen": "r1bqkbnr/1p1np2p/2p5/pB1p1p2/N2P1p1P/4P2N/PPP2KP1/R1BQ3R w kq - 1 10",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "d1h5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1kej7qg",
+  "fen": "1r1q1b1r/p1k1p1pp/1p2QP1n/1P1p4/2b5/N4P2/P2P1K1P/R1B2BNR w - - 3 21",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 910,
+  "solution": [
+   {
+    "uci": "e6c6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1kphukb",
+  "fen": "rn2k1r1/p1p1q1b1/b5pp/1p1P1N2/4Qpn1/1KP2P2/PP1BP2R/RN3B2 w - - 4 21",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 940,
+  "solution": [
+   {
+    "uci": "e4e7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1kqkasn",
+  "fen": "r6r/pQ4b1/n3k1Np/2p1p2P/3pP3/1PPP2P1/P2NKPB1/R5R1 w - - 1 27",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 845,
+  "solution": [
+   {
+    "uci": "b7e7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1kqqz19",
+  "fen": "5k1b/2pPR3/b7/1p2p3/r3PqPn/8/1N1P1BP1/R4K2 w - - 1 40",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 865,
+  "solution": [
+   {
+    "uci": "d7d8q"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1ky48is",
+  "fen": "2B4k/2n5/p6P/3P2N1/P7/1rpp4/5Q2/1RB2K1R w - - 0 47",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 775,
+  "solution": [
+   {
+    "uci": "f2f8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1kyn76y",
+  "fen": "5k2/2r5/1pBprPP1/p4n2/1b6/2PQ1Rn1/PP2P3/2K4R w - - 4 47",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 865,
+  "solution": [
+   {
+    "uci": "h1h8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1l6jwhl",
+  "fen": "r4bnr/p2nkq1p/b2pB3/1Q3pp1/3PN3/P5PN/1PPK1P1P/R1BR4 w - - 1 17",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 935,
+  "solution": [
+   {
+    "uci": "b5d7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1leob7r",
+  "fen": "3Q2n1/p1p2rr1/4k2p/2P1bpp1/8/1P3B1P/P1K5/RN2N2R w - - 11 49",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 845,
+  "solution": [
+   {
+    "uci": "f3d5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1lqnp1z",
+  "fen": "3nQbkr/7p/p4pP1/1r6/BB2p3/3Pn2b/P1P1NK2/R4QNR w - - 1 33",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 900,
+  "solution": [
+   {
+    "uci": "e8f8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1ls8a3u",
+  "fen": "3r2r1/1p2bqpp/3p3n/2kb2B1/2P3P1/p2B1P1K/PQ5P/1R5R w - - 6 39",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 905,
+  "solution": [
+   {
+    "uci": "b2b6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1lt8q3n",
+  "fen": "bN1r1kn1/6p1/1p1qpP1Q/4P2B/P7/7K/1b1P2PP/4R1NR w - - 9 45",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 865,
+  "solution": [
+   {
+    "uci": "h6g7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1m08o91",
+  "fen": "4k1n1/r4qb1/1pp2pr1/2B1n1p1/RP2PP2/6PQ/8/4KBNR w - - 1 43",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 900,
+  "solution": [
+   {
+    "uci": "h3c8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1mlg3o1",
+  "fen": "rnbqkbnr/1p1pp3/5p1p/p1p3p1/1P5P/4P3/P1PP1PPR/RNBQKBN1 w Qkq - 0 6",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "d1h5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1mvlq28",
+  "fen": "2bk3r/4b2p/2R4P/2pp1B2/8/P1P1p3/r3PP1N/RNB1K3 w Q - 0 41",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 840,
+  "solution": [
+   {
+    "uci": "c6c8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1n53j89",
+  "fen": "3r1k1r/2p5/ppP3Q1/8/PP2BN2/2P2R1p/N2P3P/R1B2K2 w - - 3 36",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 780,
+  "solution": [
+   {
+    "uci": "f4d5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1n7eioi",
+  "fen": "r2Nkbr1/p3p1pp/2n5/1pqP2pn/N1p1P1Q1/1P5B/PB1P1PKP/3R3R w q - 8 21",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 915,
+  "solution": [
+   {
+    "uci": "g4d7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1nfqsr2",
+  "fen": "8/1N2kPB1/1np5/3n3p/1ppP4/6PB/1P1KP3/q2R2bR w - - 1 39",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 840,
+  "solution": [
+   {
+    "uci": "f7f8q"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1nl1j09",
+  "fen": "r1b4r/3p4/1pN2k2/p1pp1P1Q/PNP1P1P1/5K2/5PB1/2b3RR w - - 3 40",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 845,
+  "solution": [
+   {
+    "uci": "h5g6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1nqsst9",
+  "fen": "r2kBQnr/1b6/2nB2p1/p1P4p/P1PPP3/7P/8/RN1K2NR w - - 0 28",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 865,
+  "solution": [
+   {
+    "uci": "e8c6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1nsn1p5",
+  "fen": "2b5/2r4r/1p4kp/pB1Q4/2p1R2P/6P1/1B6/1N2K1R1 w - - 2 40",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 810,
+  "solution": [
+   {
+    "uci": "h4h5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1o3xn8x",
+  "fen": "r1bqkb1r/ppppp3/7p/3n1pp1/2B1PP2/N2P2PN/PPPK3n/1RBQ3R w kq - 0 11",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "d1h5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1o6mso",
+  "fen": "1rbqr3/1ppk1p2/4pbpp/pP2P3/3np1P1/B2R3B/P2N3P/R1QK4 w - - 2 25",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 920,
+  "solution": [
+   {
+    "uci": "d3d4"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1o8lkxv",
+  "fen": "1r3b1r/p2npN2/Ppp4p/1q4P1/n1Pk3P/NR3P2/3PQK2/2B2BR1 w - - 0 23",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 905,
+  "solution": [
+   {
+    "uci": "e2e3"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1oclmkw",
+  "fen": "rnbk1b2/p1qppQpr/1pp4n/8/P4N2/1PP2P1p/1R1PPKPP/1NB2BR1 w - - 5 17",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 945,
+  "solution": [
+   {
+    "uci": "f7f8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1oh0apz",
+  "fen": "2r3r1/7p/b1kqp2P/p1BpQPp1/P1P5/1R1P3P/8/5KNR w - - 5 48",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 845,
+  "solution": [
+   {
+    "uci": "e5d6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1or8uuk",
+  "fen": "r3kqn1/5p2/b7/N1p1Np1P/ppp1B2Q/PP6/2R5/bRBK4 w - - 2 47",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 880,
+  "solution": [
+   {
+    "uci": "e4c6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1ormsw5",
+  "fen": "1rbqkb1r/pp1pnpp1/4p3/2p2P1p/1nP1N2P/6P1/PP1PP3/R1BQKBNR w KQk - 1 8",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "e4d6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1p2cudz",
+  "fen": "r3k2r/3pb2p/n1pP4/pb3pP1/1pBBQ1P1/1P2K3/P1P5/RN4NR w kq - 1 25",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 880,
+  "solution": [
+   {
+    "uci": "e4e7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1p6jd26",
+  "fen": "4bbnr/pq2p1pR/2rp2k1/5pP1/PpP2P2/1P3QP1/1R1KP3/1NB2B2 w - - 5 29",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 910,
+  "solution": [
+   {
+    "uci": "f3h5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1pp0j98",
+  "fen": "r2qkbnr/p2pp1pp/b7/1pp1Np2/2B5/B3P3/P1PP1PPP/RN1Q1K1R w kq - 2 11",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 920,
+  "solution": [
+   {
+    "uci": "c4f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1q7y5qe",
+  "fen": "rq1k4/2ppn3/p1P2Q2/1p2Ppr1/2Pp1P1p/2B3P1/PN4KP/4R2R w - - 0 30",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 855,
+  "solution": [
+   {
+    "uci": "f6f8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1qycisd",
+  "fen": "3rn3/p1pkb3/b2p4/nPp2pp1/5p1r/2PQ1P2/PB1P3R/RN3K2 w - - 2 30",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 915,
+  "solution": [
+   {
+    "uci": "d3f5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1raelkn",
+  "fen": "rnb5/1pp1b3/2kp1pr1/p2p3p/5p1P/2NQqPP1/PPP1P1B1/2RK3R w - - 0 23",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 920,
+  "solution": [
+   {
+    "uci": "d3b5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1rc0cs4",
+  "fen": "r1Bk1bnr/4p3/1q5p/p2n1Q2/1p2R2p/1PN5/P1PP1PPR/5KN1 w - - 1 25",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 905,
+  "solution": [
+   {
+    "uci": "f5d7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1sei7ip",
+  "fen": "3q1b1r/rbpp2pp/pp3n2/3np3/kP1PPPpP/7R/P1PK4/1RB1QBN1 w - - 1 17",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "h3a3"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1sie3yl",
+  "fen": "r5k1/b3Q3/p2p1B2/1p1P1nN1/2R2Ppp/4P1N1/3K2BP/7R w - - 13 35",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 815,
+  "solution": [
+   {
+    "uci": "e7f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1t8jbqm",
+  "fen": "rnbqk1nr/2pppp2/p4b1p/6pQ/1pBPPP2/1P5N/P1PN2PP/R1B1K2R w KQkq - 0 10",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "h5f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1ucgjur",
+  "fen": "1nb1kB1r/1N1p4/8/p2p1p1p/p1r3n1/Q1PpPBP1/5P1P/R1K4R w - - 4 29",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 885,
+  "solution": [
+   {
+    "uci": "a3e7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1ukp10c",
+  "fen": "3nk1r1/3r3N/1qpBPpp1/p7/1bPp1P2/1p3N1P/4K1P1/R7 w - - 6 45",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 880,
+  "solution": [
+   {
+    "uci": "h7f6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1uyktpp",
+  "fen": "r1bq2nr/pp6/n3pb2/2pp3p/NP3P1k/P3P2P/2PQ1K2/R1B2BNR w - - 0 20",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 940,
+  "solution": [
+   {
+    "uci": "g1f3"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1uyomuq",
+  "fen": "Q2rk3/4Brp1/2p5/P3Pn2/1PK1pP1p/7P/7R/1b6 w - - 1 44",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 840,
+  "solution": [
+   {
+    "uci": "a8d8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1vbo5ba",
+  "fen": "r1r2R2/2pbp1nn/2kb2P1/ppP2p2/1P1PP3/PQ4P1/RK6/1N6 w - - 3 45",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 905,
+  "solution": [
+   {
+    "uci": "b3d5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1viuet2",
+  "fen": "r2qkb1r/pp1npp1p/3pBn2/2p3N1/5P2/3PP3/PP1P2PP/RNBQK2R w KQkq - 2 8",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 915,
+  "solution": [
+   {
+    "uci": "e6f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1woez6c",
+  "fen": "rn1qkb1r/p2pp3/b4p2/1p4p1/P1p1Q1Pp/2P2P1P/1P1PP3/RNB1KBNR w KQq - 4 11",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 920,
+  "solution": [
+   {
+    "uci": "e4g6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1x6addf",
+  "fen": "B6Q/4bk2/8/2pp2pp/2P4N/1r2pnP1/4K2n/2R1R1N1 w - - 0 49",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 845,
+  "solution": [
+   {
+    "uci": "a8d5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1xjzl4z",
+  "fen": "2rqkbr1/pn1npp2/2p1B2p/1p4Np/2N1P1b1/P2P1P2/1PP3P1/R1BQ1K1R w - - 2 20",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 945,
+  "solution": [
+   {
+    "uci": "e6f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1xsm10s",
+  "fen": "5k2/1q4r1/1pr1pKn1/p1p1p2p/1PP3QP/N6P/1Bn5/R2R3B w - - 9 38",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 880,
+  "solution": [
+   {
+    "uci": "d1d8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1xtsu0b",
+  "fen": "rnb2rk1/ppqppp1p/2p2b2/1NB3pn/4Q3/1P1BP3/P1PP1PPP/2R1K1NR w - - 10 15",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "e4h7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1yawyx8",
+  "fen": "rn2B3/p1b2p2/3kp2n/3p2p1/3p1P2/p2RP1P1/7P/RNB2KN1 w - - 0 30",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 855,
+  "solution": [
+   {
+    "uci": "c1a3"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1ycah03",
+  "fen": "Nn1R2nr/p3kpb1/2p3pp/1p2p1P1/1P6/P1p4B/4PP1P/2BQK1NR w K - 2 19",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 860,
+  "solution": [
+   {
+    "uci": "d1d6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1yggzae",
+  "fen": "r1bq2nr/ppp3pp/n1k2pB1/2bpp3/P2PN3/4PP2/1PP1Q1PP/R1B1K1NR w KQ - 8 12",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "e2b5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1yvyih0",
+  "fen": "2bqkbnr/2ppp1PB/8/pp2Pp2/P1r5/R1P2P2/1PP3P1/1NBQK1NR w Kk f6 0 15",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 910,
+  "solution": [
+   {
+    "uci": "h7g6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-1yysf6y",
+  "fen": "r2qkbnr/1bppp2p/p7/5pp1/1p1n1P2/N2KP3/PPPP2PP/R1BQ1BNR w kq - 1 9",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "d1h5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-2kziqu",
+  "fen": "r2q2nr/ppp5/n2b1pp1/3pkb1p/1PP1P1P1/N3P3/P2Q1P1P/R1B1KB1R w KQ - 0 18",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 945,
+  "solution": [
+   {
+    "uci": "d2d5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-2m6jae",
+  "fen": "2kr2r1/Q5Pp/3p2bn/b1p3p1/1nP2p2/1pBPPB2/1R5N/2K4R w - - 2 34",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 910,
+  "solution": [
+   {
+    "uci": "a7b7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-2pi9or",
+  "fen": "2b1k2r/p2n4/1pB3pp/b1Q5/4p1p1/B3P3/5K1P/RN3RN1 w k - 1 29",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 850,
+  "solution": [
+   {
+    "uci": "c5e7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-34kp7d",
+  "fen": "2k2b2/Q3n3/2p4p/2Pnp3/2b2R2/1P2PPrP/3N4/1K2R3 w - - 2 47",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 865,
+  "solution": [
+   {
+    "uci": "f4f8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-3uw73e",
+  "fen": "3k4/1qr1b3/2BB1pQP/1P1K2p1/2p5/2P1P1PN/7N/7R w - - 1 49",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 805,
+  "solution": [
+   {
+    "uci": "g6e8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-3xang9",
+  "fen": "1Q6/2n1pb1k/2p3p1/p7/P1P2Pr1/2B1KB2/2N4P/6NR w - - 3 43",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 810,
+  "solution": [
+   {
+    "uci": "b8h8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-3xyz1w",
+  "fen": "rq2n2r/7Q/bp1p1k1p/p1R5/N1P3R1/P5N1/4K3/R3nB2 w - - 1 49",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 900,
+  "solution": [
+   {
+    "uci": "g4g6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-47x5nr",
+  "fen": "1b2k2r/5p1p/4b3/nP1pp1Qp/2pP4/B1R4P/2P1PP1N/1N2KB1R w k - 1 25",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 850,
+  "solution": [
+   {
+    "uci": "g5e7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-4f6o22",
+  "fen": "2brqN1b/8/n1p2Qrk/4p1p1/pP2P1Pp/P3K2B/4N2P/2B2RR1 w - - 3 40",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 905,
+  "solution": [
+   {
+    "uci": "f6h8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-4rb5su",
+  "fen": "1rbqkbnr/2p1p1Q1/p2R1p2/np5p/P7/4P2P/1PPP1PP1/1NB1KBNR w Kk - 0 12",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 940,
+  "solution": [
+   {
+    "uci": "g7g6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-4smyjg",
+  "fen": "2bqkb2/1rp5/pp1p1Q1N/Bnn1p1p1/2P1B1P1/PP1PPP1P/3N4/R4K1R w - - 5 38",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 910,
+  "solution": [
+   {
+    "uci": "f6f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-4vpww2",
+  "fen": "4kr2/1rQpp1Rp/1p5n/p2P1p2/1P2BP2/n2b3P/1b2P1K1/RNB3N1 w - - 1 27",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 910,
+  "solution": [
+   {
+    "uci": "c7c8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-52kdvd",
+  "fen": "b1n1kbn1/2B2pp1/r5Q1/p1ppp1N1/PPP2R2/7R/4PKB1/3r2N1 w - - 1 34",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 910,
+  "solution": [
+   {
+    "uci": "g6f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-52w6gh",
+  "fen": "rn3b1r/p3n1pp/b1k1ppP1/Qppq4/2BPPB2/2N4N/PP3P1P/2KR3R w - - 1 14",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 945,
+  "solution": [
+   {
+    "uci": "a5c7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-5gbm3l",
+  "fen": "2k2r2/2p1K3/rp2pQ2/pPN1n1pp/5pR1/P2PP3/2P2PP1/R4BN1 w - - 0 31",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 825,
+  "solution": [
+   {
+    "uci": "f6f8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-5h40rs",
+  "fen": "1r4n1/1p6/n2qb1p1/2p2pQ1/p1PpP1P1/NP1K2kP/P6R/R4BN1 w - - 4 35",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 880,
+  "solution": [
+   {
+    "uci": "h2g2"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-7gw6fs",
+  "fen": "1rbqkbnr/1pppp2p/2n5/pB3Pp1/8/P1N4P/1PPP1PP1/R1BQK1NR w KQk - 0 8",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 945,
+  "solution": [
+   {
+    "uci": "d1h5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-7nciia",
+  "fen": "4r1r1/5kb1/p1PQ3R/1p2p3/PP3pP1/B2P3N/R1PKnP2/8 w - - 0 38",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 840,
+  "solution": [
+   {
+    "uci": "h3g5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-7ndmeh",
+  "fen": "1n6/r7/3pqr2/RPk2p2/8/1P6/1BN2P1P/2K2n1B w - - 0 48",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 860,
+  "solution": [
+   {
+    "uci": "b2d4"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-7njwsm",
+  "fen": "1r3rk1/p4ppp/3bp3/8/1pP2qPQ/1P1PP3/P1K3BR/RNB3N1 w - - 4 24",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 850,
+  "solution": [
+   {
+    "uci": "h4h7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-7ytyto",
+  "fen": "rnbqkbnr/p2pp1p1/Q6p/2pP1p2/1pP5/4P3/PP1N1PPP/R1B1KBNR w KQkq - 1 8",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "a6g6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-7ywt1",
+  "fen": "2r1r3/3bb3/p2pp2P/3nPk2/PBPP2pP/1P2P1R1/1R1N4/3K1B2 w - - 1 42",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 870,
+  "solution": [
+   {
+    "uci": "f1d3"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-865m15",
+  "fen": "rnbqkb1r/p2pnppp/1p6/1Np1p3/2P5/P4P2/1P1PP1PP/1RBQKBNR w Kkq - 1 7",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "b5d6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-8dpgae",
+  "fen": "1nb3q1/3pp3/N4kpr/nQ6/p1BP1B1P/P4KP1/1P2R3/2R3b1 w - - 14 36",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 900,
+  "solution": [
+   {
+    "uci": "b5e5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-8ps64a",
+  "fen": "2k5/r1PN3r/5bp1/6P1/2pp1PB1/1Q6/P1qP1PK1/R1B2R2 w - - 5 41",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 835,
+  "solution": [
+   {
+    "uci": "b3b8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-8tahnc",
+  "fen": "1qR5/5k1r/3P1p2/5b1p/BPNP1b2/PKn2PQp/7N/5R2 w - - 5 48",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 865,
+  "solution": [
+   {
+    "uci": "g3g8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-925t07",
+  "fen": "1bb1k2r/r4p2/pp1p2Pp/3B4/PP1p3B/2Q3n1/R3NP1R/4K3 w - - 0 34",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 880,
+  "solution": [
+   {
+    "uci": "c3c8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-94vtub",
+  "fen": "rnb2bnr/2p1ppp1/2kp3p/1p6/Pp2P1P1/2P2P2/RB1PQ2P/1N3KNR w - - 0 13",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 920,
+  "solution": [
+   {
+    "uci": "e2b5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-9fkdwo",
+  "fen": "3r1k2/Q5pr/4P3/pp1nP1Pp/3p3P/bqp2B2/PRP2P2/1N2RK2 w - - 3 40",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 880,
+  "solution": [
+   {
+    "uci": "a7f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-9qoh97",
+  "fen": "2b2k2/3pb3/Pp3p1r/1r2N2p/2Q1B2n/P7/2PB3R/2R1K2n w - - 19 41",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 900,
+  "solution": [
+   {
+    "uci": "c4f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-9upy3p",
+  "fen": "1Qb1k1q1/4pnr1/1p2N3/pP3p2/Pp3Pp1/4KB2/N2PP2P/2B2R2 w - - 4 32",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 850,
+  "solution": [
+   {
+    "uci": "f3c6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-a07btz",
+  "fen": "rnb1kb2/pp2p1r1/1P2P3/P1Qp1ppn/7p/8/1P1PNPPP/RNB1K2R w - - 3 21",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 915,
+  "solution": [
+   {
+    "uci": "c5c8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-a21gb8",
+  "fen": "1n1rk3/qb1pbp2/2pr4/p5pp/1Pp1pQPP/P1NPPR2/5PB1/R3K1N1 w - - 0 29",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 920,
+  "solution": [
+   {
+    "uci": "f4f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-asvv0",
+  "fen": "1nbk2nr/2pp1Q1p/1r4p1/p3N3/3P3q/N7/PPP1PPPR/R1B1KB2 w Q - 1 12",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 905,
+  "solution": [
+   {
+    "uci": "f7f8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-b4ai42",
+  "fen": "4k1nr/5q2/rB4B1/2p1PQpp/1bP2P2/1P5P/P2PN3/2RK3R w k - 4 28",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 865,
+  "solution": [
+   {
+    "uci": "f5f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-bd2nva",
+  "fen": "2rQ2r1/4pk2/4p1pb/2pbnN1p/p2P3P/PP4P1/4R3/RN3KB1 w - - 1 43",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 880,
+  "solution": [
+   {
+    "uci": "d8e7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-bjet56",
+  "fen": "5k1r/1b3ppp/5R1n/Qp6/7P/PP6/3NP3/2RKb3 w - - 8 40",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 840,
+  "solution": [
+   {
+    "uci": "a5d8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-bps8z4",
+  "fen": "rnb3nr/2qp3p/p1pP1k2/2Q3p1/1pB1P2P/7N/5P2/3K4 w - - 6 36",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 910,
+  "solution": [
+   {
+    "uci": "c5g5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-bvf9qo",
+  "fen": "r2qkbnr/pbppp1p1/B6p/1P3p2/5PQ1/4P2N/PP1P2PP/RNB1K2R w KQkq - 0 9",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 915,
+  "solution": [
+   {
+    "uci": "g4g6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-d2qubv",
+  "fen": "2b2k2/5r2/2pPPn2/p4P1Q/8/1rb1n1P1/2P5/5B1K w - - 1 48",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 890,
+  "solution": [
+   {
+    "uci": "h5f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-d39ogm",
+  "fen": "3rkr2/4p2p/4P3/pNQ2p1P/Rp1R4/1P2Bb2/2K1B3/3n4 w - - 3 45",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 845,
+  "solution": [
+   {
+    "uci": "b5c7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-dsc7hr",
+  "fen": "r4knr/p1qp2p1/b1p5/bPn1Np2/7P/RQ6/1P1PPPp1/1NBK1BR1 w - - 1 23",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 940,
+  "solution": [
+   {
+    "uci": "b3f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-eradyb",
+  "fen": "1n3r2/3p1p2/3Pk3/p1p4p/N1N1P2p/1P2nrR1/PB6/1b3BK1 w - - 0 46",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 880,
+  "solution": [
+   {
+    "uci": "a4c5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-eu4rn4",
+  "fen": "rnb4r/5pp1/pqp3R1/1pbkp2P/PP1P4/3K4/1RP1PP1P/2BQ1B2 w - - 4 24",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 910,
+  "solution": [
+   {
+    "uci": "e2e4"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-eugwz2",
+  "fen": "1n1qkbnr/1N1pp3/1p3p2/3P2p1/p1P5/p1B1QP2/3PB3/RN2R1K1 w - - 1 27",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 885,
+  "solution": [
+   {
+    "uci": "b7d6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-ez9vvl",
+  "fen": "B1k3n1/8/r1p3Qp/2p1BP1p/4Pr2/p7/R5bN/1N2K3 w - - 0 46",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 845,
+  "solution": [
+   {
+    "uci": "g6e8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-fbj49t",
+  "fen": "1k6/3nNq2/PpQ5/2pPp1b1/2P1PB2/8/P3bP2/3RKB2 w - - 0 35",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 835,
+  "solution": [
+   {
+    "uci": "c6b7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-fne47n",
+  "fen": "5RQr/2P1k3/prb3Pp/2p5/5p1P/P1p4B/1P2NP2/nN2K2R w - - 1 33",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 845,
+  "solution": [
+   {
+    "uci": "c7c8n"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-fo84ul",
+  "fen": "1nb2bnr/1p3p1p/4pk2/2p3p1/4pPQ1/1p5P/r1PPK1P1/RNq2BNR w - - 0 16",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "g4g5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-g8k3zr",
+  "fen": "1n3Qn1/N6p/7b/2Bk1pp1/8/P4P1b/1PP1B3/R2K2R1 w - - 3 44",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 835,
+  "solution": [
+   {
+    "uci": "f8d6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-gk6es5",
+  "fen": "rq4nr/3n4/bp1ppppb/N1k4p/6PP/P1NPPP2/1BK5/R4r1R w - - 1 32",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 970,
+  "solution": [
+   {
+    "uci": "d3d4"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-gpe1sr",
+  "fen": "r1b2bnr/2pqp2p/p1n1k1p1/1p1pPp2/2NP4/1P2K2N/PRP2PPP/2BQ1BR1 w - - 6 15",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "h3g5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-gpg8qm",
+  "fen": "r1b1kbr1/1p2pppp/p2Q3n/1Np5/1nPPP2P/1P3P2/P3K1PR/R1B2BN1 w - - 1 17",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 915,
+  "solution": [
+   {
+    "uci": "b5c7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-guyb6e",
+  "fen": "7Q/4pk2/5B2/Ppp1K1b1/1P1N4/3r1B1N/R2P3P/7R w - - 4 50",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 775,
+  "solution": [
+   {
+    "uci": "f3h5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-gydimh",
+  "fen": "3r4/4p1b1/pp1pPnq1/N1pk2p1/P1bPp3/RP2B2R/4B3/4K3 w - - 1 38",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 885,
+  "solution": [
+   {
+    "uci": "e2c4"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-hcrm79",
+  "fen": "2bqkbnr/1r1pp3/p4ppQ/npp4p/6P1/N2P1P1P/1PPBP3/R3KBNR w Qk - 0 15",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "h6g6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-hd2xwm",
+  "fen": "1rbk2nr/2pp4/2n2p1p/1p1Bp1p1/1Q6/N3PP1P/PbP3R1/NR2K3 w - - 2 28",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 915,
+  "solution": [
+   {
+    "uci": "b4f8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-hwt5az",
+  "fen": "rnbqkbn1/3p2p1/1p4r1/p1p2p1Q/7B/1P2P2N/P1PP1PPP/RN2KB1R w KQq - 1 8",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 940,
+  "solution": [
+   {
+    "uci": "h5g6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-i37qea",
+  "fen": "1nk2b1r/2p5/6p1/2rBP2p/6p1/qR5P/4K3/3R4 w - - 0 49",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 870,
+  "solution": [
+   {
+    "uci": "d5b7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-i4s4hk",
+  "fen": "1r3bn1/p3qk1r/1p1pb1p1/2p2p1Q/2n2p1N/3PP2P/PP3KP1/RNB2B1R w - - 0 20",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 945,
+  "solution": [
+   {
+    "uci": "h5g6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-ipcurq",
+  "fen": "1nbr3k/1p4b1/1Pp4B/r1PpP3/p2P2Q1/2N3PP/P3N1n1/R2K4 w - - 4 41",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 900,
+  "solution": [
+   {
+    "uci": "g4g7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-j7e7dm",
+  "fen": "1r3bn1/pb2k1p1/2Q2q2/1BP2p1p/P1pP1p1P/N3PnrR/R2B2P1/5K2 w - - 8 22",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 940,
+  "solution": [
+   {
+    "uci": "c6d7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-j7ebsf",
+  "fen": "Q1b1kbr1/3npppp/5n2/Bp1p4/2Pp4/P2N2P1/qP2PP1P/RN2KB1R w KQ - 1 16",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 915,
+  "solution": [
+   {
+    "uci": "a8c8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-jf8dtp",
+  "fen": "Q1r1k3/p4p2/3p1B1p/2N2P2/P6P/1Pp1K2R/4P3/RN6 w - - 0 38",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 755,
+  "solution": [
+   {
+    "uci": "a8c8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-jmbj6n",
+  "fen": "r2qkb2/pb1pp3/npp3r1/4p1pp/2P2N2/N4PP1/PPQP2BP/1RB2RK1 w q - 4 15",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 920,
+  "solution": [
+   {
+    "uci": "c2g6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-jtf9f6",
+  "fen": "rnbk2nr/2pp1Q2/pp4p1/1q4Np/1PP2p1P/4P1N1/P4PP1/R1B1KBR1 w - - 7 19",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 915,
+  "solution": [
+   {
+    "uci": "f7f8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-kml99c",
+  "fen": "2rr3k/1b5p/2p2p1N/1pP5/N3p2P/1P4b1/1B6/1R2nK2 w - - 0 50",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 875,
+  "solution": [
+   {
+    "uci": "b2f6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-ks0qsh",
+  "fen": "kn6/5Q2/3p1pp1/p3p3/qP6/3PB2P/2RP4/3K4 w - - 0 48",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 785,
+  "solution": [
+   {
+    "uci": "f7a7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-l0g5ly",
+  "fen": "1Rb1k3/4r3/2p1PB2/3p2N1/7p/r2B3K/P2b3P/7R w - - 0 38",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 835,
+  "solution": [
+   {
+    "uci": "b8c8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-lff62g",
+  "fen": "3rk1nr/3b1p1p/1P1p2P1/4p3/2QP3b/P4N2/2q1PBPP/R3KB1R w - - 2 27",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 900,
+  "solution": [
+   {
+    "uci": "c4f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-li5nqw",
+  "fen": "q3k1n1/2pbppr1/1pQp4/R5pp/1P3PPP/2PR4/1P1PPbB1/1NB2KN1 w - - 0 21",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 885,
+  "solution": [
+   {
+    "uci": "a5a8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-ln7ni6",
+  "fen": "rnb1kbnr/1p2ppp1/pB5p/3P2q1/8/3P4/PP2PPPP/RNQ1KBNR w KQkq - 7 9",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 940,
+  "solution": [
+   {
+    "uci": "c1c8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-m72qbk",
+  "fen": "r7/P1kP3r/bp6/6NP/5pP1/n2R4/4K1B1/B1b3NR w - - 1 41",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 860,
+  "solution": [
+   {
+    "uci": "g5e6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-m9sb7w",
+  "fen": "1n4nr/2r1p3/1PQ5/p3kppP/3p2p1/R3P2N/K4P2/5BbR w - - 0 39",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 880,
+  "solution": [
+   {
+    "uci": "a3a5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-mvs557",
+  "fen": "r1bqkb2/p2npppr/nppp3p/4NQ2/3P2P1/1PP5/P3PP1P/RNB1KB1R w KQq - 3 9",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "f5f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-mx6sye",
+  "fen": "r1b2b2/p2Q1pBp/8/2k4K/1np1pP2/3p3P/1P2P1r1/RN3BNR w - - 1 28",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 880,
+  "solution": [
+   {
+    "uci": "g7d4"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-n12vej",
+  "fen": "5b1k/Q7/5pP1/P1pp2P1/b1n5/1RNP2r1/4K2P/3R1B2 w - - 0 47",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 835,
+  "solution": [
+   {
+    "uci": "a7h7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-nde8e5",
+  "fen": "k5B1/rp5B/3R2b1/p1pn2N1/P1P4P/P4p2/6P1/2B1K2R w - - 1 49",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 810,
+  "solution": [
+   {
+    "uci": "d6d8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-nee0gn",
+  "fen": "rn5r/pbpp4/2N1kp1p/1p4pn/1P4P1/B1P1P2P/P4KB1/RN1Q3R w - - 2 29",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 885,
+  "solution": [
+   {
+    "uci": "d1d5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-no79y9",
+  "fen": "rn2k3/1Q3r2/p2Pp1p1/5pP1/2KP1Pnp/7P/PB6/RN1R1B2 w - - 1 44",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 845,
+  "solution": [
+   {
+    "uci": "b7c8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-noxlnf",
+  "fen": "3k4/2r3rR/pp2Pp2/2Q5/5Pn1/P7/3P4/1RB1KN2 w - - 3 36",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 805,
+  "solution": [
+   {
+    "uci": "c5f8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-npv4i2",
+  "fen": "2b2q2/8/3k3B/3P1Q1p/Pr1bP3/1pR2KPP/5N2/5B1R w - - 14 49",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 830,
+  "solution": [
+   {
+    "uci": "h6f8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-ntn0hy",
+  "fen": "3Q2n1/r4krp/3P3b/4PBP1/q1p4p/2N1R3/PP2N1b1/R1B1K3 w - - 3 39",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 895,
+  "solution": [
+   {
+    "uci": "e5e6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-o5v34j",
+  "fen": "1rb1kr2/p2pb1np/n2B4/P4ppP/4QPP1/1P1P4/1R2P1BR/1N1K1N2 w - - 0 38",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 905,
+  "solution": [
+   {
+    "uci": "e4e7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-odcicq",
+  "fen": "rn3bn1/2p1pp2/1N1k2p1/Q5B1/3pP1P1/P2P1P2/1PP3Br/RN3KR1 w - - 1 24",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 875,
+  "solution": [
+   {
+    "uci": "a5d5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-oiv4ki",
+  "fen": "2B1n1kr/1n2b3/3pP1p1/N3PQ1N/1pP2Pp1/4B1KP/R7/1R6 w - - 7 50",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 840,
+  "solution": [
+   {
+    "uci": "f5f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-omxusb",
+  "fen": "q2k3r/rbppb1pP/1p2B3/3PPp2/Q3P3/3n4/PP1P3P/RNB2KNR w - - 1 16",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 905,
+  "solution": [
+   {
+    "uci": "a4d7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-ot815v",
+  "fen": "rnb1kb1r/1p1ppp1p/q2P4/p1Q2P2/P3nB2/8/R7/1N4K1 w - - 0 33",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 940,
+  "solution": [
+   {
+    "uci": "c5c8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-p64yvw",
+  "fen": "1nbqk2r/rp1p1p1p/p1p5/4N1p1/1bQP2nP/P1P5/1B2P1P1/RN2KB1R w KQk - 1 12",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 945,
+  "solution": [
+   {
+    "uci": "c4f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-pk4gm7",
+  "fen": "2b2bnr/4p3/rpqp3p/p1p2NPk/3PQ2P/N1P2p2/PP1KPPR1/1RB2B2 w - - 1 22",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 915,
+  "solution": [
+   {
+    "uci": "f5g3"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-po7y5q",
+  "fen": "2br2nr/4k3/P2pp1p1/1B1PQ3/2P3Pp/1p1PK2P/3RNP2/2B1R3 w - - 0 45",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 845,
+  "solution": [
+   {
+    "uci": "e5g7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-pu366q",
+  "fen": "B3kr2/R3bppp/2pr4/3pP1Q1/1PPn4/1P5P/3B3P/1N2K1NR w - - 0 29",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 845,
+  "solution": [
+   {
+    "uci": "g5e7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-pufwlu",
+  "fen": "2b1Bk2/8/pr1p1Bp1/8/P2PP3/b1p1n3/P1r2P2/4K2R w - - 0 37",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 870,
+  "solution": [
+   {
+    "uci": "h1h8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-pvzs61",
+  "fen": "5k1r/5p2/Q3pPn1/1r1p2pp/P1pP1P1P/R1P3R1/1P1K1nP1/2B3N1 w - - 0 31",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 850,
+  "solution": [
+   {
+    "uci": "a6c8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-q49tux",
+  "fen": "5k2/p5p1/b3PNPr/1N5p/1bRp3R/P2P1P1K/1Q2B2n/8 w - - 2 42",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 840,
+  "solution": [
+   {
+    "uci": "b2b4"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-qebmei",
+  "fen": "3qk2r/3bb1p1/1pppQ3/6Np/1P4n1/B1P1Pp2/R1B2P1P/1N1R2K1 w k - 2 22",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 880,
+  "solution": [
+   {
+    "uci": "e6f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-qeps4c",
+  "fen": "r6r/pbpn3k/1p5n/4p2N/1P2PP1p/P1PK4/2BP1qR1/1Rb5 w - - 4 30",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 935,
+  "solution": [
+   {
+    "uci": "g2g7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-qhlyud",
+  "fen": "rn2kbnr/p2ppp1p/2Q5/1p6/qpB1P2P/2P3p1/PB1P1PPR/RN2K1N1 w Qkq - 2 12",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 920,
+  "solution": [
+   {
+    "uci": "c6c8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-qmxwlh",
+  "fen": "rn2kb2/p2pB3/4pPpp/1pP2p1Q/8/P1N1P3/2P2PbP/R3KB1R w KQ - 1 24",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 855,
+  "solution": [
+   {
+    "uci": "h5g6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-qpiemo",
+  "fen": "1R2bN2/5N2/2p2k1p/2n2pp1/1PPR3P/1P6/1B6/1K6 w - - 2 47",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 780,
+  "solution": [
+   {
+    "uci": "d4d7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-qw55em",
+  "fen": "r1bqkbnr/p1ppp2p/n7/1p4p1/2P1Pp1P/3P4/PP3PP1/RNBQKBNR w KQkq - 0 6",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "d1h5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-qwffzx",
+  "fen": "1rbqkbnr/p2np3/1p3ppp/4p2B/1P1p1P1P/4B3/P1P3P1/RN1Q1KNR w k - 0 15",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "h5g6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-r5yjmi",
+  "fen": "4k2r/1Np1ppb1/rp1n1Bp1/PP1pQb1p/2NP2nP/5PP1/2P1K3/5R1R w - - 7 32",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 915,
+  "solution": [
+   {
+    "uci": "e5e7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-r66wo6",
+  "fen": "1r4n1/ppp1pp1r/n1q1b1pb/2k2P2/2Pp2p1/PP1PP3/RQ4NP/1NB2BKR w - - 1 20",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "b2d4"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-r8apgp",
+  "fen": "rnbqkb1r/1pppp1p1/p4p2/6Np/1P4n1/3BP1P1/P1PP1P1P/R1BQK1NR w KQk - 0 8",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "d3g6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-re1hoq",
+  "fen": "r1b3k1/p1pp2p1/Pp5B/2PPQ3/4qp1p/NP1B3r/5P2/4RKNR w - - 0 39",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 855,
+  "solution": [
+   {
+    "uci": "e5g7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-rue3w2",
+  "fen": "rnb4r/2qp3p/ppNbk3/P1p3pB/1PP5/4P3/1BNn3P/R2QK2R w Q - 5 29",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 940,
+  "solution": [
+   {
+    "uci": "d1g4"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-rzp6mk",
+  "fen": "2kr1bnr/pq2pp2/1QB3Rp/8/P4Pn1/RpPPP2N/1P5P/1NB1K3 w - - 3 24",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 905,
+  "solution": [
+   {
+    "uci": "b6b7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-s21caw",
+  "fen": "1nbkr3/2qpn2p/1pp5/5pN1/1PBP2PP/1RB1Pp2/r1P5/b2QK2R w - - 1 26",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 940,
+  "solution": [
+   {
+    "uci": "g5f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-sg9tvg",
+  "fen": "3rkb1r/2pbn3/p3P2q/1N2P3/pP1pBP2/3n4/1RPKN2P/7R w - - 6 34",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 930,
+  "solution": [
+   {
+    "uci": "b5c7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-sl8nuo",
+  "fen": "1n3bn1/1bp2pp1/5k2/rppppP2/1P4Qr/B2P3N/2P2PKP/5R1R w - - 6 23",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 915,
+  "solution": [
+   {
+    "uci": "g4g5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-sypqam",
+  "fen": "3r1b1r/pp1b1p1p/P1nBpkpP/2R5/3P2R1/1P2PP2/4N1P1/4KB2 w - - 1 37",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 880,
+  "solution": [
+   {
+    "uci": "g4f4"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-ta5t0c",
+  "fen": "3n3r/1bp5/r1kp1N1b/4p1p1/PP2p2P/N5PR/Rn1P4/2B2KQ1 w - - 0 38",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 905,
+  "solution": [
+   {
+    "uci": "b4b5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-tdf7s4",
+  "fen": "2n5/1b1n2p1/1rkpN1Q1/pp4P1/PP1PP1Pr/8/1BPR1R2/2K2B2 w - - 1 37",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 870,
+  "solution": [
+   {
+    "uci": "d4d5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-thzzh3",
+  "fen": "2k2bn1/1r4r1/3P4/pQ1P1ppp/B5N1/B3P1P1/PNP1K3/8 w - - 1 42",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 840,
+  "solution": [
+   {
+    "uci": "b5e8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-tkbc5o",
+  "fen": "r1bk1bnr/pppp4/2n1p1pN/7p/4p1P1/PP1P1Q2/3NKP2/Rq3B2 w - - 1 20",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "f3f8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-tlcgyc",
+  "fen": "r5nr/2pqpQ2/3k1p1p/p3b1B1/n1B1P3/2P3R1/PP3P1P/1K6 w - - 8 34",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 905,
+  "solution": [
+   {
+    "uci": "f7d5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-tqru94",
+  "fen": "r1q1k3/2p5/b2Qp2r/1p4Bp/2n1p1PP/5P2/2P1N1BR/RN3K2 w - - 2 24",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 875,
+  "solution": [
+   {
+    "uci": "d6e7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-tqrye1",
+  "fen": "rnbqkbnr/ppppp1p1/8/8/P3PpQ1/7P/1PPP1PP1/RNB1K1NR w KQq - 2 7",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 945,
+  "solution": [
+   {
+    "uci": "g4g6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-tyafwt",
+  "fen": "r1b2k1r/1pnpp2p/4Qp1b/2p3N1/p4P2/P1P4P/3BP1P1/RN2KBR1 w Q - 2 27",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 885,
+  "solution": [
+   {
+    "uci": "e6f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-u2yisz",
+  "fen": "3rqknQ/1np1p2p/p1R1r2N/3p1p2/P3PP1P/3P2P1/2K5/5BR1 w - - 7 49",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 880,
+  "solution": [
+   {
+    "uci": "h8g8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-u8rvj4",
+  "fen": "1nbqkbnr/1pppp3/5p1p/rp4p1/P3P3/5Q2/RPPP1PPP/1NB2KNR w - - 3 9",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "f3h5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-ucqvvw",
+  "fen": "1rb2b1r/1pR1P3/N3kp1n/3p3p/1PQP2q1/P3N1P1/1B1PP2p/4KB1R w K - 3 30",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 905,
+  "solution": [
+   {
+    "uci": "c4d5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-uej9tx",
+  "fen": "2rk2nr/pb2p2p/2Q2pp1/4B3/pPP1P2P/1B5n/5P2/R3K2R w - - 2 32",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 880,
+  "solution": [
+   {
+    "uci": "a1d1"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-um14cq",
+  "fen": "2k2Nn1/rbp1Q3/p5p1/qp2p2R/Pn2pP2/B1PP4/2N1R1r1/4KB2 w - - 0 36",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 910,
+  "solution": [
+   {
+    "uci": "e7e8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-umz8dw",
+  "fen": "rn2krQ1/p1qp1p2/1N6/6pp/2P4P/Bp2b1P1/2P1K2n/4RBNR w q - 2 30",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 910,
+  "solution": [
+   {
+    "uci": "g8f8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-uzn7cu",
+  "fen": "b2Q3r/1kn1p3/rqp1Nn1b/p1P2P1p/P1R4P/2N1P3/1RPK4/2B5 w - - 7 37",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 930,
+  "solution": [
+   {
+    "uci": "d8c7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-veq8nu",
+  "fen": "1n2qrk1/8/rp1p1p1n/R3pQpp/2b1B1P1/1P1P1P2/2KNPb1P/2B2R2 w - - 1 26",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 940,
+  "solution": [
+   {
+    "uci": "f5h7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-vng795",
+  "fen": "4k2r/1Q3p2/5Pp1/1N5p/p1Bpp2P/3PP2b/P5P1/R1K3n1 w - - 4 39",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 820,
+  "solution": [
+   {
+    "uci": "b7e7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-w9bbbp",
+  "fen": "r7/6N1/1P1Q4/p1pn3p/P1kP1pb1/5Rp1/7P/R3N1K1 w - - 3 49",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 815,
+  "solution": [
+   {
+    "uci": "d6c5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-x13hog",
+  "fen": "3k4/8/P1P2Ppp/1rbP1QP1/4r1n1/8/4P1BP/1NB1KR2 w - - 2 50",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 830,
+  "solution": [
+   {
+    "uci": "f5d7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-x2mgbu",
+  "fen": "3r4/7R/3N2k1/3p1b2/3pQ1p1/PP4P1/3RN3/4B2K w - - 2 50",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 775,
+  "solution": [
+   {
+    "uci": "e4f5"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-xdmgw6",
+  "fen": "1nb2k1r/3Q2b1/4p3/6p1/4p2p/q6P/Pp1B1PP1/2R1KBR1 w - - 0 27",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 875,
+  "solution": [
+   {
+    "uci": "c1c8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-xi4szy",
+  "fen": "n2k4/1r3Q2/2p3P1/3p1P1p/pp1p3P/1P2R3/P3P3/3RK1N1 w - - 0 50",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 790,
+  "solution": [
+   {
+    "uci": "e3e8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-xk1jtb",
+  "fen": "Bn2Kb1N/8/1P1k4/2p1pP2/P2p4/3PP1P1/2PQ4/RNq5 w - - 2 37",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 805,
+  "solution": [
+   {
+    "uci": "h8f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-xnew16",
+  "fen": "4k2N/4B3/2b5/QrP5/P1qp1p2/N2PR3/4PPP1/1R4K1 w - - 0 36",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 800,
+  "solution": [
+   {
+    "uci": "a5d8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-yc9lxp",
+  "fen": "4kbr1/p1P1pppp/7B/p4P2/P1p1p1P1/2PP1N1P/5R2/Rb2K3 w - - 1 30",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 830,
+  "solution": [
+   {
+    "uci": "c7c8q"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-yr67tu",
+  "fen": "r2qkb1r/pbppp1p1/n4p2/3nN2p/4B3/Np4P1/PPPPPP1P/1RBQR1K1 w kq - 0 10",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "e4g6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-yrn4n6",
+  "fen": "rnb1kbnr/p1p1pp1p/3p2p1/1pq5/6Q1/N3PP2/PP1P2PP/R1B1KBNR w Kkq - 1 8",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "g4c8"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-zd9may",
+  "fen": "rn6/p1b5/3k1pb1/5QN1/3P1P2/4Pnp1/2N1K1R1/5B2 w - - 1 41",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 865,
+  "solution": [
+   {
+    "uci": "f5e6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-zgcbsz",
+  "fen": "N3kbr1/1b2pp2/p1pQ4/2P1n1pp/pB3P2/6P1/1P5P/RN3K2 w - - 0 23",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 855,
+  "solution": [
+   {
+    "uci": "a8c7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-zngl3p",
+  "fen": "1nbqkbnr/rpp1p1p1/p2p3p/2N5/4P1Q1/PP3p2/2PP1PPP/R1B1KBNR w KQk - 0 8",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "g4g6"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-zvwxoh",
+  "fen": "r2qBk1r/p3p3/bp1p3b/2p2Pp1/P2P2nP/1Q2PP2/1P1PN3/RNB1K2R w KQ - 0 16",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 910,
+  "solution": [
+   {
+    "uci": "b3f7"
+   }
+  ],
+  "source": "Position from a random game"
+ },
+ {
+  "id": "gen-zzkiq1",
+  "fen": "r1bq1bn1/1pp1kpp1/3p3r/p5Np/Pn3QP1/R1Pp4/1B2PP1P/1N2KB1R w K - 2 12",
+  "sideToMove": "w",
+  "objective": "Checkmate in one move",
+  "theme": "mateIn1",
+  "rating": 950,
+  "solution": [
+   {
+    "uci": "f4f7"
+   }
+  ],
+  "source": "Position from a random game"
+ }
+]

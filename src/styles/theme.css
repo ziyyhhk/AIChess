@@ -1,0 +1,243 @@
+/* Board themes — blue matches Chess.com analysis look */
+/* Support both theme-* (App.tsx) and board-theme-* (legacy) */
+.theme-green,
+.board-theme-green {
+  --sq-light: #ebecd0;
+  --sq-dark: #739552;
+}
+.theme-brown,
+.board-theme-brown {
+  --sq-light: #f0d9b5;
+  --sq-dark: #b58863;
+}
+.theme-blue,
+.board-theme-blue {
+  --sq-light: #e8edf1;
+  --sq-dark: #7d9bb3;
+}
+.theme-purple,
+.board-theme-purple {
+  --sq-light: #e8d5f0;
+  --sq-dark: #7b5a8c;
+}
+
+.highlight-green { background: rgba(120, 200, 80, 0.55) !important; }
+.highlight-red { background: rgba(235, 80, 80, 0.5) !important; }
+.highlight-blue { background: rgba(80, 160, 230, 0.5) !important; }
+.highlight-yellow { background: rgba(230, 180, 40, 0.5) !important; }
+
+/* ---------- Play layout (App uses play-layout / play-board-col) ---------- */
+
+.app-main {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.play-layout {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 24px 28px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.play-board-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  flex: 0 1 auto;
+  max-width: 100%;
+}
+
+.play-layout .game-panel {
+  width: var(--panel-w, 300px);
+  max-width: 100%;
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  flex-shrink: 0;
+}
+
+/* Piece images stay true colors under forced dark mode */
+.piece-img {
+  color-scheme: only light;
+}
+
+/* ---------- Puzzles: board and sheet side by side on desktop ---------- */
+
+.puzzle-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 640px) minmax(240px, 320px);
+  justify-content: start;
+  align-items: start;
+  gap: 40px;
+}
+
+.view.puzzle-view {
+  max-width: 1080px;
+}
+
+.puzzle-board-col {
+  min-width: 0;
+}
+
+.puzzle-board-col .chessboard-wrap {
+  width: 100%;
+  max-width: 640px;
+}
+
+.puzzle-side {
+  padding-top: 4px;
+}
+
+.puzzle-rating-card {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+}
+
+.puzzle-rating-card .accuracy-value {
+  font-family: var(--serif);
+  font-size: 34px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.puzzle-rating-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 2px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+/* ---------- Phone / narrow ---------- */
+
+@media (max-width: 900px) {
+  .app-shell {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    padding: 8px 10px;
+    gap: 2px;
+    overflow-x: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--line, #2a3038);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .brand {
+    padding: 0 8px 0 0;
+  }
+
+  .brand-text,
+  .sidebar-foot {
+    display: none;
+  }
+
+  .nav {
+    flex-direction: row;
+    flex: 1;
+  }
+
+  .nav-item {
+    min-height: 44px;
+    padding: 10px 12px;
+    justify-content: center;
+    white-space: nowrap;
+  }
+
+  .nav-item.active::before {
+    display: none;
+  }
+
+  .nav-item.active {
+    box-shadow: inset 0 -2px 0 var(--accent);
+  }
+
+  .play-layout,
+  .board-and-panel {
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 12px 24px;
+  }
+
+  .play-board-col,
+  .board-column {
+    width: 100%;
+  }
+
+  .play-layout .chessboard-wrap,
+  .board-and-panel .chessboard-wrap,
+  .chessboard-wrap {
+    width: min(100vw - 24px, 520px);
+  }
+
+  .play-layout .game-panel,
+  .board-and-panel .game-panel,
+  .game-panel {
+    width: min(100vw - 24px, 520px);
+    max-height: none;
+    overflow: visible;
+  }
+
+  .view,
+  .placeholder-view {
+    padding: 16px 12px 28px;
+  }
+
+  .setting-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .setting-control .select {
+    width: 100%;
+  }
+
+  .analysis-replay-layout,
+  .puzzle-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .analysis-pgn-textarea {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .chessboard-wrap {
+    width: calc(100vw - 16px);
+    border-radius: 4px;
+  }
+
+  .play-layout,
+  .board-and-panel {
+    padding: 8px 8px 20px;
+    gap: 10px;
+  }
+
+  .play-layout .game-panel,
+  .game-panel {
+    width: calc(100vw - 16px);
+  }
+
+  .nav-item {
+    padding: 10px 8px;
+  }
+}
