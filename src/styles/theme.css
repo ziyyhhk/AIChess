@@ -1,16 +1,21 @@
 /* Board themes — blue matches Chess.com analysis look */
+/* Support both theme-* (App.tsx) and board-theme-* (legacy) */
+.theme-green,
 .board-theme-green {
   --sq-light: #ebecd0;
   --sq-dark: #739552;
 }
+.theme-brown,
 .board-theme-brown {
   --sq-light: #f0d9b5;
   --sq-dark: #b58863;
 }
+.theme-blue,
 .board-theme-blue {
   --sq-light: #e8edf1;
   --sq-dark: #7d9bb3;
 }
+.theme-purple,
 .board-theme-purple {
   --sq-light: #e8d5f0;
   --sq-dark: #7b5a8c;
