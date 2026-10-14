@@ -3,6 +3,7 @@ import type { Square } from 'chess.js';
 import { Chess } from 'chess.js';
 import { analyzeGame, buildAnalysisPlies, type GameAnalysis } from './analyzeGame';
 import { createEvaluator } from './evaluator';
+import { EvaluatorPool } from './workerPool';
 
 const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
@@ -55,22 +56,26 @@ export async function analyzePgnString(
     };
   }
   const plies = buildAnalysisPlies(verbose);
+  const pool = await EvaluatorPool.create();
   const { evaluator, warning } = await createEvaluator();
   try {
+    const warn = warning ?? pool.warning ?? null;
     const analysis = await analyzeGame({
       plies,
       evaluator,
+      pool,
       depth,
       startFen: START_FEN,
       signal,
-      warning: warning ?? null,
+      warning: warn,
       players: names,
       result: resultToken,
       onProgress: onProgress as any,
     });
-    return { analysis, warning: warning ?? null, players: names };
+    return { analysis, warning: warn, players: names };
   } finally {
     evaluator.dispose();
+    pool.dispose();
   }
 }
 
