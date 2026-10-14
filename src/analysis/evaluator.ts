@@ -11,6 +11,7 @@ import { Chess } from 'chess.js';
 import { loadStockfishWorker, STOCKFISH_CDN_URL } from '../engine/stockfishLoader';
 import { UciEngine, type Score } from '../engine/uci';
 import { searchWithMiniEngine } from '../engine/miniEngine';
+import { getCachedEval, setCachedEval } from './evalCache';
 
 export interface EngineLine {
   move: string;
@@ -18,11 +19,8 @@ export interface EngineLine {
 }
 
 export interface PositionEvaluation {
-  /** Best move in UCI coordinates for the position that was searched. */
   bestMove: string;
-  /** Score from the side-to-move's point of view, exactly like UCI reports it. */
   score: Score;
-  /** Second best line, when the engine supports MultiPV (used for "critical" spots). */
   secondBest: EngineLine | null;
   depth: number;
   pv: string[];
@@ -31,15 +29,9 @@ export interface PositionEvaluation {
 export interface EvaluateOptions {
   depth: number;
   signal: AbortSignal;
-  /** 2 when the caller wants the second-best line as well. */
   multiPv?: number;
 }
 
-/**
- * A finished position has no move to search. UCI reports `mate 0` when the side
- * to move is checkmated; a draw is 0.00. Handling this here keeps a game that
- * ended in checkmate analysable instead of failing on its last position.
- */
 export function terminalEvaluation(fen: string): PositionEvaluation | null {
   let chess: Chess;
   try {
@@ -64,7 +56,6 @@ export interface Evaluator {
   dispose(): void;
 }
 
-/** Stockfish over UCI, running in its own worker. */
 class StockfishEvaluator implements Evaluator {
   readonly kind = 'stockfish' as const;
   readonly label: string;
@@ -90,6 +81,9 @@ class StockfishEvaluator implements Evaluator {
   async evaluate(fen: string, options: EvaluateOptions): Promise<PositionEvaluation> {
     const terminal = terminalEvaluation(fen);
     if (terminal) return terminal;
+    const multiPv = options.multiPv ?? 1;
+    const cached = getCachedEval(fen, options.depth, multiPv);
+    if (cached) return cached;
     if (!this.started) {
       await this.engine.newGame();
       this.started = true;
@@ -97,7 +91,7 @@ class StockfishEvaluator implements Evaluator {
     await this.engine.setPosition(fen);
     const result = await this.engine.search({
       depth: options.depth,
-      multiPv: options.multiPv ?? 1,
+      multiPv,
       signal: options.signal,
     });
     const best = result.info.find((i) => i.multipv === 1) ?? result.best;
@@ -105,13 +99,15 @@ class StockfishEvaluator implements Evaluator {
     if (!best) {
       throw new Error(`Stockfish returned no evaluation for ${fen}`);
     }
-    return {
+    const evaluation = {
       bestMove: best.pv[0] ?? result.move,
       score: best.score,
       secondBest: second ? { move: second.pv[0] ?? '', score: second.score } : null,
       depth: best.depth || result.depth,
       pv: best.pv,
     };
+    setCachedEval(fen, multiPv, evaluation);
+    return evaluation;
   }
 
   dispose() {
@@ -119,7 +115,6 @@ class StockfishEvaluator implements Evaluator {
   }
 }
 
-/** The offline fallback: a real search, but far weaker than Stockfish. */
 class BuiltinEvaluator implements Evaluator {
   readonly kind = 'builtin' as const;
   readonly label = 'AIChess built-in engine (offline fallback, limited strength)';
@@ -135,8 +130,6 @@ class BuiltinEvaluator implements Evaluator {
     const terminal = terminalEvaluation(fen);
     if (terminal) return terminal;
     if (options.signal.aborted) throw new Error('Analysis cancelled');
-    // Yield to the event loop first so a long analysis never blocks the UI for
-    // more than one position at a time.
     await new Promise((resolve) => setTimeout(resolve, 0));
     const result = searchWithMiniEngine(fen, {
       maxDepth: Math.min(this.depth, Math.max(1, Math.round(options.depth / 4))),
@@ -159,14 +152,9 @@ class BuiltinEvaluator implements Evaluator {
 
 export interface CreateEvaluatorResult {
   evaluator: Evaluator;
-  /** Set when Stockfish could not be loaded; shown to the user. */
   warning?: string;
 }
 
-/**
- * Build the strongest available evaluator. Never throws for a missing engine -
- * analysis continues with the built-in engine and the caller shows the warning.
- */
 export async function createEvaluator(): Promise<CreateEvaluatorResult> {
   try {
     const evaluator = await StockfishEvaluator.create();
