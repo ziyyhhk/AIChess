@@ -15,40 +15,111 @@ export interface StockfishCustomOptions {
   movetimeMs?: number;
 }
 
-/**
- * UCI "go" line. Time-controlled on purpose: a depth cap (go depth N) ends the
- * search as soon as depth N is reached. On shallow levels that takes a few
- * milliseconds, which is why the AI used to look instant.
- */
-export function buildGoCommand(movetimeMs: number): string {
-  return `go movetime ${Math.max(100, Math.round(movetimeMs))}`;
+/** Approximate target ratings (approximate). Lower levels inject weaker picks. */
+export interface DifficultyProfile {
+  skill: number;
+  depth: number;
+  movetime: number;
+  limitStrength: boolean;
+  elo?: number;
+  randomMoveChance: number;
+  weakerLineChance: number;
+  targetRating: number;
 }
 
 export function difficultyToSettings(
   d: StockfishDifficulty,
   custom?: StockfishCustomOptions
-): { skill: number; depth: number; movetime: number; limitStrength: boolean; elo?: number } {
+): DifficultyProfile {
   switch (d) {
     case 'beginner':
-      return { skill: 0, depth: 1, movetime: 900, limitStrength: true, elo: 800 };
+      return {
+        skill: 0,
+        depth: 1,
+        movetime: 400,
+        limitStrength: true,
+        elo: 600,
+        randomMoveChance: 0.35,
+        weakerLineChance: 0.4,
+        targetRating: 600,
+      };
     case 'easy':
-      return { skill: 3, depth: 3, movetime: 1000, limitStrength: true, elo: 1100 };
+      return {
+        skill: 2,
+        depth: 2,
+        movetime: 600,
+        limitStrength: true,
+        elo: 900,
+        randomMoveChance: 0.18,
+        weakerLineChance: 0.35,
+        targetRating: 900,
+      };
     case 'medium':
-      return { skill: 8, depth: 8, movetime: 1200, limitStrength: true, elo: 1500 };
+      return {
+        skill: 6,
+        depth: 6,
+        movetime: 1000,
+        limitStrength: true,
+        elo: 1300,
+        randomMoveChance: 0.05,
+        weakerLineChance: 0.2,
+        targetRating: 1300,
+      };
     case 'hard':
-      return { skill: 15, depth: 12, movetime: 1600, limitStrength: false };
+      return {
+        skill: 12,
+        depth: 10,
+        movetime: 1400,
+        limitStrength: true,
+        elo: 1700,
+        randomMoveChance: 0,
+        weakerLineChance: 0.08,
+        targetRating: 1700,
+      };
     case 'expert':
-      return { skill: 20, depth: 15, movetime: 2200, limitStrength: false };
+      return {
+        skill: 18,
+        depth: 14,
+        movetime: 2000,
+        limitStrength: false,
+        randomMoveChance: 0,
+        weakerLineChance: 0,
+        targetRating: 2200,
+      };
     case 'custom':
       return {
         skill: custom?.skillLevel ?? 10,
         depth: custom?.depth ?? 10,
         movetime: custom?.movetimeMs ?? 1200,
         limitStrength: (custom?.skillLevel ?? 10) < 15,
+        randomMoveChance: 0,
+        weakerLineChance: 0,
+        targetRating: 1500,
       };
     default:
-      return { skill: 8, depth: 8, movetime: 1200, limitStrength: true, elo: 1500 };
+      return {
+        skill: 6,
+        depth: 6,
+        movetime: 1000,
+        limitStrength: true,
+        elo: 1300,
+        randomMoveChance: 0.05,
+        weakerLineChance: 0.2,
+        targetRating: 1300,
+      };
   }
+}
+
+export const DIFFICULTY_ORDER: StockfishDifficulty[] = [
+  'beginner',
+  'easy',
+  'medium',
+  'hard',
+  'expert',
+];
+
+export function buildGoCommand(movetimeMs: number): string {
+  return `go movetime ${Math.max(80, Math.round(movetimeMs))}`;
 }
 
 export class StockfishAdapter implements AIProvider {
@@ -137,11 +208,6 @@ export class StockfishAdapter implements AIProvider {
     }
   }
 
-  /**
-   * Engine assets are resolved by the shared loader (local build first, then the
-   * jsDelivr build), so gameplay and analysis can never disagree about which
-   * engine file to use or which error to report.
-   */
   private async createWorker(): Promise<Worker> {
     const { worker } = await loadStockfishWorker();
     return worker;
@@ -217,9 +283,15 @@ export class StockfishAdapter implements AIProvider {
     this.lastError = null;
 
     if (!req.legalMoves.length) {
-      throw new Error(
-        'The game has ended (no legal moves). No AI move is required.'
-      );
+      throw new Error('The game has ended (no legal moves). No AI move is required.');
+    }
+
+    const settings = difficultyToSettings(this.difficulty, this.custom);
+
+    // Deliberate imperfection at low levels: sometimes pick a random legal move.
+    if (settings.randomMoveChance > 0 && Math.random() < settings.randomMoveChance) {
+      const pick = req.legalMoves[Math.floor(Math.random() * req.legalMoves.length)];
+      return { move: pick, thinkingMs: 80 + Math.floor(Math.random() * 200) };
     }
 
     const ok = await this.init();
@@ -248,7 +320,6 @@ export class StockfishAdapter implements AIProvider {
       /* ignore */
     }
 
-    const settings = difficultyToSettings(this.difficulty, this.custom);
     const skill = Math.max(0, Math.min(20, settings.skill));
 
     this.worker!.postMessage(`setoption name Skill Level value ${skill}`);
@@ -261,12 +332,11 @@ export class StockfishAdapter implements AIProvider {
 
     this.worker!.postMessage('ucinewgame');
     this.worker!.postMessage(`position fen ${req.fen}`);
-
     this.worker!.postMessage(buildGoCommand(settings.movetime));
 
     const timeoutMs = Math.max(req.timeoutMs || 15000, settings.movetime + 5000);
 
-    return new Promise<AIMoveResponse>((resolve, reject) => {
+    const engineResult = await new Promise<AIMoveResponse>((resolve, reject) => {
       const onAbort = () => {
         try {
           this.worker?.postMessage('stop');
@@ -317,6 +387,17 @@ export class StockfishAdapter implements AIProvider {
         }, timeoutMs),
       };
     });
+
+    // Sometimes pick a weaker legal move instead of engine best.
+    if (settings.weakerLineChance > 0 && Math.random() < settings.weakerLineChance) {
+      const others = req.legalMoves.filter((m) => m !== engineResult.move);
+      if (others.length) {
+        const weaker = others[Math.floor(Math.random() * Math.min(3, others.length))];
+        return { ...engineResult, move: weaker };
+      }
+    }
+
+    return engineResult;
   }
 
   dispose() {
